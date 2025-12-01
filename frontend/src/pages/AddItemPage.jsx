@@ -7,12 +7,16 @@ import { itemApi } from '../api/services';
 const initialState = {
   title: '',
   description: '',
+  gender: '',
   category: 'clothes',
+  subcategory: '',
+  size: '',
   rentPricePerDay: '',
   salePrice: '',
   depositAmount: '',
   city: '',
   pincode: '',
+  addressLine: '',
   listingType: 'Rental'
 };
 
@@ -31,6 +35,22 @@ const AddItemPage = () => {
       toast.error('Please enter an item name.');
       return;
     }
+    if (!form.gender) {
+      toast.error('Please select Men\'s or Women\'s collection.');
+      return;
+    }
+    if (!form.subcategory) {
+      toast.error('Please select a subcategory.');
+      return;
+    }
+    if (!form.size.trim()) {
+      toast.error('Please enter a size.');
+      return;
+    }
+    if (!form.addressLine.trim()) {
+      toast.error('Please enter the complete address.');
+      return;
+    }
     if (!files.length) {
       toast.error('Please upload at least one image');
       return;
@@ -39,22 +59,27 @@ const AddItemPage = () => {
     const formData = new FormData();
     formData.append('title', form.title);
     formData.append('description', form.description);
+    formData.append('gender', form.gender);
     formData.append('category', form.category);
+    formData.append('subcategory', form.subcategory);
+    formData.append('size', form.size);
     formData.append('rentPricePerDay', form.rentPricePerDay || '0');
     if (form.salePrice) formData.append('salePrice', form.salePrice);
     if (form.depositAmount) formData.append('depositAmount', form.depositAmount);
     formData.append('location[city]', form.city);
     formData.append('location[pincode]', form.pincode);
+    formData.append('addressLine', form.addressLine);
     files.forEach((file) => formData.append('images', file));
 
     setLoading(true);
     try {
-      await itemApi.create(formData);
-      toast.success(`Successfully submitted "${form.title}" for ${form.listingType}. We will contact you for verification!`);
+      const { data } = await itemApi.create(formData);
+      toast.success(`Successfully submitted "${form.title}". Continue to payment.`);
       setForm(initialState);
       setFiles([]);
       setPreviews([]);
-      navigate('/items');
+      // Redirect to a payment options page (placeholder for now)
+      navigate('/payment', { state: { itemId: data._id } });
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to add item');
     } finally {
@@ -169,6 +194,65 @@ const AddItemPage = () => {
                 />
               </div>
 
+              {/* Collection (Men / Women) + Subcategory */}
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Collection
+                  </label>
+                  <select
+                    value={form.gender}
+                    onChange={(e) => setForm({ ...form, gender: e.target.value, subcategory: '' })}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary-berry focus:border-primary-berry transition"
+                    required
+                  >
+                    <option value="">Select</option>
+                    <option value="women">Women&apos;s Collection</option>
+                    <option value="men">Men&apos;s Collection</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Subcategory
+                  </label>
+                  <select
+                    value={form.subcategory}
+                    onChange={(e) => setForm({ ...form, subcategory: e.target.value })}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary-berry focus:border-primary-berry transition"
+                    required
+                    disabled={!form.gender}
+                  >
+                    <option value="">{form.gender ? 'Select subcategory' : 'Select collection first'}</option>
+                    {form.gender === 'women' && (
+                      <>
+                        <option value="women-clothes-western">Clothes – Western (jeans, tops, dresses, skirts…)</option>
+                        <option value="women-clothes-traditional">
+                          Clothes – Traditional (lehengas, sarees, indowestern, suits…)
+                        </option>
+                        <option value="women-jewellery">Jewellery</option>
+                        <option value="women-accessories">Accessories</option>
+                        <option value="women-shoes">Shoes</option>
+                        <option value="women-watches">Watches</option>
+                      </>
+                    )}
+                    {form.gender === 'men' && (
+                      <>
+                        <option value="men-clothes-western">
+                          Clothes – Western (jeans, shirts, t-shirts, trousers…)
+                        </option>
+                        <option value="men-clothes-traditional">
+                          Clothes – Traditional (sherwani, indowestern, 3-piece, kurta sets…)
+                        </option>
+                        <option value="men-watches">Watches</option>
+                        <option value="men-shoes">Shoes</option>
+                        <option value="men-accessories">Accessories</option>
+                      </>
+                    )}
+                  </select>
+                </div>
+              </div>
+
+              {/* Category + Listing Type */}
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
                   <label htmlFor="item-type" className="block text-sm font-medium text-gray-700 mb-1">
@@ -201,6 +285,21 @@ const AddItemPage = () => {
                     <option value="Sale">For Sale</option>
                   </select>
                 </div>
+              </div>
+
+              {/* Size */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Size
+                </label>
+                <input
+                  type="text"
+                  placeholder="S, M, L, 38, 40, etc."
+                  value={form.size}
+                  onChange={(e) => setForm({ ...form, size: e.target.value })}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary-berry focus:border-primary-berry transition"
+                  required
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-4 mb-4">
@@ -266,6 +365,21 @@ const AddItemPage = () => {
                     required
                   />
                 </div>
+              </div>
+
+              {/* Complete Address */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Complete Address
+                </label>
+                <textarea
+                  rows={3}
+                  placeholder="House / Flat, Street, Area, Landmark"
+                  value={form.addressLine}
+                  onChange={(e) => setForm({ ...form, addressLine: e.target.value })}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary-berry focus:border-primary-berry transition"
+                  required
+                />
               </div>
 
               <div className="mb-6">

@@ -28,12 +28,16 @@ export const createItem = async (req, res, next) => {
       ownerId: req.user._id,
       title: req.body.title,
       description: req.body.description,
+      gender: req.body.gender,
       category: req.body.category,
+      subcategory: req.body.subcategory,
+      size: req.body.size,
       images: imageUrls,
       rentPricePerDay: req.body.rentPricePerDay,
       salePrice: req.body.salePrice,
       depositAmount: req.body.depositAmount || 0,
-      location: mapLocation(req.body)
+      location: mapLocation(req.body),
+      addressLine: req.body.addressLine
     });
 
     res.status(201).json(item);
@@ -46,6 +50,12 @@ export const getItems = async (req, res, next) => {
   try {
     const filters = {};
     if (req.query.category) filters.category = req.query.category;
+    if (req.query.gender) filters.gender = req.query.gender;
+    if (req.query.subcategory) filters.subcategory = req.query.subcategory;
+    if (req.query.location) {
+      // partial match on city (case-insensitive)
+      filters['location.city'] = new RegExp(req.query.location, 'i');
+    }
     if (req.query.ownerId) filters.ownerId = req.query.ownerId;
 
     const items = await Item.find(filters).sort({ createdAt: -1 }).populate('ownerId', 'name email phone avatarUrl');

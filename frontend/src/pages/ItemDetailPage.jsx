@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import { itemApi, bookingApi, reviewApi } from '../api/services';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ReviewList from '../components/ReviewList';
+import { Star as StarIcon } from 'lucide-react';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const ItemDetailPage = () => {
@@ -17,6 +18,7 @@ const ItemDetailPage = () => {
   const [availability, setAvailability] = useState(null);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(addDays(new Date(), 1));
+  const [rating, setRating] = useState(5);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -89,7 +91,6 @@ const ItemDetailPage = () => {
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const rating = formData.get('rating');
     const comment = formData.get('comment');
     try {
       const { data } = await reviewApi.create({ itemId: id, rating, comment });
@@ -129,15 +130,26 @@ const ItemDetailPage = () => {
         <div className="bg-white rounded-lg shadow p-4 space-y-4">
           <h3 className="text-xl font-semibold">Reviews</h3>
           <ReviewList reviews={reviews} />
-          <form onSubmit={handleReviewSubmit} className="space-y-2">
+          <form onSubmit={handleReviewSubmit} className="space-y-3">
+            <div className="flex items-center gap-2">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  type="button"
+                  onClick={() => setRating(star)}
+                  className="focus:outline-none"
+                  aria-label={`${star} star`}
+                >
+                  <StarIcon
+                    className={`w-6 h-6 ${
+                      star <= rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
+                    }`}
+                  />
+                </button>
+              ))}
+              <span className="text-sm text-gray-600 ml-2">{rating} / 5</span>
+            </div>
             <div className="flex gap-2">
-              <select name="rating" className="border rounded px-3 py-2" defaultValue="5">
-                {[5, 4, 3, 2, 1].map((val) => (
-                  <option key={val} value={val}>
-                    {val} Stars
-                  </option>
-                ))}
-              </select>
               <input
                 name="comment"
                 placeholder="Leave a short comment"

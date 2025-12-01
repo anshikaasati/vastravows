@@ -1,8 +1,11 @@
 import { Link } from 'react-router-dom';
 import { Heart, Star } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { wishlistApi } from '../api/services';
+import { useAuth } from '../context/AuthContext';
 
 const ItemCard = ({ item }) => {
+  const { token } = useAuth();
   const [isFavorite, setIsFavorite] = useState(false);
   const categoryColors = {
     clothes: { bg: 'bg-red-100', text: 'text-red-700', border: 'border-red-300', ring: 'ring-primary-berry/20' },
@@ -42,22 +45,38 @@ const ItemCard = ({ item }) => {
   const avgRating = 4.5;
   const reviewCount = 12;
 
+  const toggleWishlist = async (e) => {
+    e.preventDefault();
+    if (!token) return;
+    try {
+      if (isFavorite) {
+        await wishlistApi.remove(item._id);
+        setIsFavorite(false);
+      } else {
+        await wishlistApi.add(item._id);
+        setIsFavorite(true);
+      }
+    } catch {
+      // ignore minor wishlist errors in card context
+    }
+  };
+
   return (
     <Link to={`/items/${item._id}`}>
-      <div className={`bg-white rounded-3xl overflow-hidden shadow-2xl hover:shadow-primary-berry/50 transition duration-300 relative group cursor-pointer border-4 border-white ring-2 ${colors.ring}`}>
+      <div
+        className={`glass-panel rounded-3xl overflow-hidden transition duration-300 relative group cursor-pointer border border-white/50 ring-1 ${colors.ring}`}
+      >
         <span className={`absolute top-4 left-4 ${badgeColor} text-white text-xs font-bold uppercase px-3 py-1.5 rounded-full shadow-lg z-10`}>
           {badgeText}
         </span>
         <button
-          onClick={(e) => {
-            e.preventDefault();
-            setIsFavorite(!isFavorite);
-          }}
+          onClick={toggleWishlist}
           className="absolute top-4 right-4 text-white p-2 rounded-full bg-black/40 hover:bg-red-500 transition duration-200 z-10"
         >
           <Heart className={`w-5 h-5 ${isFavorite ? 'fill-white' : ''}`} />
         </button>
-        <div className="h-64 bg-pink-50 flex items-center justify-center overflow-hidden">
+        <div className="h-64 flex items-center justify-center overflow-hidden relative">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
           <img
             src={item.images?.[0] || `https://placehold.co/600x400/9d174d/fce7f3?text=${encodeURIComponent(item.title)}`}
             alt={item.title}
@@ -67,9 +86,10 @@ const ItemCard = ({ item }) => {
             }}
           />
         </div>
-        <div className="p-5">
+        <div className="p-5 space-y-3">
           <h3 className="text-xl font-bold text-gray-900 truncate">{item.title}</h3>
-          <p className="text-sm text-gray-500 mb-3">
+          <p className="text-sm text-gray-500 flex items-center gap-2">
+            <span className="inline-block w-2 h-2 rounded-full bg-secondary-gold" />
             {item.location?.city || 'Location not specified'}
           </p>
           <div className="flex items-center justify-between">
@@ -90,10 +110,10 @@ const ItemCard = ({ item }) => {
               </span>
             </div>
           </div>
-          <button
-            onClick={(e) => e.preventDefault()}
-            className="mt-5 w-full text-white py-3 rounded-xl font-semibold text-base btn-gradient-vows shadow-md"
-          >
+          <p className="text-xs uppercase tracking-[0.3em] text-gray-400">
+            {item.gender} • {item.subcategory?.replace(/-/g, ' ')}
+          </p>
+          <button className="mt-2 w-full text-white py-3 rounded-xl font-semibold text-base btn-gradient-vows shadow-md">
             {item.salePrice ? 'Purchase Now' : 'Book Fitting'}
           </button>
         </div>

@@ -77,7 +77,27 @@ export const loginUser = async (req, res, next) => {
 
 export const getMe = async (req, res, next) => {
   try {
-    res.json(req.user);
+    const user = req.user.toObject ? req.user.toObject() : req.user;
+    res.json({ ...user, id: user._id });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateMe = async (req, res, next) => {
+  try {
+    const updates = {};
+    ['name', 'phone', 'avatarUrl'].forEach((field) => {
+      if (req.body[field] !== undefined) {
+        updates[field] = req.body[field];
+      }
+    });
+
+    const updatedUser = await User.findByIdAndUpdate(req.user._id, updates, {
+      new: true
+    }).select('-passwordHash');
+
+    res.json({ ...updatedUser.toObject(), id: updatedUser._id });
   } catch (error) {
     next(error);
   }

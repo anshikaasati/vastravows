@@ -3,7 +3,8 @@ import api from './http';
 export const authApi = {
   register: (payload) => api.post('/auth/register', payload),
   login: (payload) => api.post('/auth/login', payload),
-  me: () => api.get('/auth/me')
+  me: () => api.get('/auth/me'),
+  update: (payload) => api.put('/auth/me', payload)
 };
 
 export const itemApi = {
@@ -25,6 +26,12 @@ export const bookingApi = {
 export const reviewApi = {
   listByItem: (itemId) => api.get(`/reviews/${itemId}`),
   create: (payload) => api.post('/reviews', payload)
+};
+
+export const wishlistApi = {
+  list: () => api.get('/wishlist'),
+  add: (itemId) => api.post(`/wishlist/${itemId}`),
+  remove: (itemId) => api.delete(`/wishlist/${itemId}`)
 };
 
 

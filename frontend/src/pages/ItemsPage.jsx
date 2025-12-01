@@ -9,7 +9,11 @@ import toast from 'react-hot-toast';
 const ItemsPage = () => {
   const [items, setItems] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [category, setCategory] = useState(searchParams.get('category') || '');
+  const initialGender = searchParams.get('gender') || 'women';
+  const initialSubcategory = searchParams.get('subcategory') || '';
+  const [genderFilter, setGenderFilter] = useState(initialGender);
+  const [subcategory, setSubcategory] = useState(initialSubcategory);
+  const activeCategoryValue = subcategory ? `${genderFilter}:${subcategory}` : '';
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -17,7 +21,8 @@ const ItemsPage = () => {
       setLoading(true);
       try {
         const params = {};
-        if (category) params.category = category;
+        if (genderFilter) params.gender = genderFilter;
+        if (subcategory) params.subcategory = subcategory;
         const { data } = await itemApi.getAll(params);
         setItems(data);
       } catch (error) {
@@ -28,15 +33,55 @@ const ItemsPage = () => {
       }
     };
     fetchItems();
-  }, [category]);
+  }, [genderFilter, subcategory]);
 
-  const handleCategoryFilter = (cat) => {
-    setCategory(cat);
-    if (cat) {
-      setSearchParams({ category: cat });
-    } else {
-      setSearchParams({});
+  useEffect(() => {
+    setGenderFilter(searchParams.get('gender') || 'women');
+    setSubcategory(searchParams.get('subcategory') || '');
+  }, [searchParams]);
+
+  const handleGenderToggle = (gender) => {
+    setGenderFilter(gender);
+    setSubcategory('');
+    const next = new URLSearchParams();
+    if (gender) next.set('gender', gender);
+    setSearchParams(next);
+  };
+
+  const handleCategoryFilter = (value) => {
+    if (!value) {
+      setSubcategory('');
+      const next = new URLSearchParams();
+      if (genderFilter) next.set('gender', genderFilter);
+      setSearchParams(next);
+      return;
     }
+    const [g, sub] = value.split(':');
+    const appliedGender = g || genderFilter;
+    setGenderFilter(appliedGender);
+    setSubcategory(sub || '');
+    const next = new URLSearchParams();
+    if (appliedGender) next.set('gender', appliedGender);
+    if (sub) next.set('subcategory', sub);
+    setSearchParams(next);
+  };
+
+  const categoryOptions = {
+    women: [
+      { label: 'Women – Western', value: 'women:women-clothes-western', icon: Shirt },
+      { label: 'Women – Traditional', value: 'women:women-clothes-traditional', icon: Crown },
+      { label: 'Women – Jewellery', value: 'women:women-jewellery', icon: Gem },
+      { label: 'Women – Accessories', value: 'women:women-accessories', icon: ShoppingBag },
+      { label: 'Women – Shoes', value: 'women:women-shoes', icon: Footprints },
+      { label: 'Women – Watches', value: 'women:women-watches', icon: Watch }
+    ],
+    men: [
+      { label: 'Men – Western', value: 'men:men-clothes-western', icon: Shirt },
+      { label: 'Men – Traditional', value: 'men:men-clothes-traditional', icon: Crown },
+      { label: 'Men – Watches', value: 'men:men-watches', icon: Watch },
+      { label: 'Men – Shoes', value: 'men:men-shoes', icon: Footprints },
+      { label: 'Men – Accessories', value: 'men:men-accessories', icon: ShoppingBag }
+    ]
   };
 
   return (
@@ -44,67 +89,43 @@ const ItemsPage = () => {
       <h2 className="text-4xl font-extrabold text-gray-800 mb-8 tracking-tight">All Designer Looks</h2>
 
       {/* Filters & Categories */}
-      <div className="flex flex-wrap justify-center md:justify-start items-center gap-3 mb-10">
-        <span className="text-base font-bold text-primary-berry hidden sm:block mr-2">Collections:</span>
-        <button
-          onClick={() => handleCategoryFilter('clothes')}
-          className={`text-sm px-4 py-2 rounded-full font-medium hover:bg-red-200 transition shadow-md flex items-center border ${
-            category === 'clothes' ? 'bg-red-200 text-red-700 border-red-300' : 'bg-red-100 text-red-700 border-red-300'
-          }`}
-        >
-          <Crown className="w-4 h-4 mr-2 fill-red-500" />
-          Bridal Lehengas
-        </button>
-        <button
-          onClick={() => handleCategoryFilter('clothes')}
-          className="text-sm px-4 py-2 rounded-full bg-teal-100 text-teal-700 font-medium hover:bg-teal-200 transition shadow-md flex items-center border border-teal-300"
-        >
-          <Shirt className="w-4 h-4 mr-2" />
-          Groom Sherwanis
-        </button>
-          <button
-            onClick={() => handleCategoryFilter('jewellery')}
-            className={`text-sm px-4 py-2 rounded-full font-medium hover:bg-yellow-200 transition shadow-md hidden sm:flex items-center border ${
-              category === 'jewellery' ? 'bg-yellow-200 text-secondary-gold border-yellow-300' : 'bg-yellow-100 text-secondary-gold border-yellow-300'
-            }`}
-          >
-            <Gem className="w-4 h-4 mr-2 fill-yellow-500" />
-            Heavy Jewelry
-          </button>
-          <button
-            onClick={() => handleCategoryFilter('accessories')}
-            className={`text-sm px-4 py-2 rounded-full font-medium hover:bg-purple-200 transition shadow-md hidden lg:flex items-center border ${
-              category === 'accessories' ? 'bg-purple-200 text-purple-700 border-purple-300' : 'bg-purple-100 text-purple-700 border-purple-300'
-            }`}
-          >
-            <ShoppingBag className="w-4 h-4 mr-2" />
-            Accessories
-          </button>
-          <button
-            onClick={() => handleCategoryFilter('watch')}
-            className={`text-sm px-4 py-2 rounded-full font-medium hover:bg-blue-200 transition shadow-md hidden lg:flex items-center border ${
-              category === 'watch' ? 'bg-blue-200 text-blue-700 border-blue-300' : 'bg-blue-100 text-blue-700 border-blue-300'
-            }`}
-          >
-            <Watch className="w-4 h-4 mr-2" />
-            Watches
-          </button>
-          <button
-            onClick={() => handleCategoryFilter('shoes')}
-            className={`text-sm px-4 py-2 rounded-full font-medium hover:bg-orange-200 transition shadow-md hidden lg:flex items-center border ${
-              category === 'shoes' ? 'bg-orange-200 text-orange-700 border-orange-300' : 'bg-orange-100 text-orange-700 border-orange-300'
-            }`}
-          >
-            <Footprints className="w-4 h-4 mr-2" />
-            Shoes
-          </button>
+      <div className="flex flex-col gap-3 mb-10">
+        <div className="flex gap-2">
+          {['women', 'men'].map((gender) => (
+            <button
+              key={gender}
+              onClick={() => handleGenderToggle(gender)}
+              className={`px-4 py-2 rounded-full text-sm font-semibold border ${
+                genderFilter === gender ? 'bg-primary-berry text-white' : 'bg-white text-gray-700'
+              }`}
+            >
+              {gender === 'women' ? 'Women' : 'Men'}
+            </button>
+          ))}
           <button
             onClick={() => handleCategoryFilter('')}
-            className="text-sm px-4 py-2 rounded-full bg-white border-2 border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition flex items-center shadow-sm"
+            className="ml-auto text-sm px-4 py-2 rounded-full bg-white border-2 border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition flex items-center shadow-sm"
           >
             <Filter className="w-4 h-4 mr-1" />
             All Categories
           </button>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          {categoryOptions[genderFilter].map(({ label, value, icon: Icon }) => (
+            <button
+              key={value}
+              onClick={() => handleCategoryFilter(value)}
+              className={`text-sm px-4 py-2 rounded-full font-medium transition shadow-md flex items-center border ${
+                activeCategoryValue === value
+                  ? 'bg-primary-berry/20 border-primary-berry text-primary-berry'
+                  : 'bg-white'
+              }`}
+            >
+              <Icon className="w-4 h-4 mr-2" />
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {loading ? (

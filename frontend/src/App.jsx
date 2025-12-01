@@ -9,6 +9,9 @@ import ItemDetailPage from './pages/ItemDetailPage';
 import BookingPage from './pages/BookingPage';
 import UserBookingsPage from './pages/UserBookingsPage';
 import OwnerItemsPage from './pages/OwnerItemsPage';
+import WishlistPage from './pages/WishlistPage';
+import ProfilePage from './pages/ProfilePage';
+import PaymentPage from './pages/PaymentPage';
 import ProtectedRoute from './components/ProtectedRoute';
 
 const App = () => (
@@ -49,6 +52,30 @@ const App = () => (
           element={
             <ProtectedRoute>
               <OwnerItemsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/wishlist"
+          element={
+            <ProtectedRoute>
+              <WishlistPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/payment"
+          element={
+            <ProtectedRoute>
+              <PaymentPage />
             </ProtectedRoute>
           }
         />

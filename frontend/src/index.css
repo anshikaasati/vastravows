@@ -1,70 +1,74 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Playfair+Display:wght@400;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body {
+:root {
   font-family: 'Inter', sans-serif;
-  background-color: #fffbf5; /* Creamy, subtle background */
-  scroll-behavior: smooth;
+  color: #0f172a;
+  background-color: #06010d;
 }
 
-/* Custom primary color palette - Deep Berry/Maroon */
-.bg-primary-berry { background-color: #9d174d; } 
-.text-primary-berry { color: #9d174d; }
-.hover\:bg-primary-dark:hover { background-color: #831843; } 
+body {
+  background: radial-gradient(circle at 20% 20%, rgba(255, 228, 236, 0.4), transparent 35%),
+    radial-gradient(circle at 80% 0%, rgba(253, 237, 213, 0.35), transparent 40%),
+    linear-gradient(120deg, #06010d, #120319, #1c0f2b);
+  min-height: 100vh;
+  scroll-behavior: smooth;
+  color: #0f172a;
+}
 
-/* Custom secondary color - Saffron Gold for accents */
-.bg-secondary-gold { background-color: #ca8a04; } 
-.text-secondary-gold { color: #ca8a04; }
-.hover\:bg-secondary-dark:hover { background-color: #a16207; } 
+.app-shell {
+  min-height: 100vh;
+}
 
-/* Gradient for primary buttons (Vibrant Pink/Gold to Deep Berry) */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 40px 80px rgba(15, 23, 42, 0.25);
+}
+
 .btn-gradient-vows {
-  background-image: linear-gradient(to right top, #fb7185, #9d174d); /* Pink to Berry */
-  transition: all 0.2s ease-in-out;
+  background-image: linear-gradient(120deg, #f4c95d, #f472b6, #9d174d);
+  color: #fff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0px 10px 30px rgba(244, 201, 93, 0.35);
 }
 
 .btn-gradient-vows:hover {
-  background-image: linear-gradient(to right top, #9d174d, #831843);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(157, 23, 77, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0px 20px 40px rgba(157, 23, 77, 0.35);
 }
 
-/* Secondary Action Button (Gold/Green for contrasting call-to-action) */
-.btn-gradient-gold {
-  background-image: linear-gradient(to right top, #fcd34d, #ca8a04); /* Light Gold to Deep Gold */
-  color: #4a270a; /* Deep Brown text on gold */
-  transition: all 0.2s ease-in-out;
+.btn-gradient-outline {
+  border: 1px solid rgba(244, 201, 93, 0.7);
+  color: #9d174d;
+  background: rgba(255, 255, 255, 0.8);
+  transition: all 0.2s ease;
 }
 
-.btn-gradient-gold:hover {
-  background-image: linear-gradient(to right top, #ca8a04, #b48318);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(202, 138, 4, 0.6);
+.btn-gradient-outline:hover {
+  color: #fff;
+  background-image: linear-gradient(120deg, #f4c95d, #9d174d);
+  box-shadow: 0 10px 25px rgba(244, 201, 93, 0.35);
 }
 
-/* Hero section specific styles - subtle luxury background */
 .hero-section {
-  background: linear-gradient(135deg, #fefce8 0%, #fae6c3 100%); /* Light Gold/Cream gradient background */
   position: relative;
   overflow: hidden;
-  border-radius: 1.5rem; 
+  border-radius: 32px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.75));
+  box-shadow: 0 45px 120px rgba(15, 23, 42, 0.35);
 }
 
-.hero-section::before {
+.hero-section::after {
   content: '';
   position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  /* Subtle floral/geometric pattern using gradients */
-  background: radial-gradient(circle at 10% 10%, rgba(157, 23, 77, 0.05) 0%, transparent 40%),
-              radial-gradient(circle at 90% 90%, rgba(202, 138, 4, 0.08) 0%, transparent 40%);
-  z-index: 0;
-  opacity: 1;
+  inset: 0;
+  background-image: url('https://www.transparenttextures.com/patterns/arabesque.png');
+  opacity: 0.08;
 }
 
 .hero-content {
@@ -72,9 +76,8 @@ body {
   z-index: 1;
 }
 
-/* Custom modal backdrop */
 .modal-backdrop {
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: rgba(6, 1, 13, 0.82);
   z-index: 40;
 }
 
