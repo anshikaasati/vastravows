@@ -7,78 +7,117 @@
 :root {
   font-family: 'Inter', sans-serif;
   color: #0f172a;
-  background-color: #06010d;
+  background-color: #fff8ef;
 }
 
 body {
-  background: radial-gradient(circle at 20% 20%, rgba(255, 228, 236, 0.25), transparent 45%),
-    radial-gradient(circle at 80% 0%, rgba(252, 241, 224, 0.35), transparent 50%),
-    linear-gradient(90deg, #ffe0eb 0%, #fff3e2 50%, #fff8ef 100%);
+  background: radial-gradient(circle at 20% 20%, rgba(255, 228, 236, 0.4), transparent 45%),
+    radial-gradient(circle at 80% 0%, rgba(252, 241, 224, 0.5), transparent 50%),
+    linear-gradient(90deg, #fff0f5 0%, #fff8e7 50%, #fffaf0 100%);
   min-height: 100vh;
   scroll-behavior: smooth;
   color: #0f172a;
+}
+
+.font-display {
+  font-family: 'Playfair Display', serif;
 }
 
 .app-shell {
   min-height: 100vh;
 }
 
+/* Glassmorphism Utilities */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.65);
   backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  box-shadow: 0 40px 80px rgba(15, 23, 42, 0.25);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
 }
 
+.glass-card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+.glass-input {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(209, 213, 219, 0.5);
+  backdrop-filter: blur(4px);
+  transition: all 0.2s ease;
+}
+
+.glass-input:focus {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: #9d174d;
+  box-shadow: 0 0 0 3px rgba(157, 23, 77, 0.1);
+  outline: none;
+}
+
+/* Buttons */
 .btn-gradient-vows {
-  background-image: linear-gradient(120deg, #f4c95d, #f472b6, #9d174d);
+  background-image: linear-gradient(135deg, #9d174d 0%, #be185d 50%, #db2777 100%);
   color: #fff;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0px 10px 30px rgba(244, 201, 93, 0.35);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(157, 23, 77, 0.3);
 }
 
 .btn-gradient-vows:hover {
   transform: translateY(-2px);
-  box-shadow: 0px 20px 40px rgba(157, 23, 77, 0.35);
+  box-shadow: 0 8px 25px rgba(157, 23, 77, 0.4);
+  filter: brightness(1.1);
 }
 
 .btn-gradient-outline {
-  border: 1px solid rgba(244, 201, 93, 0.7);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid #9d174d;
   color: #9d174d;
-  background: rgba(255, 255, 255, 0.8);
-  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+  transition: all 0.3s ease;
 }
 
 .btn-gradient-outline:hover {
+  background: #9d174d;
   color: #fff;
-  background-image: linear-gradient(120deg, #f4c95d, #9d174d);
-  box-shadow: 0 10px 25px rgba(244, 201, 93, 0.35);
+  box-shadow: 0 4px 15px rgba(157, 23, 77, 0.2);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
 }
 
 .hero-section {
   position: relative;
   overflow: hidden;
   border-radius: 32px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.75));
-  box-shadow: 0 45px 120px rgba(15, 23, 42, 0.35);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.4));
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.05);
 }
 
 .hero-section::after {
   content: '';
   position: absolute;
   inset: 0;
-  background-image: url('https://www.transparenttextures.com/patterns/arabesque.png');
-  opacity: 0.08;
-}
-
-.hero-content {
-  position: relative;
-  z-index: 1;
-}
-
-.modal-backdrop {
-  background-color: rgba(6, 1, 13, 0.82);
-  z-index: 40;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239d174d' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  opacity: 1;
+  pointer-events: none;
 }
 
 

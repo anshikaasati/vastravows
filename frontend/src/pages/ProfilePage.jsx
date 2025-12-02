@@ -68,28 +68,28 @@ const ProfilePage = () => {
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
-      <section className="glass-panel rounded-2xl p-6">
-        <h2 className="text-2xl font-semibold mb-4">My Profile</h2>
-        <form onSubmit={handleUpdate} className="grid gap-4 md:grid-cols-2">
+      <section className="glass-panel rounded-3xl p-8 animate-fade-in">
+        <h2 className="text-2xl font-display font-bold mb-6 text-gray-900">My Profile</h2>
+        <form onSubmit={handleUpdate} className="grid gap-6 md:grid-cols-2">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
             <input
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="w-full border rounded px-3 py-2"
+              className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
               required
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input value={form.email} disabled className="w-full border rounded px-3 py-2 bg-gray-100" />
+            <input value={form.email} disabled className="w-full px-4 py-3 rounded-xl bg-gray-100/50 border border-gray-200 text-gray-500 cursor-not-allowed" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
             <input
               value={form.phone}
               onChange={(e) => setForm({ ...form, phone: e.target.value })}
-              className="w-full border rounded px-3 py-2"
+              className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
             />
           </div>
           <div>
@@ -97,59 +97,87 @@ const ProfilePage = () => {
             <input
               value={form.avatarUrl}
               onChange={(e) => setForm({ ...form, avatarUrl: e.target.value })}
-              className="w-full border rounded px-3 py-2"
+              className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
             />
           </div>
-          <div className="md:col-span-2 flex gap-3">
+          <div className="md:col-span-2 flex gap-4 mt-2">
             <button
               type="submit"
               disabled={saving}
-              className="px-6 py-2 bg-primary-berry text-white rounded-md disabled:opacity-50"
+              className="px-8 py-3 bg-gray-900 text-white font-semibold rounded-xl shadow-lg hover:bg-gray-800 transition disabled:opacity-50"
             >
               {saving ? 'Saving...' : 'Save Changes'}
             </button>
-            <Link to="/add-item" className="px-6 py-2 border border-primary-berry text-primary-berry rounded-md">
+            <Link to="/add-item" className="px-8 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-white transition">
               List New Attire
             </Link>
           </div>
         </form>
       </section>
 
-      <section className="glass-panel rounded-2xl p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-semibold">My Attires</h2>
-          <p className="text-sm text-gray-500">{items.length} total</p>
+      <section className="glass-panel rounded-3xl p-8">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-display font-bold text-gray-900">My Attires</h2>
+          <span className="px-3 py-1 bg-white/50 rounded-full text-sm font-medium text-gray-600 border border-gray-200">
+            {items.length} Listed
+          </span>
         </div>
         {items.length === 0 ? (
-          <p className="text-gray-500">You haven&apos;t listed any attire yet.</p>
+          <div className="text-center py-12 bg-white/30 rounded-2xl border border-dashed border-gray-300">
+            <p className="text-gray-500 mb-4">You haven&apos;t listed any attire yet.</p>
+            <Link to="/add-item" className="text-primary-berry font-semibold hover:underline">
+              Start listing now
+            </Link>
+          </div>
         ) : (
-          <div className="space-y-4">
+          <div className="grid gap-6">
             {items.map((item) => (
-              <div key={item._id} className="border rounded-xl p-4 flex flex-col md:flex-row gap-4">
-                <img
-                  src={item.images?.[0] || 'https://via.placeholder.com/120x120?text=No+Image'}
-                  alt={item.title}
-                  className="w-32 h-32 object-cover rounded-lg"
-                />
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold">{item.title}</h3>
-                  <p className="text-sm text-gray-500 capitalize">
-                    {item.gender} • {item.subcategory?.replace(/-/g, ' ')}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Rent: ₹{item.rentPricePerDay}/day {item.salePrice ? `• Buy: ₹${item.salePrice}` : ''}
-                  </p>
+              <div key={item._id} className="glass-card rounded-2xl p-4 flex flex-col md:flex-row gap-6 group">
+                <div className="w-full md:w-48 aspect-[4/3] rounded-xl overflow-hidden">
+                  <img
+                    src={item.images?.[0] || 'https://via.placeholder.com/120x120?text=No+Image'}
+                    alt={item.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                  />
                 </div>
-                <div className="flex items-center gap-3">
-                  <Link to={`/items/${item._id}`} className="text-primary-berry text-sm font-semibold">
-                    View
-                  </Link>
-                  <button
-                    onClick={() => handleDeleteItem(item._id)}
-                    className="px-3 py-2 text-sm text-red-600 border border-red-200 rounded-md hover:bg-red-50"
-                  >
-                    Delete
-                  </button>
+                <div className="flex-1 py-2">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-900 mb-1">{item.title}</h3>
+                      <p className="text-sm text-gray-500 uppercase tracking-wider font-medium mb-4">
+                        {item.gender} • {item.subcategory?.replace(/-/g, ' ')}
+                      </p>
+                    </div>
+                    <div className="flex gap-2">
+                      <Link
+                        to={`/items/${item._id}`}
+                        className="p-2 text-gray-400 hover:text-primary-berry transition"
+                        title="View"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                      </Link>
+                      <button
+                        onClick={() => handleDeleteItem(item._id)}
+                        className="p-2 text-gray-400 hover:text-red-500 transition"
+                        title="Delete"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-6 mt-auto">
+                    <div>
+                      <span className="text-xs text-gray-500 block">Rent Price</span>
+                      <span className="font-bold text-gray-900">₹{item.rentPricePerDay}<span className="text-xs font-normal text-gray-500">/day</span></span>
+                    </div>
+                    {item.salePrice && (
+                      <div>
+                        <span className="text-xs text-gray-500 block">Sale Price</span>
+                        <span className="font-bold text-gray-900">₹{item.salePrice}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}

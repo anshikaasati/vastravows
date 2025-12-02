@@ -104,292 +104,260 @@ const BookingPage = () => {
   };
 
   return (
-    <div className="min-h-screen py-8 px-4">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
-        {/* Header */}
-        <div className="bg-primary-berry p-6 text-white">
-          <h2 className="text-2xl font-bold">
-            {step === 1 ? 'Booking Details' : 'Payment & Confirmation'}
-          </h2>
-          <p className="opacity-90 text-sm mt-1">
-            {isRental ? `Rent: ${item.title}` : `Buy: ${item.title}`}
-          </p>
+    <div className="max-w-4xl mx-auto py-8 px-4">
+      {/* Visual Stepper */}
+      <div className="mb-12">
+        <div className="flex items-center justify-center relative">
+          <div className="absolute left-0 right-0 top-1/2 h-0.5 bg-gray-200 -z-10" />
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg transition-all duration-300 ${step >= 1 ? 'bg-primary-berry text-white shadow-lg scale-110' : 'bg-gray-200 text-gray-500'
+            }`}>1</div>
+          <div className={`w-32 h-0.5 mx-4 transition-all duration-500 ${step >= 2 ? 'bg-primary-berry' : 'bg-gray-200'}`} />
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg transition-all duration-300 ${step >= 2 ? 'bg-primary-berry text-white shadow-lg scale-110' : 'bg-gray-200 text-gray-500'
+            }`}>2</div>
         </div>
+        <div className="flex justify-center gap-32 mt-2 text-sm font-semibold text-gray-600">
+          <span>Details</span>
+          <span>Payment</span>
+        </div>
+      </div>
 
-        <div className="p-6 sm:p-8">
-          {/* Progress Indicator */}
-          <div className="flex items-center mb-8">
-            <div className={`flex items-center justify-center w-8 h-8 rounded-full ${step >= 1 ? 'bg-primary-berry text-white' : 'bg-gray-200'} font-bold`}>1</div>
-            <div className={`flex-1 h-1 mx-2 ${step >= 2 ? 'bg-primary-berry' : 'bg-gray-200'}`}></div>
-            <div className={`flex items-center justify-center w-8 h-8 rounded-full ${step >= 2 ? 'bg-primary-berry text-white' : 'bg-gray-200'} font-bold`}>2</div>
-          </div>
+      <div className="glass-panel rounded-3xl p-8 animate-fade-in">
+        <h2 className="text-3xl font-display font-bold text-center mb-8 text-gray-900">
+          {step === 1 ? 'Booking Details' : 'Confirm & Pay'}
+        </h2>
 
-          {step === 1 ? (
-            /* STEP 1: DETAILS FORM */
-            <form onSubmit={handleNextStep} className="space-y-6">
-              {/* Personal Info */}
-              <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                <h3 className="font-semibold text-lg mb-4 flex items-center text-gray-800">
-                  <User className="w-5 h-5 mr-2 text-primary-berry" /> Personal Details
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                    <input
-                      type="text"
-                      name="renterName"
-                      value={formData.renterName}
-                      onChange={handleInputChange}
-                      className="w-full p-2 border rounded-lg focus:ring-primary-berry focus:border-primary-berry"
-                      placeholder="John Doe"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                    <input
-                      type="tel"
-                      name="phoneNumber"
-                      value={formData.phoneNumber}
-                      onChange={handleInputChange}
-                      className="w-full p-2 border rounded-lg focus:ring-primary-berry focus:border-primary-berry"
-                      placeholder="+91 98765 43210"
-                      required
-                    />
-                  </div>
-                </div>
+        {step === 1 && (
+          <form id="booking-form" onSubmit={handleNextStep} className="space-y-6">
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                <input
+                  required
+                  name="renterName"
+                  value={formData.renterName}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
+                  placeholder="Enter your full name"
+                />
               </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                <input
+                  required
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
+                  placeholder="+91 98765 43210"
+                />
+              </div>
+            </div>
 
-              {/* Item Details */}
-              <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                <h3 className="font-semibold text-lg mb-4 flex items-center text-gray-800">
-                  <Truck className="w-5 h-5 mr-2 text-primary-berry" /> Item Preferences
-                </h3>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Size / Measurements</label>
+              <input
+                required
+                name="size"
+                value={formData.size}
+                onChange={handleInputChange}
+                className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
+                placeholder="e.g., M, L, or specific measurements"
+              />
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="font-semibold text-gray-900 border-b pb-2">Delivery Address</h3>
+              <textarea
+                required
+                name="deliveryAddress"
+                value={formData.deliveryAddress}
+                onChange={handleInputChange}
+                rows="3"
+                className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
+                placeholder="Full delivery address"
+              />
+              <div className="grid grid-cols-2 gap-6">
+                <input
+                  required
+                  name="city"
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
+                  placeholder="City"
+                />
+                <input
+                  required
+                  name="pincode"
+                  value={formData.pincode}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
+                  placeholder="Pincode"
+                />
+              </div>
+            </div>
+
+            {isRental && (
+              <div className="bg-amber-50/50 p-4 rounded-xl border border-amber-100">
+                <label className="block text-sm font-medium text-amber-900 mb-1">Pickup Address (Return)</label>
+                <textarea
+                  name="pickupAddress"
+                  value={formData.pickupAddress}
+                  onChange={handleInputChange}
+                  rows="2"
+                  className="w-full px-4 py-3 rounded-xl bg-white/50 border-amber-200 focus:ring-2 focus:ring-amber-500/20"
+                  placeholder="Same as delivery address if left empty"
+                />
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="w-full py-4 rounded-xl bg-gray-900 text-white font-bold text-lg hover:bg-gray-800 transition shadow-lg mt-8"
+            >
+              Continue to Payment
+            </button>
+          </form>
+        )}
+
+        {step === 2 && (
+          <div className="space-y-8">
+            {/* Order Summary */}
+            <div className="bg-white/40 rounded-2xl p-6 border border-white/60">
+              <div className="flex gap-4 mb-6">
+                <img src={item.images?.[0]} alt={item.title} className="w-24 h-24 rounded-lg object-cover shadow-sm" />
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Select Size</label>
-                  <div className="flex flex-wrap gap-2">
-                    {/* Assuming item.size is a string like "S, M, L" or just "M" */}
-                    {/* If item.size is an array in backend but string in frontend form, let's handle it safely */}
-                    {(typeof item.size === 'string' ? item.size.split(',') : (Array.isArray(item.size) ? item.size : [item.size])).map((s) => {
-                      const sizeVal = s.trim();
-                      return (
-                        <label key={sizeVal} className={`cursor-pointer px-4 py-2 rounded-lg border transition ${formData.size === sizeVal ? 'bg-primary-berry text-white border-primary-berry' : 'bg-white hover:bg-gray-100 border-gray-300'}`}>
-                          <input
-                            type="radio"
-                            name="size"
-                            value={sizeVal}
-                            checked={formData.size === sizeVal}
-                            onChange={handleInputChange}
-                            className="hidden"
-                          />
-                          {sizeVal}
-                        </label>
-                      );
-                    })}
-                  </div>
+                  <h3 className="font-bold text-lg text-gray-900">{item.title}</h3>
+                  <p className="text-sm text-gray-500">
+                    {isRental ? `${new Date(startDate).toLocaleDateString()} - ${new Date(endDate).toLocaleDateString()}` : 'Purchase'}
+                  </p>
                 </div>
               </div>
 
-              {/* Address */}
-              <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                <h3 className="font-semibold text-lg mb-4 flex items-center text-gray-800">
-                  <MapPin className="w-5 h-5 mr-2 text-primary-berry" /> Delivery Location
-                </h3>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Delivery Address</label>
-                    <textarea
-                      name="deliveryAddress"
-                      value={formData.deliveryAddress}
-                      onChange={handleInputChange}
-                      rows="2"
-                      className="w-full p-2 border rounded-lg focus:ring-primary-berry focus:border-primary-berry"
-                      placeholder="House No, Street, Area"
-                      required
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
-                      <input
-                        type="text"
-                        name="city"
-                        value={formData.city}
-                        onChange={handleInputChange}
-                        className="w-full p-2 border rounded-lg focus:ring-primary-berry focus:border-primary-berry"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Pincode</label>
-                      <input
-                        type="text"
-                        name="pincode"
-                        value={formData.pincode}
-                        onChange={handleInputChange}
-                        className="w-full p-2 border rounded-lg focus:ring-primary-berry focus:border-primary-berry"
-                        required
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Rental Specific: Pickup Address */}
-              {isRental && (
-                <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                  <h3 className="font-semibold text-lg mb-4 flex items-center text-gray-800">
-                    <Truck className="w-5 h-5 mr-2 text-primary-berry" /> Return Pickup
-                  </h3>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Pickup Address (for return)</label>
-                    <textarea
-                      name="pickupAddress"
-                      value={formData.pickupAddress}
-                      onChange={handleInputChange}
-                      rows="2"
-                      className="w-full p-2 border rounded-lg focus:ring-primary-berry focus:border-primary-berry"
-                      placeholder="Same as delivery or different?"
-                      required
-                    />
-                  </div>
-                </div>
-              )}
-
-              <button
-                type="submit"
-                className="w-full py-3 bg-primary-berry text-white font-bold rounded-xl shadow-lg hover:bg-primary-dark transition"
-              >
-                Proceed to Payment
-              </button>
-            </form>
-          ) : (
-            /* STEP 2: PAYMENT */
-            <div className="space-y-6">
-              {/* Order Summary */}
-              <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
-                <h3 className="font-bold text-lg mb-4">Order Summary</h3>
-                <div className="space-y-2 text-sm text-gray-700">
-                  <div className="flex justify-between">
-                    <span>Item</span>
-                    <span className="font-medium">{item.title}</span>
-                  </div>
-                  {isRental && (
-                    <>
-                      <div className="flex justify-between">
-                        <span>Duration</span>
-                        <span>{days} Days ({format(new Date(startDate), 'MMM d')} - {format(new Date(endDate), 'MMM d')})</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Rent (₹{item.rentPricePerDay}/day)</span>
-                        <span>₹{rentAmount}</span>
-                      </div>
-                      <div className="flex justify-between text-orange-600">
-                        <span>Security Deposit (Refundable)</span>
-                        <span>₹{depositAmount}</span>
-                      </div>
-                    </>
-                  )}
-                  <div className="border-t pt-2 mt-2 flex justify-between text-lg font-bold text-primary-berry">
-                    <span>Total Payable</span>
-                    <span>₹{totalAmount}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Payment Options */}
-              <div className="space-y-6">
-                <h3 className="font-bold text-lg">Payment Method</h3>
-
+              <div className="space-y-3 text-sm">
                 {isRental ? (
                   <>
-                    {/* Deposit Payment - Enforce Online */}
-                    <div className="border rounded-xl p-4 bg-orange-50 border-orange-200">
-                      <h4 className="font-semibold text-orange-800 mb-2 flex items-center">
-                        <Banknote className="w-4 h-4 mr-2" /> Security Deposit (₹{depositAmount})
-                      </h4>
-                      <p className="text-xs text-orange-700 mb-3">Must be paid online via Bank, Card, or UPI.</p>
-                      <div className="flex gap-4">
-                        {['card', 'upi', 'netbanking'].map(method => (
-                          <label key={method} className={`flex-1 cursor-pointer p-3 rounded-lg border text-center capitalize transition ${formData.depositPaymentMethod === method ? 'bg-white border-orange-500 shadow-sm ring-1 ring-orange-500' : 'bg-white/50 border-gray-300'}`}>
-                            <input
-                              type="radio"
-                              name="depositPaymentMethod"
-                              value={method}
-                              checked={formData.depositPaymentMethod === method}
-                              onChange={handleInputChange}
-                              className="hidden"
-                            />
-                            {method === 'netbanking' ? 'Net Banking' : method}
-                          </label>
-                        ))}
-                      </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Rent Amount ({days} days)</span>
+                      <span className="font-medium">₹{rentAmount}</span>
                     </div>
-
-                    {/* Rent Payment - COD or Online */}
-                    <div className="border rounded-xl p-4">
-                      <h4 className="font-semibold text-gray-800 mb-2 flex items-center">
-                        <CreditCard className="w-4 h-4 mr-2" /> Rent Amount (₹{rentAmount})
-                      </h4>
-                      <p className="text-xs text-gray-500 mb-3">Can be paid via COD or Online.</p>
-                      <div className="flex gap-4">
-                        {['cod', 'online'].map(method => (
-                          <label key={method} className={`flex-1 cursor-pointer p-3 rounded-lg border text-center capitalize transition ${formData.rentPaymentMethod === method ? 'bg-primary-berry text-white border-primary-berry' : 'bg-white hover:bg-gray-50 border-gray-300'}`}>
-                            <input
-                              type="radio"
-                              name="rentPaymentMethod"
-                              value={method}
-                              checked={formData.rentPaymentMethod === method}
-                              onChange={handleInputChange}
-                              className="hidden"
-                            />
-                            {method === 'cod' ? 'Cash on Delivery' : 'Pay Online'}
-                          </label>
-                        ))}
-                      </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Security Deposit (Refundable)</span>
+                      <span className="font-medium">₹{depositAmount}</span>
                     </div>
                   </>
                 ) : (
-                  /* Sale Payment - Standard */
-                  <div className="border rounded-xl p-4">
-                    <div className="flex gap-4">
-                      {['cod', 'card', 'upi'].map(method => (
-                        <label key={method} className={`flex-1 cursor-pointer p-3 rounded-lg border text-center capitalize transition ${formData.paymentMethod === method ? 'bg-primary-berry text-white border-primary-berry' : 'bg-white hover:bg-gray-100 border-gray-300'}`}>
-                          <input
-                            type="radio"
-                            name="paymentMethod"
-                            value={method}
-                            checked={formData.paymentMethod === method}
-                            onChange={handleInputChange}
-                            className="hidden"
-                          />
-                          {method === 'cod' ? 'Cash on Delivery' : method}
-                        </label>
-                      ))}
-                    </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Sale Price</span>
+                    <span className="font-medium">₹{item.salePrice}</span>
                   </div>
                 )}
-              </div>
-
-              <div className="flex gap-4 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setStep(1)}
-                  className="flex-1 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition"
-                >
-                  Back
-                </button>
-                <button
-                  onClick={handleConfirmBooking}
-                  disabled={loading}
-                  className="flex-1 py-3 bg-primary-berry text-white font-bold rounded-xl shadow-lg hover:bg-primary-dark transition disabled:opacity-50"
-                >
-                  {loading ? 'Processing...' : `Pay ₹${totalAmount} & Book`}
-                </button>
+                <div className="border-t border-gray-300 my-2" />
+                <div className="flex justify-between text-lg font-bold text-primary-berry">
+                  <span>Total Payable</span>
+                  <span>₹{totalAmount}</span>
+                </div>
               </div>
             </div>
-          )}
-        </div>
+
+            {/* Payment Methods */}
+            <div className="space-y-6">
+              {isRental ? (
+                <>
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-gray-900 flex items-center gap-2">
+                      <CreditCard className="w-4 h-4" /> Security Deposit (₹{depositAmount})
+                    </h4>
+                    <div className="p-4 border border-green-200 bg-green-50/50 rounded-xl flex items-center gap-3">
+                      <div className="w-4 h-4 rounded-full bg-green-500" />
+                      <span className="font-medium text-green-800">Online Payment Required</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-gray-900 flex items-center gap-2">
+                      <Banknote className="w-4 h-4" /> Rent Amount (₹{rentAmount})
+                    </h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <label className={`cursor-pointer p-4 rounded-xl border-2 transition-all ${formData.rentPaymentMethod === 'online' ? 'border-primary-berry bg-primary-berry/5' : 'border-transparent bg-white/50 hover:bg-white'
+                        }`}>
+                        <input
+                          type="radio"
+                          name="rentPaymentMethod"
+                          value="online"
+                          checked={formData.rentPaymentMethod === 'online'}
+                          onChange={handleInputChange}
+                          className="hidden"
+                        />
+                        <span className="font-semibold block">Pay Online</span>
+                        <span className="text-xs text-gray-500">UPI / Cards</span>
+                      </label>
+                      <label className={`cursor-pointer p-4 rounded-xl border-2 transition-all ${formData.rentPaymentMethod === 'cod' ? 'border-primary-berry bg-primary-berry/5' : 'border-transparent bg-white/50 hover:bg-white'
+                        }`}>
+                        <input
+                          type="radio"
+                          name="rentPaymentMethod"
+                          value="cod"
+                          checked={formData.rentPaymentMethod === 'cod'}
+                          onChange={handleInputChange}
+                          className="hidden"
+                        />
+                        <span className="font-semibold block">Cash on Delivery</span>
+                        <span className="text-xs text-gray-500">Pay at doorstep</span>
+                      </label>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="space-y-3">
+                  <h4 className="font-semibold text-gray-900">Payment Method</h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    <label className={`cursor-pointer p-4 rounded-xl border-2 transition-all ${formData.paymentMethod === 'online' ? 'border-primary-berry bg-primary-berry/5' : 'border-transparent bg-white/50 hover:bg-white'
+                      }`}>
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value="online"
+                        checked={formData.paymentMethod === 'online'}
+                        onChange={handleInputChange}
+                        className="hidden"
+                      />
+                      <span className="font-semibold block">Pay Online</span>
+                    </label>
+                    <label className={`cursor-pointer p-4 rounded-xl border-2 transition-all ${formData.paymentMethod === 'cod' ? 'border-primary-berry bg-primary-berry/5' : 'border-transparent bg-white/50 hover:bg-white'
+                      }`}>
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value="cod"
+                        checked={formData.paymentMethod === 'cod'}
+                        onChange={handleInputChange}
+                        className="hidden"
+                      />
+                      <span className="font-semibold block">Cash on Delivery</span>
+                    </label>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="flex gap-4 pt-4">
+              <button
+                type="button"
+                onClick={() => setStep(1)}
+                className="flex-1 py-4 rounded-xl border border-gray-300 font-semibold text-gray-700 hover:bg-gray-50 transition"
+              >
+                Back
+              </button>
+              <button
+                onClick={handleConfirmBooking}
+                disabled={loading}
+                className="flex-[2] py-4 rounded-xl btn-gradient-vows font-bold text-white shadow-lg disabled:opacity-70"
+              >
+                {loading ? 'Processing...' : `Pay ₹${totalAmount}`}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

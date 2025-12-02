@@ -26,43 +26,53 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white shadow rounded-lg p-6">
-      <h2 className="text-2xl font-semibold mb-4">Login</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Email</label>
-          <input
-            type="email"
-            required
-            value={form.email}
-            onChange={(e) => setForm((prev) => ({ ...prev, email: e.target.value }))}
-            className="mt-1 w-full border rounded px-3 py-2 focus:outline-brand"
-          />
+    <div className="flex items-center justify-center min-h-[80vh]">
+      <div className="glass-panel max-w-md w-full p-8 rounded-3xl relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-secondary-gold to-primary-berry" />
+        <h2 className="text-3xl font-display font-bold mb-2 text-center text-primary-berry">Welcome Back</h2>
+        <p className="text-center text-gray-500 mb-8">Sign in to continue your journey</p>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+            <input
+              type="email"
+              required
+              value={form.email}
+              onChange={(e) => setForm((prev) => ({ ...prev, email: e.target.value }))}
+              className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20 transition-all"
+              placeholder="you@example.com"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <input
+              type="password"
+              required
+              value={form.password}
+              onChange={(e) => setForm((prev) => ({ ...prev, password: e.target.value }))}
+              className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20 transition-all"
+              placeholder="••••••••"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3.5 rounded-xl font-semibold text-white btn-gradient-vows shadow-lg disabled:opacity-70 disabled:cursor-not-allowed mt-2"
+          >
+            {loading ? 'Signing in...' : 'Sign In'}
+          </button>
+        </form>
+
+        <div className="mt-8 text-center">
+          <p className="text-sm text-gray-600">
+            New to Vastra Vows?{' '}
+            <Link to="/register" className="text-primary-berry font-semibold hover:underline">
+              Create an account
+            </Link>
+          </p>
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Password</label>
-          <input
-            type="password"
-            required
-            value={form.password}
-            onChange={(e) => setForm((prev) => ({ ...prev, password: e.target.value }))}
-            className="mt-1 w-full border rounded px-3 py-2 focus:outline-brand"
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-brand text-white py-2 rounded-md disabled:opacity-50"
-        >
-          {loading ? 'Signing in...' : 'Login'}
-        </button>
-      </form>
-      <p className="text-sm text-gray-600 mt-4">
-        New here?{' '}
-        <Link to="/register" className="text-brand font-semibold">
-          Create an account
-        </Link>
-      </p>
+      </div>
     </div>
   );
 };
