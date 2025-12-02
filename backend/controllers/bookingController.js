@@ -46,7 +46,13 @@ export const createBooking = async (req, res, next) => {
       return next(new Error(errors.array()[0].msg));
     }
 
-    const { itemId, startDate, endDate } = req.body;
+    const {
+      itemId, startDate, endDate,
+      renterName, phoneNumber, size,
+      deliveryAddress, pickupAddress, location,
+      paymentMethod, depositPaymentMethod, rentPaymentMethod
+    } = req.body;
+
     const item = await Item.findById(itemId);
     if (!item) {
       res.status(404);
@@ -56,13 +62,35 @@ export const createBooking = async (req, res, next) => {
     const parsedStart = new Date(startDate);
     const parsedEnd = new Date(endDate);
 
-    const conflicts = await findOverlappingBookings({ itemId, startDate: parsedStart, endDate: parsedEnd });
-    if (conflicts.length) {
-      res.status(400);
-      return next(new Error('Selected dates overlap with existing booking'));
+    // Only check for overlaps if it's a rental (rentPrice > 0)
+    // If it's a sale, maybe we check if it's already sold? 
+    // For now, assuming rental logic applies or sale is one-off.
+    // If sale, we might want to mark item as sold?
+
+    if (item.rentPricePerDay > 0) {
+      const conflicts = await findOverlappingBookings({ itemId, startDate: parsedStart, endDate: parsedEnd });
+      if (conflicts.length) {
+        res.status(400);
+        return next(new Error('Selected dates overlap with existing booking'));
+      }
     }
 
-    const totalAmount = computeTotal(item, parsedStart, parsedEnd);
+    let totalAmount = 0;
+    let rentAmount = 0;
+    let depositAmount = 0;
+
+    if (item.rentPricePerDay > 0) {
+      // Rental
+      const millisecondsPerDay = 1000 * 60 * 60 * 24;
+      const days = Math.max(1, Math.ceil((parsedEnd - parsedStart) / millisecondsPerDay));
+      rentAmount = days * item.rentPricePerDay;
+      depositAmount = item.depositAmount || 0;
+      totalAmount = rentAmount + depositAmount;
+    } else {
+      // Sale
+      totalAmount = item.salePrice || 0;
+    }
+
     const booking = await Booking.create({
       itemId,
       renterId: req.user._id,
@@ -70,6 +98,17 @@ export const createBooking = async (req, res, next) => {
       startDate: parsedStart,
       endDate: parsedEnd,
       totalAmount,
+      rentAmount,
+      depositAmount,
+      renterName,
+      phoneNumber,
+      size,
+      deliveryAddress,
+      pickupAddress,
+      location,
+      paymentMethod,
+      depositPaymentMethod,
+      rentPaymentMethod,
       status: 'pending'
     });
 

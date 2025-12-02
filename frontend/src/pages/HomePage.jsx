@@ -79,7 +79,8 @@ const HomePage = () => {
         setGenderFilter(inferred.gender);
         setSearchCategory(effectiveCategory);
       } else {
-        toast.error('Could not understand the style prompt. Try different words!');
+        // Fallback to text search if no category inferred
+        params.append('search', searchPrompt);
       }
     }
 
@@ -174,11 +175,11 @@ const HomePage = () => {
               </div>
             </div>
           </div>
-          <br></br>      
+          <br></br>
           {/* Search */}
           <div className="bg-white/90 mx-6 md:mx-16 -mt-10 rounded-3xl p-6 shadow-glow flex flex-col lg:flex-row lg:items-center gap-4 mb-12">
             {/* Location Input */}
-            
+
             {/* Text prompt */}
             <div className="flex-1 px-4 py-2 border-b md:border-b-0 md:border-r border-gray-200">
               <label htmlFor="prompt" className="block text-xs font-semibold text-gray-500 mb-0.5 text-left">
@@ -222,9 +223,8 @@ const HomePage = () => {
                     setGenderFilter(gender);
                     setSearchCategory('');
                   }}
-                  className={`px-4 py-2 rounded-full text-xs font-semibold border ${
-                    genderFilter === gender ? 'bg-primary-berry text-white' : 'bg-white text-gray-700'
-                  }`}
+                  className={`px-4 py-2 rounded-full text-xs font-semibold border ${genderFilter === gender ? 'bg-primary-berry text-white' : 'bg-white text-gray-700'
+                    }`}
                 >
                   {gender === 'women' ? 'Women' : 'Men'}
                 </button>
@@ -235,9 +235,8 @@ const HomePage = () => {
             <button
               key={value}
               onClick={() => handleCategoryFilter(value)}
-              className={`text-sm px-4 py-4 rounded-full font-medium transition shadow-md flex items-center border ${
-                searchCategory === value ? 'bg-primary-berry/20 border-primary-berry text-primary-berry' : 'bg-white'
-              }`}
+              className={`text-sm px-4 py-4 rounded-full font-medium transition shadow-md flex items-center border ${searchCategory === value ? 'bg-primary-berry/20 border-primary-berry text-primary-berry' : 'bg-white'
+                }`}
             >
               <Icon className="w-4 h-4 mr-2" />
               {label}

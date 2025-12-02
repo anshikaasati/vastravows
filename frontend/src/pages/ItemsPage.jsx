@@ -21,6 +21,8 @@ const ItemsPage = () => {
       setLoading(true);
       try {
         const params = {};
+        const search = searchParams.get('search');
+        if (search) params.search = search;
         if (genderFilter) params.gender = genderFilter;
         if (subcategory) params.subcategory = subcategory;
         const { data } = await itemApi.getAll(params);
@@ -33,7 +35,7 @@ const ItemsPage = () => {
       }
     };
     fetchItems();
-  }, [genderFilter, subcategory]);
+  }, [genderFilter, subcategory, searchParams]);
 
   useEffect(() => {
     setGenderFilter(searchParams.get('gender') || 'women');
@@ -95,9 +97,8 @@ const ItemsPage = () => {
             <button
               key={gender}
               onClick={() => handleGenderToggle(gender)}
-              className={`px-4 py-2 rounded-full text-sm font-semibold border ${
-                genderFilter === gender ? 'bg-primary-berry text-white' : 'bg-white text-gray-700'
-              }`}
+              className={`px-4 py-2 rounded-full text-sm font-semibold border ${genderFilter === gender ? 'bg-primary-berry text-white' : 'bg-white text-gray-700'
+                }`}
             >
               {gender === 'women' ? 'Women' : 'Men'}
             </button>
@@ -115,11 +116,10 @@ const ItemsPage = () => {
             <button
               key={value}
               onClick={() => handleCategoryFilter(value)}
-              className={`text-sm px-4 py-2 rounded-full font-medium transition shadow-md flex items-center border ${
-                activeCategoryValue === value
-                  ? 'bg-primary-berry/20 border-primary-berry text-primary-berry'
-                  : 'bg-white'
-              }`}
+              className={`text-sm px-4 py-2 rounded-full font-medium transition shadow-md flex items-center border ${activeCategoryValue === value
+                ? 'bg-primary-berry/20 border-primary-berry text-primary-berry'
+                : 'bg-white'
+                }`}
             >
               <Icon className="w-4 h-4 mr-2" />
               {label}

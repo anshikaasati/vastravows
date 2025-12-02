@@ -56,6 +56,13 @@ export const getItems = async (req, res, next) => {
       // partial match on city (case-insensitive)
       filters['location.city'] = new RegExp(req.query.location, 'i');
     }
+    if (req.query.search) {
+      const searchRegex = new RegExp(req.query.search, 'i');
+      filters.$or = [
+        { title: searchRegex },
+        { description: searchRegex }
+      ];
+    }
     if (req.query.ownerId) filters.ownerId = req.query.ownerId;
 
     const items = await Item.find(filters).sort({ createdAt: -1 }).populate('ownerId', 'name email phone avatarUrl');

@@ -74,12 +74,13 @@ const AddItemPage = () => {
     setLoading(true);
     try {
       const { data } = await itemApi.create(formData);
-      toast.success(`Successfully submitted "${form.title}". Continue to payment.`);
+      toast.success(`Successfully submitted "${form.title}".`);
       setForm(initialState);
       setFiles([]);
       setPreviews([]);
-      // Redirect to a payment options page (placeholder for now)
-      navigate('/payment', { state: { itemId: data._id } });
+      // Stay on page or navigate to home/profile if preferred
+      // navigate('/profile'); 
+
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to add item');
     } finally {
@@ -89,7 +90,7 @@ const AddItemPage = () => {
 
   const handleFileChange = (selectedFiles) => {
     const fileArray = Array.from(selectedFiles);
-    
+
     // Validate file count (max 5 images)
     if (files.length + fileArray.length > 5) {
       toast.error('Maximum 5 images allowed');
@@ -140,14 +141,14 @@ const AddItemPage = () => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       handleFileChange(e.dataTransfer.files);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen py-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-2xl">
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
           <div className="p-6">
@@ -292,14 +293,29 @@ const AddItemPage = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Size
                 </label>
-                <input
-                  type="text"
-                  placeholder="S, M, L, 38, 40, etc."
-                  value={form.size}
-                  onChange={(e) => setForm({ ...form, size: e.target.value })}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary-berry focus:border-primary-berry transition"
-                  required
-                />
+                <div className="grid grid-cols-3 gap-2">
+                  {["FS", "XS", "S", "M", "L", "XL", "XXL", "XXXL", "XXXXL"].map((size) => (
+                    <label key={size} className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        value={size}
+                        checked={form.size.includes(size)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setForm({ ...form, size: [...form.size, size] });
+                          } else {
+                            setForm({
+                              ...form,
+                              size: form.size.filter((s) => s !== size),
+                            });
+                          }
+                        }}
+                        className="rounded border-gray-300 text-primary-berry focus:ring-primary-berry"
+                      />
+                      <span>{size}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4 mb-4">
@@ -386,18 +402,17 @@ const AddItemPage = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Upload Photos <span className="text-gray-500">(Up to 5 images, max 5MB each)</span>
                 </label>
-                
+
                 {/* Drag and Drop Area */}
                 <div
                   onDragEnter={handleDrag}
                   onDragLeave={handleDrag}
                   onDragOver={handleDrag}
                   onDrop={handleDrop}
-                  className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
-                    dragActive
+                  className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-colors ${dragActive
                       ? 'border-primary-berry bg-primary-berry/5'
                       : 'border-secondary-gold bg-secondary-gold/10 hover:bg-secondary-gold/20'
-                  }`}
+                    }`}
                 >
                   <input
                     ref={fileInputRef}
@@ -412,7 +427,7 @@ const AddItemPage = () => {
                       }
                     }}
                   />
-                  
+
                   <div className="flex flex-col items-center justify-center">
                     <Upload className={`w-12 h-12 mb-3 ${dragActive ? 'text-primary-berry' : 'text-secondary-gold'}`} />
                     <p className="text-sm font-semibold text-gray-700 mb-1">

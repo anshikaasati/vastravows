@@ -3,10 +3,11 @@ import { Heart, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { wishlistApi } from '../api/services';
 import { useAuth } from '../context/AuthContext';
+import { useWishlist } from '../context/WishlistContext';
+import toast from 'react-hot-toast';
 
 const ItemCard = ({ item }) => {
   const { token } = useAuth();
-  const [isFavorite, setIsFavorite] = useState(false);
   const categoryColors = {
     clothes: { bg: 'bg-red-100', text: 'text-red-700', border: 'border-red-300', ring: 'ring-primary-berry/20' },
     jewellery: { bg: 'bg-teal-100', text: 'text-teal-700', border: 'border-teal-300', ring: 'ring-teal-300/50' },
@@ -15,7 +16,7 @@ const ItemCard = ({ item }) => {
     shoes: { bg: 'bg-orange-100', text: 'text-orange-700', border: 'border-orange-300', ring: 'ring-orange-300/50' }
   };
   const colors = categoryColors[item.category] || { bg: 'bg-indigo-100', text: 'text-indigo-700', border: 'border-indigo-300', ring: 'ring-indigo-300/20' };
-  
+
   const getBadgeText = () => {
     if (item.salePrice) return 'FOR SALE';
     const categoryBadges = {
@@ -26,7 +27,7 @@ const ItemCard = ({ item }) => {
     };
     return categoryBadges[item.category] || 'PREMIUM RENTAL';
   };
-  
+
   const getBadgeColor = () => {
     if (item.salePrice) return 'bg-gray-700';
     const categoryBadges = {
@@ -37,7 +38,7 @@ const ItemCard = ({ item }) => {
     };
     return categoryBadges[item.category] || 'bg-primary-berry';
   };
-  
+
   const badgeText = getBadgeText();
   const badgeColor = getBadgeColor();
 
@@ -45,20 +46,16 @@ const ItemCard = ({ item }) => {
   const avgRating = 4.5;
   const reviewCount = 12;
 
-  const toggleWishlist = async (e) => {
+  const { isInWishlist, toggleWishlist } = useWishlist();
+  const isFavorite = isInWishlist(item._id);
+
+  const handleToggle = async (e) => {
     e.preventDefault();
-    if (!token) return;
-    try {
-      if (isFavorite) {
-        await wishlistApi.remove(item._id);
-        setIsFavorite(false);
-      } else {
-        await wishlistApi.add(item._id);
-        setIsFavorite(true);
-      }
-    } catch {
-      // ignore minor wishlist errors in card context
+    if (!token) {
+      toast.error('Please login to add to wishlist');
+      return;
     }
+    await toggleWishlist(item._id);
   };
 
   return (
@@ -70,7 +67,7 @@ const ItemCard = ({ item }) => {
           {badgeText}
         </span>
         <button
-          onClick={toggleWishlist}
+          onClick={handleToggle}
           className="absolute top-4 right-4 text-white p-2 rounded-full bg-black/40 hover:bg-red-500 transition duration-200 z-10"
         >
           <Heart className={`w-5 h-5 ${isFavorite ? 'fill-white' : ''}`} />

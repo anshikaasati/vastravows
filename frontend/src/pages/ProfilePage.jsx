@@ -68,7 +68,7 @@ const ProfilePage = () => {
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
-      <section className="bg-white rounded-2xl shadow p-6">
+      <section className="glass-panel rounded-2xl p-6">
         <h2 className="text-2xl font-semibold mb-4">My Profile</h2>
         <form onSubmit={handleUpdate} className="grid gap-4 md:grid-cols-2">
           <div>
@@ -115,7 +115,7 @@ const ProfilePage = () => {
         </form>
       </section>
 
-      <section className="bg-white rounded-2xl shadow p-6">
+      <section className="glass-panel rounded-2xl p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-semibold">My Attires</h2>
           <p className="text-sm text-gray-500">{items.length} total</p>
