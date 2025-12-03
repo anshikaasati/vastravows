@@ -96,37 +96,39 @@ const ItemsPage = () => {
       </div>
 
       {/* Filters & Categories */}
-      <div className="glass-panel rounded-3xl p-6 mb-10 space-y-6">
-        <div className="flex flex-wrap gap-3 pb-4 border-b border-gray-200/50">
-          {['women', 'men'].map((gender) => (
-            <button
-              key={gender}
-              onClick={() => handleGenderToggle(gender)}
-              className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${genderFilter === gender
+      <div className="glass-panel rounded-3xl p-4 md:p-6 mb-10 space-y-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-gray-200/50">
+          <div className="flex flex-wrap gap-2 md:gap-3">
+            {['women', 'men'].map((gender) => (
+              <button
+                key={gender}
+                onClick={() => handleGenderToggle(gender)}
+                className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${genderFilter === gender
                   ? 'bg-gray-900 text-white shadow-lg transform scale-105'
                   : 'bg-white/50 text-gray-600 hover:bg-white hover:shadow-md'
-                }`}
-            >
-              {gender === 'women' ? 'Women\'s Collection' : 'Men\'s Collection'}
-            </button>
-          ))}
+                  }`}
+              >
+                {gender === 'women' ? 'Women' : 'Men'}
+              </button>
+            ))}
+          </div>
           <button
             onClick={() => handleCategoryFilter('')}
-            className="ml-auto px-5 py-2.5 rounded-full bg-white border border-gray-200 text-gray-600 font-medium hover:bg-gray-50 transition flex items-center shadow-sm hover:shadow-md"
+            className="w-full md:w-auto px-5 py-2.5 rounded-full bg-white border border-gray-200 text-gray-600 font-medium hover:bg-gray-50 transition flex items-center justify-center shadow-sm hover:shadow-md"
           >
             <Filter className="w-4 h-4 mr-2" />
             Clear Filters
           </button>
         </div>
 
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-2 md:gap-3">
           {categoryOptions[genderFilter].map(({ label, value, icon: Icon }) => (
             <button
               key={value}
               onClick={() => handleCategoryFilter(value)}
-              className={`px-5 py-2.5 rounded-2xl font-medium transition-all duration-200 flex items-center border ${activeCategoryValue === value
-                  ? 'bg-primary-berry/10 border-primary-berry text-primary-berry shadow-sm'
-                  : 'bg-white/40 border-transparent hover:bg-white hover:shadow-sm text-gray-600'
+              className={`px-4 md:px-5 py-2.5 rounded-2xl text-sm font-medium transition-all duration-200 flex items-center border ${activeCategoryValue === value
+                ? 'bg-primary-berry/10 border-primary-berry text-primary-berry shadow-sm'
+                : 'bg-white/40 border-transparent hover:bg-white hover:shadow-sm text-gray-600'
                 }`}
             >
               <Icon className={`w-4 h-4 mr-2 ${activeCategoryValue === value ? 'text-primary-berry' : 'text-gray-400'}`} />

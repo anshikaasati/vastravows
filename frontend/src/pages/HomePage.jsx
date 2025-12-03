@@ -119,47 +119,47 @@ const HomePage = () => {
   return (
     <div className="min-h-screen space-y-16">
       {/* Hero */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-16">
-        <div className="hero-section relative overflow-hidden">
-          <div className="hero-content grid lg:grid-cols-2 gap-12 p-10">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-20 md:pt-24">
+        <div className="hero-section relative overflow-hidden rounded-3xl">
+          <div className="hero-content grid lg:grid-cols-2 gap-8 md:gap-12 p-6 md:p-10">
             <div className="text-left space-y-6">
-              <p className="text-xs uppercase tracking-[0.5em] text-secondary-gold">Curated Luxury Rentals</p>
-              <h1 className="text-4xl md:text-6xl font-display leading-tight text-midnight">
+              <p className="text-[10px] md:text-xs uppercase tracking-[0.3em] md:tracking-[0.5em] text-secondary-gold font-semibold">Curated Luxury Rentals</p>
+              <h1 className="text-3xl sm:text-4xl md:text-6xl font-display leading-tight text-midnight">
                 Adorn your story with <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-berry to-secondary-gold">couture elegance</span>
               </h1>
-              <p className="text-gray-600 text-lg">
+              <p className="text-gray-600 text-sm md:text-lg leading-relaxed">
                 Discover designer lehengas, heirloom jewellery, heritage sherwanis, and statement accessories sourced from the country&apos;s most coveted closets.
               </p>
-              <div className="flex flex-wrap gap-4">
-                <Link to="/items" className="btn-gradient-vows px-6 py-3 rounded-full text-sm font-semibold">
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link to="/items" className="btn-gradient-vows px-8 py-3.5 rounded-full text-sm font-semibold text-center shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5">
                   Browse Collections
                 </Link>
                 {token ? (
-                  <Link to="/wishlist" className="btn-gradient-outline px-6 py-3 rounded-full text-sm font-semibold">
+                  <Link to="/wishlist" className="btn-gradient-outline px-8 py-3.5 rounded-full text-sm font-semibold text-center hover:bg-white transition">
                     View Wishlist
                   </Link>
                 ) : (
-                  <Link to="/register" className="btn-gradient-outline px-6 py-3 rounded-full text-sm font-semibold">
+                  <Link to="/register" className="btn-gradient-outline px-8 py-3.5 rounded-full text-sm font-semibold text-center hover:bg-white transition">
                     Become a Lender
                   </Link>
                 )}
               </div>
 
-              <div className="grid grid-cols-3 gap-4 text-center">
+              <div className="grid grid-cols-3 gap-2 md:gap-4 text-center pt-4">
                 {[
                   { label: 'Designers', value: '120+' },
-                  { label: 'Cities Served', value: '35' },
-                  { label: 'Pieces Curated', value: '2.4k+' }
+                  { label: 'Cities', value: '35' },
+                  { label: 'Curated', value: '2.4k+' }
                 ].map((stat) => (
-                  <div key={stat.label} className="p-4 glass-panel rounded-2xl">
-                    <p className="text-2xl font-semibold text-primary-berry">{stat.value}</p>
-                    <p className="text-xs uppercase tracking-wide text-gray-500">{stat.label}</p>
+                  <div key={stat.label} className="p-3 md:p-4 glass-panel rounded-2xl border border-white/40">
+                    <p className="text-xl md:text-2xl font-bold text-primary-berry">{stat.value}</p>
+                    <p className="text-[10px] md:text-xs uppercase tracking-wide text-gray-500 font-medium">{stat.label}</p>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="relative">
+            <div className="relative hidden lg:block">
               <div className="absolute -inset-6 bg-gradient-to-tr from-secondary-gold/30 to-primary-berry/30 blur-3xl" />
               <div className="relative grid grid-cols-2 gap-4">
                 {[
@@ -169,53 +169,49 @@ const HomePage = () => {
                   'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=600&q=80'
                 ].map((img, idx) => (
                   <div key={img} className={`rounded-2xl overflow-hidden shadow-glow ${idx % 2 ? 'translate-y-8' : ''}`}>
-                    <img src={img} alt="Editorial couture" className="w-full h-48 object-cover" />
+                    <img src={img} alt="Editorial couture" className="w-full h-48 object-cover hover:scale-110 transition duration-700" />
                   </div>
                 ))}
               </div>
             </div>
           </div>
-          <br></br>
+          <br></br>      
           {/* Search */}
-          <div className="bg-white/90 mx-6 md:mx-16 -mt-10 rounded-3xl p-6 shadow-glow flex flex-col lg:flex-row lg:items-center gap-4 mb-12">
-            {/* Location Input */}
-
-            {/* Text prompt */}
-            <div className="flex-1 px-4 py-2 border-b md:border-b-0 md:border-r border-gray-200">
-              <label htmlFor="prompt" className="block text-xs font-semibold text-gray-500 mb-0.5 text-left">
-                Describe the look
+          <div className="bg-white/90 backdrop-blur-md mx-4 md:mx-16 -mt-6 md:-mt-10 rounded-3xl p-4 md:p-6 shadow-glow flex flex-col lg:flex-row lg:items-center gap-4 mb-8 md:mb-12 border border-white/50 relative z-10">
+            <div className="flex-1 px-2 md:px-4 py-2">
+              <label htmlFor="prompt" className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 text-left">
+                Describe your look
               </label>
               <input
                 id="prompt"
                 type="text"
-                placeholder="“men sherwani with brooch” or “women bridal lehenga”"
+                placeholder="Try “red bridal lehenga” or “sherwani for groom”"
                 value={searchPrompt}
                 onChange={(e) => setSearchPrompt(e.target.value)}
-                className="w-full text-base font-medium text-gray-800 placeholder-gray-400 focus:outline-none"
+                className="w-full text-base md:text-lg font-medium text-gray-900 placeholder-gray-400 bg-transparent focus:outline-none"
               />
             </div>
 
-            {/* Search Button */}
             <button
               onClick={handleSearch}
-              className="w-full md:w-auto px-7 py-3.5 btn-gradient-vows text-white font-semibold rounded-full flex items-center justify-center space-x-2 mt-2 md:mt-0 shadow-lg"
+              className="w-full lg:w-auto px-8 py-4 btn-gradient-vows text-white font-bold rounded-2xl flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5"
             >
               <Sparkles className="w-5 h-5" />
-              <span className="text-base">Find Attire</span>
+              <span className="text-base">Search</span>
             </button>
           </div>
         </div>
       </div>
 
       {/* Main Content Area */}
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-16">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         {/* Filters & Categories */}
-        <div className="flex flex-wrap justify-center md:justify-start items-center gap-3 mb-10">
-          <div className="flex items-center justify-between w-full">
-            <span className="text-base font-bold text-secondary-gold uppercase tracking-[0.3em]">
-              Collections
+        <div className="flex flex-col gap-6 mb-12">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <span className="text-sm md:text-base font-bold text-secondary-gold uppercase tracking-[0.2em]">
+              Browse Collections
             </span>
-            <div className="flex gap-2">
+            <div className="flex p-1 bg-gray-100/50 rounded-full border border-gray-200 w-fit">
               {['women', 'men'].map((gender) => (
                 <button
                   key={gender}
@@ -223,7 +219,9 @@ const HomePage = () => {
                     setGenderFilter(gender);
                     setSearchCategory('');
                   }}
-                  className={`px-4 py-2 rounded-full text-xs font-semibold border ${genderFilter === gender ? 'bg-primary-berry text-white' : 'bg-white text-gray-700'
+                  className={`px-6 py-2 rounded-full text-xs md:text-sm font-bold transition-all duration-300 ${genderFilter === gender
+                      ? 'bg-white text-primary-berry shadow-md'
+                      : 'text-gray-500 hover:text-gray-700'
                     }`}
                 >
                   {gender === 'women' ? 'Women' : 'Men'}
@@ -231,27 +229,37 @@ const HomePage = () => {
               ))}
             </div>
           </div>
-          {categoryOptions[genderFilter].map(({ label, value, icon: Icon }) => (
+
+          <div className="flex flex-wrap gap-3">
+            {categoryOptions[genderFilter].map(({ label, value, icon: Icon }) => (
+              <button
+                key={value}
+                onClick={() => handleCategoryFilter(value)}
+                className={`px-5 py-3 rounded-2xl text-sm font-medium transition-all duration-200 flex items-center border ${searchCategory === value
+                    ? 'bg-primary-berry text-white border-primary-berry shadow-lg transform scale-105'
+                    : 'bg-white border-gray-100 text-gray-600 hover:border-primary-berry/30 hover:shadow-md'
+                  }`}
+              >
+                <Icon className={`w-4 h-4 mr-2 ${searchCategory === value ? 'text-white' : 'text-primary-berry'}`} />
+                {label.split('–')[1].trim()}
+              </button>
+            ))}
             <button
-              key={value}
-              onClick={() => handleCategoryFilter(value)}
-              className={`text-sm px-4 py-4 rounded-full font-medium transition shadow-md flex items-center border ${searchCategory === value ? 'bg-primary-berry/20 border-primary-berry text-primary-berry' : 'bg-white'
-                }`}
+              onClick={() => handleCategoryFilter('all')}
+              className="px-5 py-3 rounded-2xl text-sm font-medium bg-gray-50 border border-gray-200 text-gray-600 hover:bg-gray-100 transition flex items-center"
             >
-              <Icon className="w-4 h-4 mr-2" />
-              {label}
+              <Filter className="w-4 h-4 mr-2" />
+              View All
             </button>
-          ))}
-          <button
-            onClick={() => handleCategoryFilter('all')}
-            className="text-sm px-4 py-2 rounded-full bg-white border-2 border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition flex items-center shadow-sm"
-          >
-            <Filter className="w-4 h-4 mr-1" />
-            All Categories
-          </button>
+          </div>
         </div>
 
-        <h2 className="text-4xl font-extrabold text-gray-800 mb-8 mt-4 tracking-tight">Trending Designer Looks</h2>
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-2xl md:text-4xl font-display font-bold text-gray-900">Trending Now</h2>
+          <Link to="/items" className="text-sm font-semibold text-primary-berry hover:text-primary-dark flex items-center">
+            View All <span className="ml-1">→</span>
+          </Link>
+        </div>
 
         {/* Product Listing Grid */}
         {loading ? (

@@ -67,10 +67,10 @@ const ProfilePage = () => {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
-      <section className="glass-panel rounded-3xl p-8 animate-fade-in">
-        <h2 className="text-2xl font-display font-bold mb-6 text-gray-900">My Profile</h2>
-        <form onSubmit={handleUpdate} className="grid gap-6 md:grid-cols-2">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8 space-y-8 md:space-y-10">
+      <section className="glass-panel rounded-3xl p-4 md:p-8 animate-fade-in">
+        <h2 className="text-xl md:text-2xl font-display font-bold mb-6 text-gray-900">My Profile</h2>
+        <form onSubmit={handleUpdate} className="grid gap-4 md:gap-6 md:grid-cols-2">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
             <input
@@ -100,25 +100,25 @@ const ProfilePage = () => {
               className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
             />
           </div>
-          <div className="md:col-span-2 flex gap-4 mt-2">
+          <div className="md:col-span-2 flex flex-col sm:flex-row gap-4 mt-2">
             <button
               type="submit"
               disabled={saving}
-              className="px-8 py-3 bg-gray-900 text-white font-semibold rounded-xl shadow-lg hover:bg-gray-800 transition disabled:opacity-50"
+              className="px-8 py-3 bg-gray-900 text-white font-semibold rounded-xl shadow-lg hover:bg-gray-800 transition disabled:opacity-50 text-center"
             >
               {saving ? 'Saving...' : 'Save Changes'}
             </button>
-            <Link to="/add-item" className="px-8 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-white transition">
+            <Link to="/add-item" className="px-8 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-white transition text-center">
               List New Attire
             </Link>
           </div>
         </form>
       </section>
 
-      <section className="glass-panel rounded-3xl p-8">
+      <section className="glass-panel rounded-3xl p-4 md:p-8">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-display font-bold text-gray-900">My Attires</h2>
-          <span className="px-3 py-1 bg-white/50 rounded-full text-sm font-medium text-gray-600 border border-gray-200">
+          <h2 className="text-xl md:text-2xl font-display font-bold text-gray-900">My Attires</h2>
+          <span className="px-3 py-1 bg-white/50 rounded-full text-xs md:text-sm font-medium text-gray-600 border border-gray-200">
             {items.length} Listed
           </span>
         </div>
@@ -130,21 +130,21 @@ const ProfilePage = () => {
             </Link>
           </div>
         ) : (
-          <div className="grid gap-6">
+          <div className="grid gap-4 md:gap-6">
             {items.map((item) => (
-              <div key={item._id} className="glass-card rounded-2xl p-4 flex flex-col md:flex-row gap-6 group">
-                <div className="w-full md:w-48 aspect-[4/3] rounded-xl overflow-hidden">
+              <div key={item._id} className="glass-card rounded-2xl p-4 flex flex-col sm:flex-row gap-4 md:gap-6 group">
+                <div className="w-full sm:w-40 md:w-48 aspect-[4/3] rounded-xl overflow-hidden">
                   <img
                     src={item.images?.[0] || 'https://via.placeholder.com/120x120?text=No+Image'}
                     alt={item.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                   />
                 </div>
-                <div className="flex-1 py-2">
+                <div className="flex-1 py-1 md:py-2 flex flex-col">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-1">{item.title}</h3>
-                      <p className="text-sm text-gray-500 uppercase tracking-wider font-medium mb-4">
+                      <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-1">{item.title}</h3>
+                      <p className="text-xs md:text-sm text-gray-500 uppercase tracking-wider font-medium mb-2 md:mb-4">
                         {item.gender} • {item.subcategory?.replace(/-/g, ' ')}
                       </p>
                     </div>
@@ -166,7 +166,7 @@ const ProfilePage = () => {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-6 mt-auto">
+                  <div className="flex items-center gap-6 mt-auto pt-4 md:pt-0">
                     <div>
                       <span className="text-xs text-gray-500 block">Rent Price</span>
                       <span className="font-bold text-gray-900">₹{item.rentPricePerDay}<span className="text-xs font-normal text-gray-500">/day</span></span>

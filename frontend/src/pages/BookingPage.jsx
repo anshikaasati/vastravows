@@ -106,29 +106,29 @@ const BookingPage = () => {
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
       {/* Visual Stepper */}
-      <div className="mb-12">
+      <div className="mb-8 md:mb-12">
         <div className="flex items-center justify-center relative">
           <div className="absolute left-0 right-0 top-1/2 h-0.5 bg-gray-200 -z-10" />
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg transition-all duration-300 ${step >= 1 ? 'bg-primary-berry text-white shadow-lg scale-110' : 'bg-gray-200 text-gray-500'
+          <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-bold text-sm md:text-lg transition-all duration-300 ${step >= 1 ? 'bg-primary-berry text-white shadow-lg scale-110' : 'bg-gray-200 text-gray-500'
             }`}>1</div>
-          <div className={`w-32 h-0.5 mx-4 transition-all duration-500 ${step >= 2 ? 'bg-primary-berry' : 'bg-gray-200'}`} />
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg transition-all duration-300 ${step >= 2 ? 'bg-primary-berry text-white shadow-lg scale-110' : 'bg-gray-200 text-gray-500'
+          <div className={`w-16 md:w-32 h-0.5 mx-2 md:mx-4 transition-all duration-500 ${step >= 2 ? 'bg-primary-berry' : 'bg-gray-200'}`} />
+          <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-bold text-sm md:text-lg transition-all duration-300 ${step >= 2 ? 'bg-primary-berry text-white shadow-lg scale-110' : 'bg-gray-200 text-gray-500'
             }`}>2</div>
         </div>
-        <div className="flex justify-center gap-32 mt-2 text-sm font-semibold text-gray-600">
+        <div className="flex justify-center gap-16 md:gap-32 mt-2 text-xs md:text-sm font-semibold text-gray-600">
           <span>Details</span>
           <span>Payment</span>
         </div>
       </div>
 
-      <div className="glass-panel rounded-3xl p-8 animate-fade-in">
-        <h2 className="text-3xl font-display font-bold text-center mb-8 text-gray-900">
+      <div className="glass-panel rounded-3xl p-4 md:p-8 animate-fade-in">
+        <h2 className="text-2xl md:text-3xl font-display font-bold text-center mb-6 md:mb-8 text-gray-900">
           {step === 1 ? 'Booking Details' : 'Confirm & Pay'}
         </h2>
 
         {step === 1 && (
-          <form id="booking-form" onSubmit={handleNextStep} className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
+          <form id="booking-form" onSubmit={handleNextStep} className="space-y-4 md:space-y-6">
+            <div className="grid md:grid-cols-2 gap-4 md:gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
                 <input
@@ -176,7 +176,7 @@ const BookingPage = () => {
                 className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
                 placeholder="Full delivery address"
               />
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-2 gap-4 md:gap-6">
                 <input
                   required
                   name="city"
@@ -220,14 +220,14 @@ const BookingPage = () => {
         )}
 
         {step === 2 && (
-          <div className="space-y-8">
+          <div className="space-y-6 md:space-y-8">
             {/* Order Summary */}
-            <div className="bg-white/40 rounded-2xl p-6 border border-white/60">
+            <div className="bg-white/40 rounded-2xl p-4 md:p-6 border border-white/60">
               <div className="flex gap-4 mb-6">
-                <img src={item.images?.[0]} alt={item.title} className="w-24 h-24 rounded-lg object-cover shadow-sm" />
+                <img src={item.images?.[0]} alt={item.title} className="w-20 h-20 md:w-24 md:h-24 rounded-lg object-cover shadow-sm" />
                 <div>
-                  <h3 className="font-bold text-lg text-gray-900">{item.title}</h3>
-                  <p className="text-sm text-gray-500">
+                  <h3 className="font-bold text-base md:text-lg text-gray-900">{item.title}</h3>
+                  <p className="text-xs md:text-sm text-gray-500">
                     {isRental ? `${new Date(startDate).toLocaleDateString()} - ${new Date(endDate).toLocaleDateString()}` : 'Purchase'}
                   </p>
                 </div>
@@ -269,7 +269,7 @@ const BookingPage = () => {
                     </h4>
                     <div className="p-4 border border-green-200 bg-green-50/50 rounded-xl flex items-center gap-3">
                       <div className="w-4 h-4 rounded-full bg-green-500" />
-                      <span className="font-medium text-green-800">Online Payment Required</span>
+                      <span className="font-medium text-green-800 text-sm md:text-base">Online Payment Required</span>
                     </div>
                   </div>
 
@@ -277,7 +277,7 @@ const BookingPage = () => {
                     <h4 className="font-semibold text-gray-900 flex items-center gap-2">
                       <Banknote className="w-4 h-4" /> Rent Amount (₹{rentAmount})
                     </h4>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <label className={`cursor-pointer p-4 rounded-xl border-2 transition-all ${formData.rentPaymentMethod === 'online' ? 'border-primary-berry bg-primary-berry/5' : 'border-transparent bg-white/50 hover:bg-white'
                         }`}>
                         <input
@@ -310,7 +310,7 @@ const BookingPage = () => {
               ) : (
                 <div className="space-y-3">
                   <h4 className="font-semibold text-gray-900">Payment Method</h4>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <label className={`cursor-pointer p-4 rounded-xl border-2 transition-all ${formData.paymentMethod === 'online' ? 'border-primary-berry bg-primary-berry/5' : 'border-transparent bg-white/50 hover:bg-white'
                       }`}>
                       <input

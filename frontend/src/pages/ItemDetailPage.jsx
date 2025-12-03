@@ -106,10 +106,10 @@ const ItemDetailPage = () => {
   if (!item) return <p>Item not found.</p>;
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[1.5fr_1fr] max-w-7xl mx-auto">
-      <div className="space-y-8">
+    <div className="grid gap-6 md:gap-8 lg:grid-cols-[1.5fr_1fr] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+      <div className="space-y-6 md:space-y-8">
         {/* Main Content Card */}
-        <div className="glass-panel rounded-3xl p-6 md:p-8 animate-fade-in">
+        <div className="glass-panel rounded-3xl p-4 md:p-8 animate-fade-in">
           {/* Image Gallery */}
           <div className="space-y-4">
             <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-lg">
@@ -120,7 +120,7 @@ const ItemDetailPage = () => {
               />
             </div>
             {item.images?.length > 1 && (
-              <div className="grid grid-cols-4 gap-4">
+              <div className="grid grid-cols-4 gap-2 md:gap-4">
                 {item.images.slice(1).map((src, idx) => (
                   <div key={idx} className="aspect-square rounded-xl overflow-hidden cursor-pointer border-2 border-transparent hover:border-primary-berry transition">
                     <img src={src} alt={`View ${idx + 2}`} className="w-full h-full object-cover" />
@@ -130,31 +130,31 @@ const ItemDetailPage = () => {
             )}
           </div>
 
-          <div className="mt-8 space-y-4">
+          <div className="mt-6 md:mt-8 space-y-4">
             <div>
-              <h2 className="text-4xl font-display font-bold text-gray-900 mb-2">{item.title}</h2>
-              <p className="text-sm uppercase tracking-widest text-gray-500 font-semibold">
+              <h2 className="text-2xl md:text-4xl font-display font-bold text-gray-900 mb-2">{item.title}</h2>
+              <p className="text-xs md:text-sm uppercase tracking-widest text-gray-500 font-semibold">
                 {item.gender} • {item.subcategory?.replace(/-/g, ' ')}
               </p>
             </div>
 
             <div className="flex items-baseline gap-4 border-b border-gray-200 pb-6">
               {item.salePrice ? (
-                <span className="text-3xl font-bold text-gray-900">₹{item.salePrice}</span>
+                <span className="text-2xl md:text-3xl font-bold text-gray-900">₹{item.salePrice}</span>
               ) : (
                 <div className="flex items-baseline gap-2">
-                  <span className="text-3xl font-bold text-primary-berry">₹{item.rentPricePerDay}</span>
+                  <span className="text-2xl md:text-3xl font-bold text-primary-berry">₹{item.rentPricePerDay}</span>
                   <span className="text-gray-500 font-medium">/ day</span>
                 </div>
               )}
             </div>
 
-            <div className="prose prose-pink max-w-none text-gray-600 leading-relaxed">
+            <div className="prose prose-pink max-w-none text-gray-600 leading-relaxed text-sm md:text-base">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Description</h3>
               <p>{item.description}</p>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 py-6 border-t border-gray-200">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-6 border-t border-gray-200">
               <div>
                 <p className="text-sm text-gray-500 mb-1">Location</p>
                 <p className="font-medium text-gray-900">{item.location?.city}, {item.location?.pincode}</p>
@@ -166,20 +166,20 @@ const ItemDetailPage = () => {
             </div>
 
             <div className="flex items-center gap-4 p-4 bg-white/50 rounded-xl border border-white/60">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary-berry to-secondary-gold flex items-center justify-center text-white font-bold text-xl">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-primary-berry to-secondary-gold flex items-center justify-center text-white font-bold text-lg md:text-xl">
                 {item.ownerId?.name?.charAt(0)}
               </div>
               <div>
-                <p className="text-sm text-gray-500">Listed by</p>
-                <p className="font-semibold text-gray-900">{item.ownerId?.name}</p>
+                <p className="text-xs md:text-sm text-gray-500">Listed by</p>
+                <p className="font-semibold text-gray-900 text-sm md:text-base">{item.ownerId?.name}</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Reviews Section */}
-        <div className="glass-panel rounded-3xl p-6 md:p-8">
-          <h3 className="text-2xl font-display font-bold mb-6">Client Reviews</h3>
+        <div className="glass-panel rounded-3xl p-4 md:p-8">
+          <h3 className="text-xl md:text-2xl font-display font-bold mb-6">Client Reviews</h3>
           <ReviewList reviews={reviews} />
 
           <div className="mt-8 pt-8 border-t border-gray-200/60">
@@ -194,19 +194,19 @@ const ItemDetailPage = () => {
                     className="focus:outline-none transition-transform hover:scale-110"
                   >
                     <StarIcon
-                      className={`w-8 h-8 ${star <= rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
+                      className={`w-6 h-6 md:w-8 md:h-8 ${star <= rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
                         }`}
                     />
                   </button>
                 ))}
               </div>
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <input
                   name="comment"
                   placeholder="Share your experience with this attire..."
-                  className="flex-1 px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
+                  className="flex-1 px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20 text-sm md:text-base"
                 />
-                <button type="submit" className="px-6 py-3 rounded-xl bg-gray-900 text-white font-semibold hover:bg-gray-800 transition shadow-lg">
+                <button type="submit" className="px-6 py-3 rounded-xl bg-gray-900 text-white font-semibold hover:bg-gray-800 transition shadow-lg w-full sm:w-auto">
                   Post
                 </button>
               </div>
