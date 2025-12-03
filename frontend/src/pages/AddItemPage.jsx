@@ -10,7 +10,7 @@ const initialState = {
   gender: '',
   category: 'clothes',
   subcategory: '',
-  size: '',
+  size: [],
   rentPricePerDay: '',
   salePrice: '',
   depositAmount: '',
@@ -43,8 +43,8 @@ const AddItemPage = () => {
       toast.error('Please select a subcategory.');
       return;
     }
-    if (!form.size.trim()) {
-      toast.error('Please enter a size.');
+    if (!form.size || form.size.length === 0) {
+      toast.error('Please select at least one size.');
       return;
     }
     if (!form.addressLine.trim()) {
@@ -62,7 +62,7 @@ const AddItemPage = () => {
     formData.append('gender', form.gender);
     formData.append('category', form.category);
     formData.append('subcategory', form.subcategory);
-    formData.append('size', form.size);
+    formData.append('size', Array.isArray(form.size) ? form.size.join(', ') : form.size);
     formData.append('rentPricePerDay', form.rentPricePerDay || '0');
     if (form.salePrice) formData.append('salePrice', form.salePrice);
     if (form.depositAmount) formData.append('depositAmount', form.depositAmount);
