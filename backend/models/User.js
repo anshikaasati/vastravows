@@ -7,9 +7,10 @@ const userSchema = new mongoose.Schema(
     passwordHash: { type: String, required: true },
     phone: { type: String },
     avatarUrl: { type: String },
-    // Razorpay Payouts
+    // Razorpay Payouts/Route
     upiId: { type: String },
-    razorpayContactId: { type: String },
+    razorpayContactId: { type: String }, // Legacy (Standard Payouts)
+    razorpayAccountId: { type: String }, // New (Route Linked Account)
     razorpayFundAccountId: { type: String },
     // Razorpay Subscription (for lender monthly fee)
     razorpaySubscriptionId: { type: String },

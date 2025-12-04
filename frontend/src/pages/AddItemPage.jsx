@@ -1,8 +1,9 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, Image, Info, Upload, Trash2 } from 'lucide-react';
+import { X, Image, Info, Upload, Trash2, ShieldCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { itemApi, paymentApi } from '../api/services';
+import { itemApi, paymentApi, authApi } from '../api/services';
+import { useAuth } from '../context/AuthContext';
 
 const initialState = {
   title: '',
@@ -21,13 +22,97 @@ const initialState = {
 };
 
 const AddItemPage = () => {
+  const { user, setUser } = useAuth();
   const [form, setForm] = useState(initialState);
   const [files, setFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
   const [loading, setLoading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user && user.subscriptionStatus !== 'active') {
+      setShowSubscriptionModal(true);
+    }
+  }, [user]);
+
+  const handleSubscribe = async () => {
+    setLoading(true);
+    try {
+      // 1. Create Subscription
+      const { data: subscription } = await paymentApi.createSubscription();
+
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        subscription_id: subscription.id,
+        name: "Vastra Vows",
+        description: "Monthly Lender Subscription (₹100/month)",
+        image: "https://i.imgur.com/3g7nmJC.png",
+        handler: async function (razorpayResponse) {
+          try {
+            // 2. Verify Subscription
+            await paymentApi.verifySubscription({
+              ...razorpayResponse,
+              userId: user.id || user._id
+            });
+
+            toast.success('Subscription activated! You can now list items.');
+
+            // Update local user state
+            const updatedUser = { ...user, subscriptionStatus: 'active' };
+            setUser(updatedUser);
+            setShowSubscriptionModal(false);
+
+            // Optional: Refresh user from backend to be sure
+            const { data: me } = await authApi.me();
+            setUser(me);
+
+          } catch (err) {
+            toast.error('Subscription verification failed');
+            console.error(err);
+          }
+        },
+        prefill: {
+          name: user.name,
+          email: user.email,
+          contact: user.phone
+        },
+        theme: {
+          color: "#D4AF37",
+          backdrop_color: "rgba(212, 175, 55, 0.1)"
+        },
+        modal: {
+          ondismiss: function () {
+            toast.error('Subscription cancelled');
+            setLoading(false);
+          }
+        }
+      };
+
+      if (!window.Razorpay) {
+        toast.error('Payment SDK failed to load. Please refresh.');
+        setLoading(false);
+        return;
+      }
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to initiate subscription');
+      setLoading(false);
+    }
+  };
+
+  const handleContinueFree = () => {
+    setShowSubscriptionModal(false);
+    toast('You are on the Free Tier. ₹50 fee per rental.', {
+      icon: 'ℹ️',
+      duration: 4000
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -510,6 +595,64 @@ const AddItemPage = () => {
           </div>
         </div>
       </div>
+      {/* Subscription Modal */}
+      {showSubscriptionModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-8 max-w-lg w-full animate-fade-in shadow-2xl text-center">
+            <div className="w-16 h-16 bg-primary-berry/10 rounded-full flex items-center justify-center mx-auto mb-6">
+              <ShieldCheck className="w-8 h-8 text-primary-berry" />
+            </div>
+            <h3 className="text-2xl font-display font-bold text-gray-900 mb-2">Choose Your Lender Plan</h3>
+            <p className="text-gray-600 mb-6">
+              Select a plan that suits your needs. You can upgrade anytime.
+            </p>
+
+            <div className="grid grid-cols-2 gap-4 mb-8">
+              {/* Free Tier */}
+              <div className="border border-gray-200 rounded-xl p-4 hover:border-gray-300 transition cursor-pointer" onClick={handleContinueFree}>
+                <h4 className="font-bold text-gray-900 mb-1">Free Tier</h4>
+                <p className="text-xs text-gray-500 mb-3">Pay as you earn</p>
+                <ul className="text-xs text-gray-600 space-y-2 text-left">
+                  <li className="flex items-center"><span className="text-red-500 mr-1">●</span> Max 10 Listings</li>
+                  <li className="flex items-center"><span className="text-red-500 mr-1">●</span> ₹50 Fee per Rental</li>
+                  <li className="flex items-center"><span className="text-gray-400 mr-1">●</span> Standard Support</li>
+                </ul>
+              </div>
+
+              {/* Premium Tier */}
+              <div className="border-2 border-primary-berry bg-primary-berry/5 rounded-xl p-4 relative cursor-pointer" onClick={handleSubscribe}>
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary-berry text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                  RECOMMENDED
+                </div>
+                <h4 className="font-bold text-primary-berry mb-1">Premium</h4>
+                <p className="text-xs text-gray-500 mb-3">₹100 / month</p>
+                <ul className="text-xs text-gray-700 space-y-2 text-left">
+                  <li className="flex items-center"><span className="text-green-500 mr-1">✔</span> Unlimited Listings</li>
+                  <li className="flex items-center"><span className="text-green-500 mr-1">✔</span> 0% Platform Fee</li>
+                  <li className="flex items-center"><span className="text-green-500 mr-1">✔</span> Priority Support</li>
+                  <li className="flex items-center"><span className="text-green-500 mr-1">✔</span> Instant Payouts</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={handleSubscribe}
+                disabled={loading}
+                className="w-full py-3 bg-gradient-to-r from-primary-berry to-primary-plum text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5 disabled:opacity-70"
+              >
+                {loading ? 'Processing...' : 'Subscribe to Premium (₹100/mo)'}
+              </button>
+              <button
+                onClick={handleContinueFree}
+                className="w-full py-3 text-gray-500 font-semibold hover:text-gray-700 transition"
+              >
+                Continue with Free Tier
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

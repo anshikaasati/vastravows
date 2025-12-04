@@ -16,6 +16,15 @@ export const createItem = async (req, res, next) => {
       return next(new Error(errors.array()[0].msg));
     }
 
+    // Check listing limit for non-subscribed users
+    if (req.user.subscriptionStatus !== 'active') {
+      const existingItemsCount = await Item.countDocuments({ ownerId: req.user._id });
+      if (existingItemsCount >= 10) {
+        res.status(403);
+        return next(new Error('Free tier limit reached (10 items). Upgrade to Premium for unlimited listings.'));
+      }
+    }
+
     const imageUrls = [];
     if (req.files?.length) {
       for (const file of req.files) {
