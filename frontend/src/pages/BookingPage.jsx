@@ -1,48 +1,36 @@
-import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { format } from 'date-fns';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { bookingApi, paymentApi } from '../api/services';
-import { MapPin, Truck, User, Phone, Calendar, CreditCard, Banknote } from 'lucide-react';
+import { useCart } from '../context/CartContext';
+import { MapPin, Truck, User, Phone, Calendar, CreditCard, Banknote, Map as MapIcon } from 'lucide-react';
 
 const BookingPage = () => {
-  const { state } = useLocation();
+  const { cart, getCartTotal, clearCart } = useCart();
   const navigate = useNavigate();
-
-  // If no item state, redirect back
-  if (!state?.item) {
-    return (
-      <div className="p-8 text-center">
-        <p className="text-red-500">No item selected. Please go back.</p>
-        <button onClick={() => navigate('/')} className="mt-4 text-blue-600 underline">Go Home</button>
-      </div>
-    );
-  }
-
-  const { item, startDate, endDate } = state;
-  const isRental = item.rentPricePerDay > 0 && startDate && endDate;
-
-  // Calculate amounts
-  const days = isRental ? Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24)) : 0;
-  const rentAmount = isRental ? item.rentPricePerDay * days : 0;
-  const depositAmount = isRental ? (item.depositAmount || 0) : 0;
-  const salePrice = item.salePrice || 0;
-  const totalAmount = isRental ? (rentAmount + depositAmount) : salePrice;
-
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [showMapModal, setShowMapModal] = useState(false);
+
+  // Redirect if cart is empty
+  useEffect(() => {
+    if (cart.length === 0) {
+      toast.error('Your cart is empty');
+      navigate('/items');
+    }
+  }, [cart, navigate]);
 
   const [formData, setFormData] = useState({
     renterName: '',
     phoneNumber: '',
-    size: '',
+    alternatePhoneNumber: '',
     deliveryAddress: '',
     city: '',
     pincode: '',
-    pickupAddress: '', // For rental return/pickup
-    paymentMethod: 'card', // Default for Sale
-    depositPaymentMethod: 'card', // Default for Deposit (Online)
-    rentPaymentMethod: 'cod', // Default for Rent (COD allowed)
+    pickupAddress: '',
+    deliveryDate: '', // Global preference
+    returnDate: '',   // Global preference
+    paymentMethod: 'online', // Default
   });
 
   const handleInputChange = (e) => {
@@ -50,97 +38,140 @@ const BookingPage = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleUseCurrentLocation = () => {
+    if (navigator.geolocation) {
+      toast.loading('Getting location...');
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          toast.dismiss();
+          const { latitude, longitude } = position.coords;
+          // In a real app, use Geocoding API here to get address from lat/lng
+          // For now, we'll just fill a placeholder and show success
+          setFormData(prev => ({
+            ...prev,
+            deliveryAddress: `Lat: ${latitude}, Long: ${longitude} (Pinned Location)`,
+            // city: 'Detected City',
+            // pincode: 'Detected Pin'
+          }));
+          toast.success('Location pinned successfully!');
+          setShowMapModal(false);
+        },
+        (error) => {
+          toast.dismiss();
+          toast.error('Unable to retrieve location');
+          console.error(error);
+        }
+      );
+    } else {
+      toast.error('Geolocation is not supported by your browser');
+    }
+  };
+
   const handleNextStep = (e) => {
     e.preventDefault();
-    // Basic validation
-    if (!formData.renterName || !formData.phoneNumber || !formData.deliveryAddress || !formData.city || !formData.pincode || !formData.size) {
+    if (!formData.renterName || !formData.phoneNumber || !formData.deliveryAddress || !formData.city || !formData.pincode) {
       toast.error('Please fill in all required fields.');
-      return;
-    }
-    if (isRental && !formData.pickupAddress) {
-      toast.error('Please provide a pickup address for the item return.');
       return;
     }
     setStep(2);
   };
 
+  const calculateBreakdown = () => {
+    let rentTotal = 0;
+    let depositTotal = 0;
+    let saleTotal = 0;
+
+    cart.forEach(item => {
+      if (item.rentPricePerDay && item.rentalPeriod) {
+        const days = Math.ceil((new Date(item.rentalPeriod.endDate) - new Date(item.rentalPeriod.startDate)) / (1000 * 60 * 60 * 24));
+        rentTotal += item.rentPricePerDay * days;
+        depositTotal += (item.depositAmount || 0);
+      } else {
+        saleTotal += (item.salePrice || 0);
+      }
+    });
+
+    const platformFee = 50; // Fixed fee for example
+    const deliveryCharges = 100; // Fixed delivery
+    const gst = (rentTotal + saleTotal) * 0.18; // 18% GST on services/goods
+    const subTotal = rentTotal + depositTotal + saleTotal;
+    const grandTotal = subTotal + platformFee + deliveryCharges + gst;
+
+    return { rentTotal, depositTotal, saleTotal, platformFee, deliveryCharges, gst, grandTotal };
+  };
+
+  const breakdown = calculateBreakdown();
+
   const handleConfirmBooking = async () => {
     setLoading(true);
     try {
-      const payload = {
-        itemId: item._id,
-        startDate,
-        endDate,
-        totalAmount,
-        renterName: formData.renterName,
-        phoneNumber: formData.phoneNumber,
-        size: formData.size,
-        deliveryAddress: formData.deliveryAddress,
-        pickupAddress: formData.pickupAddress,
-        location: {
-          city: formData.city,
-          pincode: formData.pincode
-        },
-        depositAmount,
-        rentAmount,
-        // Payment methods
-        ...(isRental ? {
-          depositPaymentMethod: formData.depositPaymentMethod,
-          rentPaymentMethod: formData.rentPaymentMethod
-        } : {
-          paymentMethod: formData.paymentMethod
-        })
-      };
+      // We need to create a booking for EACH item in the cart
+      // Or a single "Order" containing multiple bookings.
+      // The backend `bookingApi.create` likely handles one item.
+      // We should loop or update backend. For now, loop.
 
-      const isOnlinePayment =
-        (isRental && formData.depositPaymentMethod === 'card') ||
-        (!isRental && formData.paymentMethod === 'online');
+      const promises = cart.map(async (item) => {
+        const isRental = !!item.rentPricePerDay;
+        const days = isRental ? Math.ceil((new Date(item.rentalPeriod.endDate) - new Date(item.rentalPeriod.startDate)) / (1000 * 60 * 60 * 24)) : 0;
+        const itemRentAmount = isRental ? item.rentPricePerDay * days : 0;
+        const itemTotal = isRental ? (itemRentAmount + item.depositAmount) : item.salePrice;
 
-      if (isOnlinePayment) {
-        // Calculate amount to charge online
-        let amountToCharge;
-        if (isRental) {
-          // If rent is also online, charge full amount (deposit + rent)
-          // If rent is COD, charge only deposit
-          amountToCharge = formData.rentPaymentMethod === 'online'
-            ? totalAmount
-            : depositAmount;
-        } else {
-          // For sales, always full amount
-          amountToCharge = totalAmount;
-        }
+        const payload = {
+          itemId: item._id,
+          startDate: item.rentalPeriod?.startDate,
+          endDate: item.rentalPeriod?.endDate,
+          totalAmount: itemTotal,
+          renterName: formData.renterName,
+          phoneNumber: formData.phoneNumber,
+          size: item.selectedSize,
+          deliveryAddress: formData.deliveryAddress,
+          pickupAddress: formData.pickupAddress || formData.deliveryAddress,
+          location: {
+            city: formData.city,
+            pincode: formData.pincode
+          },
+          depositAmount: item.depositAmount || 0,
+          rentAmount: itemRentAmount,
+          paymentMethod: formData.paymentMethod,
+          // Add extra fields if backend supports them
+          alternatePhoneNumber: formData.alternatePhoneNumber,
+          deliveryDate: formData.deliveryDate,
+          returnDate: formData.returnDate
+        };
 
-        if (amountToCharge === 0) {
-          toast.error('No amount to charge online');
-          setLoading(false);
-          return;
-        }
+        // Return the promise
+        return { payload, isRental, itemTotal };
+      });
 
-        // 1. Create Order
-        const { data: order } = await paymentApi.createOrder({ amount: amountToCharge, currency: 'INR' });
+      const bookingPayloads = await Promise.all(promises);
 
-        // 2. Open Razorpay with custom theme
+      if (formData.paymentMethod === 'online') {
+        // Create ONE Razorpay order for the Grand Total
+        const { data: order } = await paymentApi.createOrder({ amount: breakdown.grandTotal, currency: 'INR' });
+
         const options = {
           key: import.meta.env.VITE_RAZORPAY_KEY_ID,
           amount: order.amount,
           currency: order.currency,
           name: "Vastra Vows",
-          description: isRental
-            ? (formData.rentPaymentMethod === 'online'
-              ? `Full Payment for ${item.title}`
-              : `Security Deposit for ${item.title}`)
-            : `Purchase ${item.title}`,
+          description: `Payment for ${cart.length} items`,
           image: "https://i.imgur.com/3g7nmJC.png",
           order_id: order.id,
           handler: async function (response) {
             try {
-              await paymentApi.verifyPayment({
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature,
-                bookingData: payload
-              });
-              toast.success('Booking confirmed successfully!');
+              // Verify payment and create ALL bookings
+              // We might need a bulk create endpoint, but looping is okay for small numbers
+              for (const { payload } of bookingPayloads) {
+                await paymentApi.verifyPayment({
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                  bookingData: payload
+                });
+              }
+
+              toast.success('Order placed successfully!');
+              clearCart();
               navigate('/bookings');
             } catch (err) {
               console.error(err);
@@ -152,309 +183,216 @@ const BookingPage = () => {
             contact: formData.phoneNumber
           },
           theme: {
-            color: "#D4AF37",
-            backdrop_color: "rgba(212, 175, 55, 0.1)"
-          },
-          modal: {
-            backdropclose: false,
-            escape: false,
-            handleback: true,
-            confirm_close: true,
-            ondismiss: function () {
-              toast.error('Payment cancelled');
-              setLoading(false);
-            }
+            color: "#D4AF37"
           }
         };
 
-        if (!window.Razorpay) {
-          toast.error('Payment SDK failed to load. Please refresh.');
-          setLoading(false);
-          return;
-        }
-
         const rzp = new window.Razorpay(options);
         rzp.open();
+
       } else {
-        // COD Flow
-        await bookingApi.create(payload);
-        toast.success('Booking confirmed successfully!');
+        // COD Loop
+        for (const { payload } of bookingPayloads) {
+          await bookingApi.create(payload);
+        }
+        toast.success('Order placed successfully!');
+        clearCart();
         navigate('/bookings');
       }
 
     } catch (error) {
       console.error(error);
-      toast.error(error.response?.data?.message || 'Failed to create booking');
+      toast.error('Failed to place order');
     } finally {
       setLoading(false);
     }
   };
 
+  if (cart.length === 0) return null;
+
   return (
-    <div className="max-w-4xl mx-auto py-8 px-4">
-      {/* Visual Stepper */}
+    <div className="max-w-6xl mx-auto py-8 px-4">
+      {/* Stepper */}
       <div className="mb-8 md:mb-12">
         <div className="flex items-center justify-center relative">
           <div className="absolute left-0 right-0 top-1/2 h-0.5 bg-gray-200 -z-10" />
-          <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-bold text-sm md:text-lg transition-all duration-300 ${step >= 1 ? 'bg-primary-berry text-white shadow-lg scale-110' : 'bg-gray-200 text-gray-500'
-            }`}>1</div>
-          <div className={`w-16 md:w-32 h-0.5 mx-2 md:mx-4 transition-all duration-500 ${step >= 2 ? 'bg-primary-berry' : 'bg-gray-200'}`} />
-          <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-bold text-sm md:text-lg transition-all duration-300 ${step >= 2 ? 'bg-primary-berry text-white shadow-lg scale-110' : 'bg-gray-200 text-gray-500'
-            }`}>2</div>
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${step >= 1 ? 'bg-primary-berry text-white' : 'bg-gray-200 text-gray-500'}`}>1</div>
+          <div className={`w-32 h-0.5 mx-4 ${step >= 2 ? 'bg-primary-berry' : 'bg-gray-200'}`} />
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${step >= 2 ? 'bg-primary-berry text-white' : 'bg-gray-200 text-gray-500'}`}>2</div>
         </div>
-        <div className="flex justify-center gap-16 md:gap-32 mt-2 text-xs md:text-sm font-semibold text-gray-600">
+        <div className="flex justify-center gap-28 mt-2 text-sm font-semibold text-gray-600">
           <span>Details</span>
-          <span>Payment</span>
+          <span>Summary & Pay</span>
         </div>
       </div>
 
-      <div className="glass-panel rounded-3xl p-4 md:p-8 animate-fade-in">
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-center mb-6 md:mb-8 text-gray-900">
-          {step === 1 ? 'Booking Details' : 'Confirm & Pay'}
-        </h2>
-
-        {step === 1 && (
-          <form id="booking-form" onSubmit={handleNextStep} className="space-y-4 md:space-y-6">
-            <div className="grid md:grid-cols-2 gap-4 md:gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                <input
-                  required
-                  name="renterName"
-                  value={formData.renterName}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
-                  placeholder="Enter your full name"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                <input
-                  required
-                  name="phoneNumber"
-                  value={formData.phoneNumber}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
-                  placeholder="+91 98765 43210"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Size / Measurements</label>
-              <input
-                required
-                name="size"
-                value={formData.size}
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
-                placeholder="e.g., M, L, or specific measurements"
-              />
-            </div>
-
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900 border-b pb-2">Delivery Address</h3>
-              <textarea
-                required
-                name="deliveryAddress"
-                value={formData.deliveryAddress}
-                onChange={handleInputChange}
-                rows="3"
-                className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
-                placeholder="Full delivery address"
-              />
-              <div className="grid grid-cols-2 gap-4 md:gap-6">
-                <input
-                  required
-                  name="city"
-                  value={formData.city}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
-                  placeholder="City"
-                />
-                <input
-                  required
-                  name="pincode"
-                  value={formData.pincode}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
-                  placeholder="Pincode"
-                />
-              </div>
-            </div>
-
-            {isRental && (
-              <div className="bg-amber-50/50 p-4 rounded-xl border border-amber-100">
-                <label className="block text-sm font-medium text-amber-900 mb-1">Pickup Address (Return)</label>
-                <textarea
-                  name="pickupAddress"
-                  value={formData.pickupAddress}
-                  onChange={handleInputChange}
-                  rows="2"
-                  className="w-full px-4 py-3 rounded-xl bg-white/50 border-amber-200 focus:ring-2 focus:ring-amber-500/20"
-                  placeholder="Same as delivery address if left empty"
-                />
-              </div>
-            )}
-
-            <button
-              type="submit"
-              className="w-full py-4 rounded-xl bg-gray-900 text-white font-bold text-lg hover:bg-gray-800 transition shadow-lg mt-8"
-            >
-              Continue to Payment
-            </button>
-          </form>
-        )}
-
-        {step === 2 && (
-          <div className="space-y-6 md:space-y-8">
-            {/* Order Summary */}
-            <div className="bg-white/40 rounded-2xl p-4 md:p-6 border border-white/60">
-              <div className="flex gap-4 mb-6">
-                <img src={item.images?.[0]} alt={item.title} className="w-20 h-20 md:w-24 md:h-24 rounded-lg object-cover shadow-sm" />
-                <div>
-                  <h3 className="font-bold text-base md:text-lg text-gray-900">{item.title}</h3>
-                  <p className="text-xs md:text-sm text-gray-500">
-                    {isRental ? `${new Date(startDate).toLocaleDateString()} - ${new Date(endDate).toLocaleDateString()}` : 'Purchase'}
-                  </p>
+      <div className="grid lg:grid-cols-[1.5fr_1fr] gap-8">
+        {/* Left Column: Form or Items */}
+        <div className="space-y-6">
+          {step === 1 ? (
+            <div className="glass-panel p-6 rounded-3xl animate-fade-in">
+              <h2 className="text-2xl font-bold mb-6">Buyer Details</h2>
+              <form id="booking-form" onSubmit={handleNextStep} className="space-y-4">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                    <input required name="renterName" value={formData.renterName} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl glass-input" placeholder="John Doe" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                    <input required name="phoneNumber" value={formData.phoneNumber} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl glass-input" placeholder="+91 98765 43210" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Alternate Phone (Optional)</label>
+                    <input name="alternatePhoneNumber" value={formData.alternatePhoneNumber} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl glass-input" placeholder="Backup number" />
+                  </div>
                 </div>
-              </div>
 
-              <div className="space-y-3 text-sm">
-                {isRental ? (
-                  <>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Rent Amount ({days} days)</span>
-                      <span className="font-medium">₹{rentAmount}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Security Deposit (Refundable)</span>
-                      <span className="font-medium">₹{depositAmount}</span>
-                    </div>
-                  </>
-                ) : (
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Sale Price</span>
-                    <span className="font-medium">₹{item.salePrice}</span>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Preferred Delivery Date</label>
+                    <input type="date" name="deliveryDate" value={formData.deliveryDate} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl glass-input" />
                   </div>
-                )}
-                <div className="border-t border-gray-300 my-2" />
-                <div className="flex justify-between text-lg font-bold text-primary-berry">
-                  <span>Total Payable</span>
-                  <span>₹{totalAmount}</span>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Preferred Return Date</label>
+                    <input type="date" name="returnDate" value={formData.returnDate} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl glass-input" />
+                  </div>
                 </div>
-              </div>
+
+                <div className="space-y-4 pt-4 border-t">
+                  <div className="flex justify-between items-center">
+                    <h3 className="font-semibold text-gray-900">Delivery Address</h3>
+                    <button type="button" onClick={() => setShowMapModal(true)} className="text-sm text-primary-berry font-semibold flex items-center gap-1 hover:underline">
+                      <MapIcon className="w-4 h-4" /> Pin on Map
+                    </button>
+                  </div>
+                  <textarea required name="deliveryAddress" value={formData.deliveryAddress} onChange={handleInputChange} rows="3" className="w-full px-4 py-3 rounded-xl glass-input" placeholder="Full address" />
+                  <div className="grid grid-cols-2 gap-4">
+                    <input required name="city" value={formData.city} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl glass-input" placeholder="City" />
+                    <input required name="pincode" value={formData.pincode} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl glass-input" placeholder="Pincode" />
+                  </div>
+                </div>
+
+                <button type="submit" className="w-full py-4 bg-gray-900 text-white font-bold rounded-xl shadow-lg mt-6">
+                  Continue to Summary
+                </button>
+              </form>
             </div>
-
-            {/* Payment Methods */}
-            <div className="space-y-6">
-              {isRental ? (
-                <>
-                  <div className="space-y-3">
-                    <h4 className="font-semibold text-gray-900 flex items-center gap-2">
-                      <CreditCard className="w-4 h-4" /> Security Deposit (₹{depositAmount})
-                    </h4>
-                    <div className="p-4 border border-green-200 bg-green-50/50 rounded-xl flex items-center gap-3">
-                      <div className="w-4 h-4 rounded-full bg-green-500" />
-                      <span className="font-medium text-green-800 text-sm md:text-base">Online Payment Required</span>
+          ) : (
+            <div className="glass-panel p-6 rounded-3xl animate-fade-in">
+              <h2 className="text-2xl font-bold mb-6">Review Items</h2>
+              <div className="space-y-4">
+                {cart.map((item, idx) => (
+                  <div key={idx} className="flex gap-4 p-4 bg-white/50 rounded-xl border border-gray-100">
+                    <img src={item.images?.[0]} alt={item.title} className="w-20 h-20 rounded-lg object-cover" />
+                    <div>
+                      <h3 className="font-bold text-gray-900">{item.title}</h3>
+                      <p className="text-sm text-gray-500">Size: {item.selectedSize}</p>
+                      {item.rentalPeriod && (
+                        <p className="text-xs text-gray-500">
+                          {new Date(item.rentalPeriod.startDate).toLocaleDateString()} - {new Date(item.rentalPeriod.endDate).toLocaleDateString()}
+                        </p>
+                      )}
+                      <p className="font-semibold mt-1">
+                        {item.salePrice ? `₹${item.salePrice}` : `₹${item.rentPricePerDay}/day`}
+                      </p>
                     </div>
                   </div>
+                ))}
+              </div>
+              <button onClick={() => setStep(1)} className="mt-6 text-gray-500 hover:text-gray-900 font-medium">
+                ← Edit Details
+              </button>
+            </div>
+          )}
+        </div>
 
-                  <div className="space-y-3">
-                    <h4 className="font-semibold text-gray-900 flex items-center gap-2">
-                      <Banknote className="w-4 h-4" /> Rent Amount (₹{rentAmount})
-                    </h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <label className={`cursor-pointer p-4 rounded-xl border-2 transition-all ${formData.rentPaymentMethod === 'online' ? 'border-primary-berry bg-primary-berry/5' : 'border-transparent bg-white/50 hover:bg-white'
-                        }`}>
-                        <input
-                          type="radio"
-                          name="rentPaymentMethod"
-                          value="online"
-                          checked={formData.rentPaymentMethod === 'online'}
-                          onChange={handleInputChange}
-                          className="hidden"
-                        />
-                        <span className="font-semibold block">Pay Online</span>
-                        <span className="text-xs text-gray-500">Full amount now</span>
-                      </label>
-                      <label className={`cursor-pointer p-4 rounded-xl border-2 transition-all ${formData.rentPaymentMethod === 'cod' ? 'border-primary-berry bg-primary-berry/5' : 'border-transparent bg-white/50 hover:bg-white'
-                        }`}>
-                        <input
-                          type="radio"
-                          name="rentPaymentMethod"
-                          value="cod"
-                          checked={formData.rentPaymentMethod === 'cod'}
-                          onChange={handleInputChange}
-                          className="hidden"
-                        />
-                        <span className="font-semibold block">Cash on Delivery</span>
-                        <span className="text-xs text-gray-500">Pay at doorstep</span>
-                      </label>
-                    </div>
-                    <p className="text-xs text-gray-500 italic">
-                      {formData.rentPaymentMethod === 'online'
-                        ? '✓ You will pay the full amount (deposit + rent) online now'
-                        : '✓ You will pay deposit online now, rent at delivery'}
-                    </p>
-                  </div>
-                </>
-              ) : (
-                <div className="space-y-3">
-                  <h4 className="font-semibold text-gray-900">Payment Method</h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <label className={`cursor-pointer p-4 rounded-xl border-2 transition-all ${formData.paymentMethod === 'online' ? 'border-primary-berry bg-primary-berry/5' : 'border-transparent bg-white/50 hover:bg-white'
-                      }`}>
-                      <input
-                        type="radio"
-                        name="paymentMethod"
-                        value="online"
-                        checked={formData.paymentMethod === 'online'}
-                        onChange={handleInputChange}
-                        className="hidden"
-                      />
-                      <span className="font-semibold block">Pay Online</span>
-                    </label>
-                    <label className={`cursor-pointer p-4 rounded-xl border-2 transition-all ${formData.paymentMethod === 'cod' ? 'border-primary-berry bg-primary-berry/5' : 'border-transparent bg-white/50 hover:bg-white'
-                      }`}>
-                      <input
-                        type="radio"
-                        name="paymentMethod"
-                        value="cod"
-                        checked={formData.paymentMethod === 'cod'}
-                        onChange={handleInputChange}
-                        className="hidden"
-                      />
-                      <span className="font-semibold block">Cash on Delivery</span>
-                    </label>
-                  </div>
+        {/* Right Column: Summary & Pay */}
+        <div className="h-fit space-y-6">
+          <div className="glass-panel p-6 rounded-3xl">
+            <h3 className="text-xl font-bold text-gray-900 mb-6">Order Summary</h3>
+
+            <div className="space-y-3 text-sm mb-6">
+              <div className="flex justify-between text-gray-600">
+                <span>Rental Charges</span>
+                <span>₹{breakdown.rentTotal}</span>
+              </div>
+              <div className="flex justify-between text-gray-600">
+                <span>Security Deposits (Refundable)</span>
+                <span>₹{breakdown.depositTotal}</span>
+              </div>
+              {breakdown.saleTotal > 0 && (
+                <div className="flex justify-between text-gray-600">
+                  <span>Purchase Total</span>
+                  <span>₹{breakdown.saleTotal}</span>
                 </div>
               )}
+              <div className="flex justify-between text-gray-600">
+                <span>Platform Fee</span>
+                <span>₹{breakdown.platformFee}</span>
+              </div>
+              <div className="flex justify-between text-gray-600">
+                <span>Delivery Charges</span>
+                <span>₹{breakdown.deliveryCharges}</span>
+              </div>
+              <div className="flex justify-between text-gray-600">
+                <span>GST (18%)</span>
+                <span>₹{breakdown.gst.toFixed(2)}</span>
+              </div>
+
+              <div className="border-t border-gray-200 my-2" />
+
+              <div className="flex justify-between text-xl font-bold text-primary-berry">
+                <span>Grand Total</span>
+                <span>₹{breakdown.grandTotal.toFixed(2)}</span>
+              </div>
             </div>
 
-            <div className="flex gap-4 pt-4">
-              <button
-                type="button"
-                onClick={() => setStep(1)}
-                className="flex-1 py-4 rounded-xl border border-gray-300 font-semibold text-gray-700 hover:bg-gray-50 transition"
-              >
-                Back
-              </button>
-              <button
-                onClick={handleConfirmBooking}
-                disabled={loading}
-                className="flex-[2] py-4 rounded-xl btn-gradient-vows font-bold text-white shadow-lg disabled:opacity-70"
-              >
-                {loading ? 'Processing...' :
-                  isRental && formData.rentPaymentMethod === 'cod'
-                    ? `Pay Deposit ₹${depositAmount}`
-                    : `Pay ₹${totalAmount}`
-                }
-              </button>
+            {step === 2 && (
+              <div className="space-y-4">
+                <h4 className="font-semibold text-gray-900">Payment Method</h4>
+                <div className="grid grid-cols-2 gap-3">
+                  <label className={`cursor-pointer p-3 rounded-xl border-2 text-center transition-all ${formData.paymentMethod === 'online' ? 'border-primary-berry bg-primary-berry/5' : 'border-transparent bg-white/50'}`}>
+                    <input type="radio" name="paymentMethod" value="online" checked={formData.paymentMethod === 'online'} onChange={handleInputChange} className="hidden" />
+                    <span className="font-semibold block text-sm">Online Pay</span>
+                  </label>
+                  <label className={`cursor-pointer p-3 rounded-xl border-2 text-center transition-all ${formData.paymentMethod === 'cod' ? 'border-primary-berry bg-primary-berry/5' : 'border-transparent bg-white/50'}`}>
+                    <input type="radio" name="paymentMethod" value="cod" checked={formData.paymentMethod === 'cod'} onChange={handleInputChange} className="hidden" />
+                    <span className="font-semibold block text-sm">Cash on Delivery</span>
+                  </label>
+                </div>
+
+                <button
+                  onClick={handleConfirmBooking}
+                  disabled={loading}
+                  className="w-full py-4 rounded-xl btn-gradient-vows font-bold text-white shadow-lg disabled:opacity-70"
+                >
+                  {loading ? 'Processing...' : `Pay ₹${breakdown.grandTotal.toFixed(2)}`}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Map Modal */}
+      {showMapModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full animate-fade-in">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">Pin Location</h3>
+            <p className="text-gray-600 mb-6 text-sm">
+              We'll use your current location to help with delivery.
+            </p>
+            <div className="bg-gray-100 h-48 rounded-xl mb-6 flex items-center justify-center">
+              <MapPin className="w-12 h-12 text-gray-400" />
+            </div>
+            <div className="flex gap-4">
+              <button onClick={() => setShowMapModal(false)} className="flex-1 px-4 py-2 border border-gray-300 rounded-lg font-semibold">Cancel</button>
+              <button onClick={handleUseCurrentLocation} className="flex-1 px-4 py-2 bg-primary-berry text-white rounded-lg font-semibold">Use Current Location</button>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -6,6 +6,7 @@ import RegisterPage from './pages/RegisterPage';
 import AddItemPage from './pages/AddItemPage';
 import ItemsPage from './pages/ItemsPage';
 import ItemDetailPage from './pages/ItemDetailPage';
+import CartPage from './pages/CartPage';
 import BookingPage from './pages/BookingPage';
 import UserBookingsPage from './pages/UserBookingsPage';
 import OwnerItemsPage from './pages/OwnerItemsPage';
@@ -36,6 +37,14 @@ const App = () => (
           element={
             <ProtectedRoute>
               <BookingPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/cart"
+          element={
+            <ProtectedRoute>
+              <CartPage />
             </ProtectedRoute>
           }
         />

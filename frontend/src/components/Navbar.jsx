@@ -55,6 +55,10 @@ const Navbar = () => {
               Bookings
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-berry transition-all group-hover:w-full"></span>
             </Link>
+            <Link to="/cart" className="hover:text-primary-berry transition relative group flex items-center gap-1">
+              Cart
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-berry transition-all group-hover:w-full"></span>
+            </Link>
           </nav>
 
           <div className="flex items-center space-x-4">
@@ -104,6 +108,9 @@ const Navbar = () => {
             </Link>
             <Link to="/wishlist" className="block text-lg font-medium text-gray-800 hover:text-primary-berry">
               Wishlist
+            </Link>
+            <Link to="/cart" className="block text-lg font-medium text-gray-800 hover:text-primary-berry">
+              Cart
             </Link>
             <Link to="/profile" className="block text-lg font-medium text-gray-800 hover:text-primary-berry">
               Profile

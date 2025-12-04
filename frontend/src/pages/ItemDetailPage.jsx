@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
-import { addDays, format } from 'date-fns';
+import { addDays } from 'date-fns';
 import toast from 'react-hot-toast';
 import { itemApi, bookingApi, reviewApi } from '../api/services';
+import { useCart } from '../context/CartContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ReviewList from '../components/ReviewList';
-import { Star as StarIcon } from 'lucide-react';
+import { Star as StarIcon, ShoppingBag } from 'lucide-react';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const ItemDetailPage = () => {
   const { id } = useParams();
+  const { addToCart, cart } = useCart();
   const [item, setItem] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,6 +21,7 @@ const ItemDetailPage = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(addDays(new Date(), 1));
   const [rating, setRating] = useState(5);
+  const [selectedSize, setSelectedSize] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -62,7 +65,24 @@ const ItemDetailPage = () => {
     }
   };
 
+  const handleAddToCart = () => {
+    if (!selectedSize) {
+      toast.error('Please select a size');
+      return;
+    }
+    if (!item.salePrice && !availability?.available) {
+      toast.error('Please check availability first');
+      return;
+    }
+
+    addToCart(item, selectedSize, item.salePrice ? null : { startDate, endDate });
+  };
+
   const handleRentNow = () => {
+    if (!selectedSize) {
+      toast.error('Please select a size');
+      return;
+    }
     if (!availability?.available) {
       toast.error('Please check availability first');
       return;
@@ -71,21 +91,23 @@ const ItemDetailPage = () => {
       toast.error('Please select both start and end dates');
       return;
     }
-    navigate('/booking', {
-      state: {
-        item,
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString()
-      }
-    });
+
+    // Add to cart first then navigate
+    addToCart(item, selectedSize, { startDate, endDate });
+    navigate('/booking');
   };
 
   const handleBuyNow = () => {
+    if (!selectedSize) {
+      toast.error('Please select a size');
+      return;
+    }
     if (!item.salePrice) {
       toast.error('This item is not for sale');
       return;
     }
-    toast.success('Buying flow would be implemented here');
+    addToCart(item, selectedSize, null);
+    navigate('/booking');
   };
 
   const handleReviewSubmit = async (e) => {
@@ -149,6 +171,45 @@ const ItemDetailPage = () => {
               )}
             </div>
 
+            {/* Size Selection */}
+            <div className="py-4">
+              <h3 className="text-sm font-medium text-gray-900 mb-3">Select Size</h3>
+              <div className="flex flex-wrap gap-3">
+                {(() => {
+                  // Parse size: handle array or string
+                  let sizes = [];
+                  if (Array.isArray(item.size)) {
+                    sizes = item.size;
+                  } else if (typeof item.size === 'string') {
+                    sizes = item.size.split(',').map(s => s.trim()).filter(s => s);
+                  }
+
+                  if (sizes.length > 0) {
+                    return sizes.map((size) => {
+                      const isInCart = cart.some(cartItem => cartItem._id === item._id && cartItem.selectedSize === size);
+                      return (
+                        <button
+                          key={size}
+                          onClick={() => !isInCart && setSelectedSize(size)}
+                          disabled={isInCart}
+                          className={`w-12 h-12 rounded-lg border-2 flex items-center justify-center font-semibold transition-all ${selectedSize === size
+                              ? 'border-primary-berry bg-primary-berry text-white shadow-lg scale-110'
+                              : isInCart
+                                ? 'border-gray-100 bg-gray-100 text-gray-400 cursor-not-allowed'
+                                : 'border-gray-200 text-gray-700 hover:border-primary-berry/50'
+                            }`}
+                          title={isInCart ? 'Already in cart' : size}
+                        >
+                          {size}
+                        </button>
+                      );
+                    });
+                  } else {
+                    return <p className="text-sm text-gray-500">No sizes available</p>;
+                  }
+                })()}
+              </div>
+            </div>
             <div className="prose prose-pink max-w-none text-gray-600 leading-relaxed text-sm md:text-base">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Description</h3>
               <p>{item.description}</p>
@@ -221,37 +282,39 @@ const ItemDetailPage = () => {
           <h3 className="text-xl font-display font-bold mb-6">Check Availability</h3>
 
           <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Rental Period</label>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <span className="text-xs text-gray-500 mb-1 block">Start Date</span>
-                  <DatePicker
-                    selected={startDate}
-                    onChange={(date) => setStartDate(date)}
-                    selectsStart
-                    startDate={startDate}
-                    endDate={endDate}
-                    minDate={new Date()}
-                    className="w-full px-3 py-2 rounded-lg glass-input text-sm"
-                  />
-                </div>
-                <div>
-                  <span className="text-xs text-gray-500 mb-1 block">End Date</span>
-                  <DatePicker
-                    selected={endDate}
-                    onChange={(date) => setEndDate(date)}
-                    selectsEnd
-                    startDate={startDate}
-                    endDate={endDate}
-                    minDate={startDate}
-                    className="w-full px-3 py-2 rounded-lg glass-input text-sm"
-                  />
+            {!item.salePrice && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Rental Period</label>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <span className="text-xs text-gray-500 mb-1 block">Start Date</span>
+                    <DatePicker
+                      selected={startDate}
+                      onChange={(date) => setStartDate(date)}
+                      selectsStart
+                      startDate={startDate}
+                      endDate={endDate}
+                      minDate={new Date()}
+                      className="w-full px-3 py-2 rounded-lg glass-input text-sm"
+                    />
+                  </div>
+                  <div>
+                    <span className="text-xs text-gray-500 mb-1 block">End Date</span>
+                    <DatePicker
+                      selected={endDate}
+                      onChange={(date) => setEndDate(date)}
+                      selectsEnd
+                      startDate={startDate}
+                      endDate={endDate}
+                      minDate={startDate}
+                      className="w-full px-3 py-2 rounded-lg glass-input text-sm"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
-            {availability && (
+            {availability && !item.salePrice && (
               <div className={`p-4 rounded-xl flex items-center gap-3 ${availability.available ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'
                 }`}>
                 <div className={`w-2 h-2 rounded-full ${availability.available ? 'bg-green-500' : 'bg-red-500'}`} />
@@ -264,31 +327,43 @@ const ItemDetailPage = () => {
               </div>
             )}
 
-            <button
-              onClick={handleAvailability}
-              disabled={checking}
-              className="w-full py-3 rounded-xl border border-gray-300 font-semibold text-gray-700 hover:bg-gray-50 transition"
-            >
-              {checking ? 'Checking...' : 'Check Availability'}
-            </button>
+            {!item.salePrice && (
+              <button
+                onClick={handleAvailability}
+                disabled={checking}
+                className="w-full py-3 rounded-xl border border-gray-300 font-semibold text-gray-700 hover:bg-gray-50 transition"
+              >
+                {checking ? 'Checking...' : 'Check Availability'}
+              </button>
+            )}
 
             <div className="h-px bg-gray-200 my-4" />
 
-            <button
-              onClick={handleRentNow}
-              className="w-full py-4 rounded-xl btn-gradient-vows font-bold text-white shadow-lg text-lg"
-            >
-              Rent Now
-            </button>
-
-            {item.salePrice && (
+            <div className="grid grid-cols-2 gap-3">
               <button
-                onClick={handleBuyNow}
-                className="w-full py-3 rounded-xl btn-gradient-outline font-semibold"
+                onClick={handleAddToCart}
+                className="w-full py-3 rounded-xl border-2 border-primary-berry text-primary-berry font-bold hover:bg-primary-berry hover:text-white transition flex items-center justify-center gap-2"
               >
-                Buy This Look
+                <ShoppingBag className="w-5 h-5" />
+                Add to Cart
               </button>
-            )}
+
+              {item.salePrice ? (
+                <button
+                  onClick={handleBuyNow}
+                  className="w-full py-3 rounded-xl btn-gradient-outline font-semibold"
+                >
+                  Buy Now
+                </button>
+              ) : (
+                <button
+                  onClick={handleRentNow}
+                  className="w-full py-3 rounded-xl btn-gradient-vows font-bold text-white shadow-lg"
+                >
+                  Rent Now
+                </button>
+              )}
+            </div>
 
             <p className="text-xs text-center text-gray-400 mt-4">
               Secure transaction • 100% Money back guarantee
