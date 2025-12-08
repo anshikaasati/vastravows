@@ -3,15 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { bookingApi, paymentApi } from '../api/services';
 import { useCart } from '../context/CartContext';
-import { MapPin, Truck, User, Phone, Calendar, CreditCard, Banknote, Map as MapIcon } from 'lucide-react';
-import LocationPicker from '../components/LocationPicker';
+import { MapPin, Truck, User, Phone, Calendar, CreditCard, Banknote } from 'lucide-react';
 
 const BookingPage = () => {
   const { cart, getCartTotal, clearCart } = useCart();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [showMapModal, setShowMapModal] = useState(false);
+
 
   // Redirect if cart is empty
   useEffect(() => {
@@ -37,35 +36,6 @@ const BookingPage = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleUseCurrentLocation = () => {
-    if (navigator.geolocation) {
-      toast.loading('Getting location...');
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          toast.dismiss();
-          const { latitude, longitude } = position.coords;
-          // In a real app, use Geocoding API here to get address from lat/lng
-          // For now, we'll just fill a placeholder and show success
-          setFormData(prev => ({
-            ...prev,
-            deliveryAddress: `Lat: ${latitude}, Long: ${longitude} (Pinned Location)`,
-            // city: 'Detected City',
-            // pincode: 'Detected Pin'
-          }));
-          toast.success('Location pinned successfully!');
-          setShowMapModal(false);
-        },
-        (error) => {
-          toast.dismiss();
-          toast.error('Unable to retrieve location');
-          console.error(error);
-        }
-      );
-    } else {
-      toast.error('Geolocation is not supported by your browser');
-    }
   };
 
   const handleNextStep = (e) => {
@@ -279,12 +249,7 @@ const BookingPage = () => {
                 </div>
 
                 <div className="space-y-4 pt-4 border-t">
-                  <div className="flex justify-between items-center">
-                    <h3 className="font-semibold text-gray-900">Delivery Address</h3>
-                    <button type="button" onClick={() => setShowMapModal(true)} className="text-sm text-primary-berry font-semibold flex items-center gap-1 hover:underline">
-                      <MapIcon className="w-4 h-4" /> Pin on Map
-                    </button>
-                  </div>
+                  <h3 className="font-semibold text-gray-900">Delivery Address</h3>
                   <textarea required name="deliveryAddress" value={formData.deliveryAddress} onChange={handleInputChange} rows="3" className="w-full px-4 py-3 rounded-xl glass-input" placeholder="Full address" />
                   <div className="grid grid-cols-2 gap-4">
                     <input required name="city" value={formData.city} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl glass-input" placeholder="City" />
@@ -408,28 +373,10 @@ const BookingPage = () => {
             )}
           </div>
         </div>
-      </div>
+      </div >
 
-      {/* Map Modal */}
-      {showMapModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-6 max-w-2xl w-full animate-fade-in shadow-2xl max-h-[90vh] overflow-y-auto">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Pin Delivery Location</h3>
-            <LocationPicker
-              onClose={() => setShowMapModal(false)}
-              onLocationSelect={(locationData) => {
-                setFormData(prev => ({
-                  ...prev,
-                  deliveryAddress: locationData.address,
-                  city: locationData.city,
-                  pincode: locationData.pincode
-                }));
-              }}
-            />
-          </div>
-        </div>
-      )}
-    </div>
+
+    </div >
   );
 };
 

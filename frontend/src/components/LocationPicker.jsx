@@ -18,42 +18,42 @@ let DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
+// Component to handle map clicks and marker dragging
+const LocationMarker = ({ position, setPosition, fetchAddress }) => {
+    const map = useMapEvents({
+        click(e) {
+            setPosition(e.latlng);
+            fetchAddress(e.latlng.lat, e.latlng.lng);
+        },
+    });
+
+    useEffect(() => {
+        if (position) {
+            map.flyTo(position, map.getZoom());
+        }
+    }, [position, map]);
+
+    return position === null ? null : (
+        <Marker
+            position={position}
+            draggable={true}
+            eventHandlers={{
+                dragend: (e) => {
+                    const newPos = e.target.getLatLng();
+                    setPosition(newPos);
+                    fetchAddress(newPos.lat, newPos.lng);
+                },
+            }}
+        />
+    );
+};
+
 const LocationPicker = ({ onLocationSelect, onClose }) => {
     const [position, setPosition] = useState(null);
     const [address, setAddress] = useState('');
     const [loading, setLoading] = useState(true);
     const [gettingLocation, setGettingLocation] = useState(false);
     const [fetchingAddress, setFetchingAddress] = useState(false);
-
-    // Component to handle map clicks and marker dragging
-    const LocationMarker = () => {
-        const map = useMapEvents({
-            click(e) {
-                setPosition(e.latlng);
-                fetchAddress(e.latlng.lat, e.latlng.lng);
-            },
-        });
-
-        useEffect(() => {
-            if (position) {
-                map.flyTo(position, map.getZoom());
-            }
-        }, [position, map]);
-
-        return position === null ? null : (
-            <Marker
-                position={position}
-                draggable={true}
-                eventHandlers={{
-                    dragend: (e) => {
-                        const newPos = e.target.getLatLng();
-                        setPosition(newPos);
-                        fetchAddress(newPos.lat, newPos.lng);
-                    },
-                }}
-            />
-        );
-    };
 
     // Get current location on mount
     useEffect(() => {
@@ -131,7 +131,7 @@ const LocationPicker = ({ onLocationSelect, onClose }) => {
     };
 
     return (
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col w-full">
             {/* Header with Use My Location button */}
             <div className="flex items-center justify-between mb-4">
                 <div className="bg-blue-50 p-3 rounded-lg flex-1 text-sm text-blue-800 flex items-start gap-2">
@@ -154,9 +154,9 @@ const LocationPicker = ({ onLocationSelect, onClose }) => {
                 </button>
             </div>
 
-            <div className="relative flex-1 min-h-[300px] rounded-xl overflow-hidden border-2 border-gray-200 shadow-lg">
+            <div className="relative w-full h-[400px] rounded-xl overflow-hidden border-2 border-gray-200 shadow-lg bg-gray-100">
                 {loading ? (
-                    <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                    <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
                         <div className="text-center">
                             <Loader className="w-8 h-8 animate-spin text-primary-berry mx-auto mb-2" />
                             <p className="text-gray-500">Loading map...</p>
@@ -166,13 +166,17 @@ const LocationPicker = ({ onLocationSelect, onClose }) => {
                     <MapContainer
                         center={position || [28.6139, 77.2090]}
                         zoom={13}
-                        style={{ height: '100%', width: '100%' }}
+                        style={{ height: '400px', width: '100%' }}
                     >
                         <TileLayer
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         />
-                        <LocationMarker />
+                        <LocationMarker
+                            position={position}
+                            setPosition={setPosition}
+                            fetchAddress={fetchAddress}
+                        />
                     </MapContainer>
                 )}
             </div>
