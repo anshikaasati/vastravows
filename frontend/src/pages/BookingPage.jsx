@@ -381,12 +381,28 @@ const BookingPage = () => {
                   </label>
                 </div>
 
+                {formData.paymentMethod === 'cod' && (
+                  <div className="bg-yellow-50 p-4 rounded-xl text-sm text-yellow-800 border border-yellow-200 animate-fade-in">
+                    <div className="flex justify-between mb-2">
+                      <span>Pay Now (Advance):</span>
+                      <span className="font-bold">₹{(breakdown.depositTotal + breakdown.platformFee + breakdown.deliveryCharges).toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between text-gray-600">
+                      <span>Pay on Delivery:</span>
+                      <span className="font-bold">₹{(breakdown.grandTotal - (breakdown.depositTotal + breakdown.platformFee + breakdown.deliveryCharges)).toFixed(2)}</span>
+                    </div>
+                    <p className="text-xs mt-3 pt-3 border-t border-yellow-200 opacity-90">
+                      *Delivery charges, platform fee, and security deposit are required to be paid online.
+                    </p>
+                  </div>
+                )}
+
                 <button
                   onClick={handleConfirmBooking}
                   disabled={loading}
                   className="w-full py-4 rounded-xl btn-gradient-vows font-bold text-white shadow-lg disabled:opacity-70"
                 >
-                  {loading ? 'Processing...' : `Pay ₹${breakdown.grandTotal.toFixed(2)}`}
+                  {loading ? 'Processing...' : `Pay ₹${(formData.paymentMethod === 'online' ? breakdown.grandTotal : (breakdown.depositTotal + breakdown.platformFee + breakdown.deliveryCharges)).toFixed(2)}`}
                 </button>
               </div>
             )}
