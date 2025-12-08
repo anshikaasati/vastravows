@@ -50,7 +50,13 @@ export const createBooking = async (req, res, next) => {
       itemId, startDate, endDate,
       renterName, phoneNumber, size,
       deliveryAddress, pickupAddress, location,
-      paymentMethod, depositPaymentMethod, rentPaymentMethod
+      paymentMethod, depositPaymentMethod, rentPaymentMethod,
+      // New fields from frontend
+      platformFee = 0,
+      deliveryCharges = 0,
+      gst = 0,
+      paidAmount = 0,
+      dueAmount = 0
     } = req.body;
 
     const item = await Item.findById(itemId);
@@ -63,10 +69,6 @@ export const createBooking = async (req, res, next) => {
     const parsedEnd = new Date(endDate);
 
     // Only check for overlaps if it's a rental (rentPrice > 0)
-    // If it's a sale, maybe we check if it's already sold? 
-    // For now, assuming rental logic applies or sale is one-off.
-    // If sale, we might want to mark item as sold?
-
     if (item.rentPricePerDay > 0) {
       const conflicts = await findOverlappingBookings({ itemId, startDate: parsedStart, endDate: parsedEnd });
       if (conflicts.length) {
@@ -75,9 +77,9 @@ export const createBooking = async (req, res, next) => {
       }
     }
 
-    let totalAmount = 0;
     let rentAmount = 0;
     let depositAmount = 0;
+    let itemTotal = 0;
 
     if (item.rentPricePerDay > 0) {
       // Rental
@@ -85,11 +87,15 @@ export const createBooking = async (req, res, next) => {
       const days = Math.max(1, Math.ceil((parsedEnd - parsedStart) / millisecondsPerDay));
       rentAmount = days * item.rentPricePerDay;
       depositAmount = item.depositAmount || 0;
-      totalAmount = rentAmount + depositAmount;
+      itemTotal = rentAmount + depositAmount;
     } else {
       // Sale
-      totalAmount = item.salePrice || 0;
+      itemTotal = item.salePrice || 0;
     }
+
+    // Total amount for this specific booking record
+    // If platformFee/deliveryCharges are passed (e.g. on the first item of an order), add them
+    const totalAmount = itemTotal + platformFee + deliveryCharges + gst;
 
     const booking = await Booking.create({
       itemId,
@@ -100,6 +106,11 @@ export const createBooking = async (req, res, next) => {
       totalAmount,
       rentAmount,
       depositAmount,
+      platformFee,
+      deliveryCharges,
+      gst,
+      paidAmount,
+      dueAmount,
       renterName,
       phoneNumber,
       size,
@@ -109,7 +120,7 @@ export const createBooking = async (req, res, next) => {
       paymentMethod,
       depositPaymentMethod,
       rentPaymentMethod,
-      status: 'pending'
+      status: dueAmount > 0 ? 'partially_paid' : 'confirmed'
     });
 
     const populated = await booking.populate('itemId renterId ownerId', 'title name email phone images');

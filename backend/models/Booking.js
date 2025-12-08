@@ -21,12 +21,17 @@ const bookingSchema = new mongoose.Schema(
     // Payment details
     depositAmount: { type: Number, default: 0 },
     rentAmount: { type: Number, default: 0 },
-    paymentMethod: { type: String }, // For Sale or general
-    depositPaymentMethod: { type: String }, // For Rental Deposit (Online only)
-    rentPaymentMethod: { type: String }, // For Rental Remaining (COD/Online)
+    platformFee: { type: Number, default: 0 },
+    deliveryCharges: { type: Number, default: 0 },
+    gst: { type: Number, default: 0 },
+    paidAmount: { type: Number, default: 0 },
+    dueAmount: { type: Number, default: 0 },
+    paymentMethod: { type: String }, // 'online' or 'cod' (which is now partial)
+    depositPaymentMethod: { type: String },
+    rentPaymentMethod: { type: String },
     status: {
       type: String,
-      enum: ['pending', 'confirmed', 'cancelled', 'completed'],
+      enum: ['pending', 'confirmed', 'cancelled', 'completed', 'partially_paid'],
       default: 'pending'
     }
   },

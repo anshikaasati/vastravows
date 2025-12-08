@@ -84,11 +84,13 @@ export const verifyPayment = async (req, res) => {
         }
 
         // Create Booking
+        const status = bookingData.dueAmount > 0 ? 'partially_paid' : 'confirmed';
+
         const booking = await Booking.create({
             ...bookingData,
             renterId: req.user._id,
-            status: 'confirmed',
-            paymentStatus: 'paid',
+            status: status,
+            paymentStatus: bookingData.dueAmount > 0 ? 'partial' : 'paid',
             transactionId: razorpay_payment_id
         });
 

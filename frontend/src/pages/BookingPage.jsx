@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { bookingApi, paymentApi } from '../api/services';
 import { useCart } from '../context/CartContext';
 import { MapPin, Truck, User, Phone, Calendar, CreditCard, Banknote, Map as MapIcon } from 'lucide-react';
+import LocationPicker from '../components/LocationPicker';
 
 const BookingPage = () => {
   const { cart, getCartTotal, clearCart } = useCart();
@@ -105,104 +106,122 @@ const BookingPage = () => {
   const handleConfirmBooking = async () => {
     setLoading(true);
     try {
-      // We need to create a booking for EACH item in the cart
-      // Or a single "Order" containing multiple bookings.
-      // The backend `bookingApi.create` likely handles one item.
-      // We should loop or update backend. For now, loop.
+      // Calculate amounts
+      // Mandatory Online: Deposit + Platform Fee + Delivery Charges
+      const mandatoryOnlineAmount = breakdown.depositTotal + breakdown.platformFee + breakdown.deliveryCharges;
 
-      const promises = cart.map(async (item) => {
-        const isRental = !!item.rentPricePerDay;
-        const days = isRental ? Math.ceil((new Date(item.rentalPeriod.endDate) - new Date(item.rentalPeriod.startDate)) / (1000 * 60 * 60 * 24)) : 0;
-        const itemRentAmount = isRental ? item.rentPricePerDay * days : 0;
-        const itemTotal = isRental ? (itemRentAmount + item.depositAmount) : item.salePrice;
+      // Payable Amount: Grand Total (if Online) OR Mandatory Amount (if COD)
+      const payableAmount = formData.paymentMethod === 'online' ? breakdown.grandTotal : mandatoryOnlineAmount;
 
-        const payload = {
-          itemId: item._id,
-          startDate: item.rentalPeriod?.startDate,
-          endDate: item.rentalPeriod?.endDate,
-          totalAmount: itemTotal,
-          renterName: formData.renterName,
-          phoneNumber: formData.phoneNumber,
-          size: item.selectedSize,
-          deliveryAddress: formData.deliveryAddress,
-          pickupAddress: formData.pickupAddress || formData.deliveryAddress,
-          location: {
-            city: formData.city,
-            pincode: formData.pincode
-          },
-          depositAmount: item.depositAmount || 0,
-          rentAmount: itemRentAmount,
-          paymentMethod: formData.paymentMethod,
-          // Add extra fields if backend supports them
-          alternatePhoneNumber: formData.alternatePhoneNumber,
-          deliveryDate: formData.deliveryDate,
-          returnDate: formData.returnDate
-        };
+      // Create Razorpay Order
+      const { data: order } = await paymentApi.createOrder({ amount: payableAmount, currency: 'INR' });
 
-        // Return the promise
-        return { payload, isRental, itemTotal };
-      });
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount: order.amount,
+        currency: order.currency,
+        name: "Vastra Vows",
+        description: formData.paymentMethod === 'online' ? "Full Payment" : "Partial Payment (Booking Charges)",
+        image: "https://i.imgur.com/3g7nmJC.png",
+        order_id: order.id,
+        handler: async function (response) {
+          try {
+            // Create bookings for each item
+            for (let i = 0; i < cart.length; i++) {
+              const item = cart[i];
+              const isFirst = i === 0;
 
-      const bookingPayloads = await Promise.all(promises);
+              const isRental = !!item.rentPricePerDay;
+              const days = isRental ? Math.ceil((new Date(item.rentalPeriod.endDate) - new Date(item.rentalPeriod.startDate)) / (1000 * 60 * 60 * 24)) : 0;
+              const itemRentAmount = isRental ? item.rentPricePerDay * days : 0;
+              const itemSaleAmount = !isRental ? item.salePrice : 0;
+              const itemDeposit = item.depositAmount || 0;
 
-      if (formData.paymentMethod === 'online') {
-        // Create ONE Razorpay order for the Grand Total
-        const { data: order } = await paymentApi.createOrder({ amount: breakdown.grandTotal, currency: 'INR' });
+              // GST is calculated on Rent + Sale (Service/Goods)
+              const itemGST = (itemRentAmount + itemSaleAmount) * 0.18;
 
-        const options = {
-          key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-          amount: order.amount,
-          currency: order.currency,
-          name: "Vastra Vows",
-          description: `Payment for ${cart.length} items`,
-          image: "https://i.imgur.com/3g7nmJC.png",
-          order_id: order.id,
-          handler: async function (response) {
-            try {
-              // Verify payment and create ALL bookings
-              // We might need a bulk create endpoint, but looping is okay for small numbers
-              for (const { payload } of bookingPayloads) {
-                await paymentApi.verifyPayment({
-                  razorpay_order_id: response.razorpay_order_id,
-                  razorpay_payment_id: response.razorpay_payment_id,
-                  razorpay_signature: response.razorpay_signature,
-                  bookingData: payload
-                });
+              // Calculate Paid and Due Amounts
+              let paidAmount = 0;
+              let dueAmount = 0;
+
+              if (formData.paymentMethod === 'online') {
+                // Full Payment Online
+                paidAmount = itemRentAmount + itemSaleAmount + itemDeposit + itemGST;
+                if (isFirst) {
+                  paidAmount += breakdown.platformFee + breakdown.deliveryCharges;
+                }
+                dueAmount = 0;
+              } else {
+                // Partial Payment (COD)
+                // Online: Deposit + Fees (if first)
+                paidAmount = itemDeposit;
+                if (isFirst) {
+                  paidAmount += breakdown.platformFee + breakdown.deliveryCharges;
+                }
+
+                // Due (COD): Rent + Sale + GST
+                dueAmount = itemRentAmount + itemSaleAmount + itemGST;
               }
 
-              toast.success('Order placed successfully!');
-              clearCart();
-              navigate('/bookings');
-            } catch (err) {
-              console.error(err);
-              toast.error('Payment verification failed');
+              const payload = {
+                itemId: item._id,
+                startDate: item.rentalPeriod?.startDate,
+                endDate: item.rentalPeriod?.endDate,
+                renterName: formData.renterName,
+                phoneNumber: formData.phoneNumber,
+                size: item.selectedSize,
+                deliveryAddress: formData.deliveryAddress,
+                pickupAddress: formData.pickupAddress || formData.deliveryAddress,
+                location: {
+                  city: formData.city,
+                  pincode: formData.pincode
+                },
+                depositAmount: itemDeposit,
+                rentAmount: itemRentAmount,
+                paymentMethod: formData.paymentMethod,
+                // New fields
+                platformFee: isFirst ? breakdown.platformFee : 0,
+                deliveryCharges: isFirst ? breakdown.deliveryCharges : 0,
+                gst: itemGST,
+                paidAmount: paidAmount,
+                dueAmount: dueAmount,
+
+                alternatePhoneNumber: formData.alternatePhoneNumber,
+                deliveryDate: formData.deliveryDate,
+                returnDate: formData.returnDate
+              };
+
+              await paymentApi.verifyPayment({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                bookingData: payload
+              });
             }
-          },
-          prefill: {
-            name: formData.renterName,
-            contact: formData.phoneNumber
-          },
-          theme: {
-            color: "#D4AF37"
+
+            toast.success('Order placed successfully!');
+            clearCart();
+            navigate('/bookings');
+          } catch (err) {
+            console.error(err);
+            toast.error('Payment verification failed');
           }
-        };
-
-        const rzp = new window.Razorpay(options);
-        rzp.open();
-
-      } else {
-        // COD Loop
-        for (const { payload } of bookingPayloads) {
-          await bookingApi.create(payload);
+        },
+        prefill: {
+          name: formData.renterName,
+          contact: formData.phoneNumber
+        },
+        theme: {
+          color: "#D4AF37"
         }
-        toast.success('Order placed successfully!');
-        clearCart();
-        navigate('/bookings');
-      }
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
 
     } catch (error) {
       console.error(error);
-      toast.error('Failed to place order');
+      toast.error('Failed to initiate payment');
     } finally {
       setLoading(false);
     }
@@ -377,19 +396,20 @@ const BookingPage = () => {
 
       {/* Map Modal */}
       {showMapModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-6 max-w-md w-full animate-fade-in">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Pin Location</h3>
-            <p className="text-gray-600 mb-6 text-sm">
-              We'll use your current location to help with delivery.
-            </p>
-            <div className="bg-gray-100 h-48 rounded-xl mb-6 flex items-center justify-center">
-              <MapPin className="w-12 h-12 text-gray-400" />
-            </div>
-            <div className="flex gap-4">
-              <button onClick={() => setShowMapModal(false)} className="flex-1 px-4 py-2 border border-gray-300 rounded-lg font-semibold">Cancel</button>
-              <button onClick={handleUseCurrentLocation} className="flex-1 px-4 py-2 bg-primary-berry text-white rounded-lg font-semibold">Use Current Location</button>
-            </div>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-2xl w-full animate-fade-in shadow-2xl max-h-[90vh] overflow-y-auto">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">Pin Delivery Location</h3>
+            <LocationPicker
+              onClose={() => setShowMapModal(false)}
+              onLocationSelect={(locationData) => {
+                setFormData(prev => ({
+                  ...prev,
+                  deliveryAddress: locationData.address,
+                  city: locationData.city,
+                  pincode: locationData.pincode
+                }));
+              }}
+            />
           </div>
         </div>
       )}
