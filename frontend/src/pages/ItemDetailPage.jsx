@@ -22,6 +22,7 @@ const ItemDetailPage = () => {
   const [endDate, setEndDate] = useState(addDays(new Date(), 1));
   const [rating, setRating] = useState(5);
   const [selectedSize, setSelectedSize] = useState('');
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -136,16 +137,21 @@ const ItemDetailPage = () => {
           <div className="space-y-4">
             <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-lg">
               <img
-                src={item.images?.[0]}
+                src={item.images?.[selectedImageIndex] || item.images?.[0]}
                 alt={item.title}
                 className="w-full h-full object-cover hover:scale-105 transition duration-700"
               />
             </div>
             {item.images?.length > 1 && (
               <div className="grid grid-cols-4 gap-2 md:gap-4">
-                {item.images.slice(1).map((src, idx) => (
-                  <div key={idx} className="aspect-square rounded-xl overflow-hidden cursor-pointer border-2 border-transparent hover:border-primary transition">
-                    <img src={src} alt={`View ${idx + 2}`} className="w-full h-full object-cover" />
+                {item.images.map((src, idx) => (
+                  <div
+                    key={idx}
+                    onClick={() => setSelectedImageIndex(idx)}
+                    className={`aspect-square rounded-xl overflow-hidden cursor-pointer border-2 transition ${selectedImageIndex === idx ? 'border-primary ring-2 ring-primary/20' : 'border-transparent hover:border-primary/50'
+                      }`}
+                  >
+                    <img src={src} alt={`View ${idx + 1}`} className="w-full h-full object-cover" />
                   </div>
                 ))}
               </div>
