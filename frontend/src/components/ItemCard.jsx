@@ -36,9 +36,10 @@ const ItemCard = ({ item }) => {
   const badgeText = getBadgeText();
   const badgeColor = getBadgeColor();
 
-  // Calculate average rating (mock for now, can be enhanced with actual reviews)
-  const avgRating = 4.5;
-  const reviewCount = 12;
+  // Calculate average rating from actual reviews if they exist
+  const avgRating = item.averageRating || 0;
+  const reviewCount = item.reviewCount || 0;
+  const hasRatings = reviewCount > 0;
 
   const { isInWishlist, toggleWishlist } = useWishlist();
   const isFavorite = isInWishlist(item._id);
@@ -97,12 +98,14 @@ const ItemCard = ({ item }) => {
                 <span className="text-xs font-sans font-medium text-gray-500 ml-1">/day</span>
               </span>
             )}
-            <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-lg border border-yellow-100">
-              <Star className="w-3.5 h-3.5 fill-yellow-500 text-yellow-500" />
-              <span className="text-xs font-bold text-gray-700">
-                {avgRating.toFixed(1)}
-              </span>
-            </div>
+            {hasRatings && (
+              <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-lg border border-yellow-100">
+                <Star className="w-3.5 h-3.5 fill-yellow-500 text-yellow-500" />
+                <span className="text-xs font-bold text-gray-700">
+                  {avgRating.toFixed(1)}
+                </span>
+              </div>
+            )}
           </div>
 
           <button className="w-full py-3 rounded-xl font-medium text-sm btn-primary shadow-lg mt-2 opacity-90 group-hover:opacity-100 transition-opacity">

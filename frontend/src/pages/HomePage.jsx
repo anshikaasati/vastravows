@@ -194,7 +194,7 @@ const HomePage = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {categories.map((cat) => (
               <div
                 key={cat.title}
@@ -205,23 +205,26 @@ const HomePage = () => {
                   document.getElementById('items-grid')?.scrollIntoView({ behavior: 'smooth' });
                 }}
               >
-                <div className="relative w-full aspect-[3/4] mask-arch overflow-hidden mb-4 shadow-lg transition-transform duration-500 group-hover:-translate-y-2">
+                {/* Arch-shaped image container */}
+                <div className="relative w-full aspect-[3/4] mask-arch overflow-hidden shadow-xl transition-all duration-500 group-hover:shadow-2xl">
                   <img
                     src={cat.image}
                     alt={cat.title}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  {/* Label overlay at bottom inside the arch, similar to reference */}
-                  <div className="absolute bottom-0 inset-x-0 h-16 bg-primary/90 flex items-center justify-center translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                    <span className="text-white font-display text-lg tracking-wider">Explore</span>
+
+                  {/* Label box inside arch at bottom - matches reference */}
+                  <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-primary/90 backdrop-blur-sm px-8 py-3 rounded-sm">
+                    <h3 className="text-white font-display text-base md:text-lg text-center tracking-wide whitespace-nowrap">
+                      {cat.title}
+                    </h3>
                   </div>
                 </div>
 
-                {/* Boxed Label below */}
-                <div className="bg-primary text-white py-3 px-8 text-sm uppercase tracking-widest font-serif shadow-md transition-colors group-hover:bg-primary-dark">
-                  {cat.title}
-                </div>
-                <span className="mt-2 text-xs text-secondary-light group-hover:text-primary transition-colors">{cat.title} +</span>
+                {/* Subtitle below card - matches reference */}
+                <p className="mt-3 text-sm text-gray-500 group-hover:text-primary transition-colors">
+                  {cat.title} →
+                </p>
               </div>
             ))}
           </div>
