@@ -124,7 +124,7 @@ h6,
 /* Buttons - Boho Style */
 .btn-primary {
   /* Gradient: Maroon (Light to Dark) */
-  background: linear-gradient(135deg, #cc6666 0%, #800000 100%);
+  background: linear-gradient(135deg, #f7b2b2 0%, #800000 100%);
   color: white;
   border: none;
   font-family: var(--font-serif);

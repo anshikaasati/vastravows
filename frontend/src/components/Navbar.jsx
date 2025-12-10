@@ -42,12 +42,12 @@ const Navbar = () => {
   ];
 
   return (
-    <header className={`sticky top-0 z-50 transition-all duration-500 ${scrolled
-      ? 'bg-white/95 backdrop-blur-xl border-b border-gold/20 py-3 shadow-md'
-      : 'bg-white/30 backdrop-blur-sm border-b border-transparent py-5'
+    <header className={`sticky z-50 transition-all duration-500 w-full ${scrolled
+      ? 'top-3 bg-white/60 backdrop-blur-xl border-b border-gold/20 shadow-md'
+      : 'top-0 bg-white/30 backdrop-blur-sm border-b border-transparent py-5'
       }`}>
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
+        <div className={`flex justify-between items-center ${scrolled ? 'py-3' : ''}`}>
 
           {/* Logo - Left */}
           <Link to="/" className="flex items-center gap-3 group flex-shrink-0">
