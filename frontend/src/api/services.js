@@ -44,4 +44,7 @@ export const paymentApi = {
   verifySubscription: (payload) => api.post('/payments/verify-subscription', payload)
 };
 
+export const contactApi = {
+  send: (payload) => api.post('/contact/send', payload)
+};
 

@@ -13,6 +13,13 @@ import OwnerItemsPage from './pages/OwnerItemsPage';
 import WishlistPage from './pages/WishlistPage';
 import ProfilePage from './pages/ProfilePage';
 import PaymentPage from './pages/PaymentPage';
+import AboutPage from './pages/AboutPage';
+import HowItWorksPage from './pages/HowItWorksPage';
+import FAQPage from './pages/FAQPage';
+import PricingPage from './pages/PricingPage';
+import ContactPage from './pages/ContactPage';
+import TermsPage from './pages/TermsPage';
+import PrivacyPage from './pages/PrivacyPage';
 import ProtectedRoute from './components/ProtectedRoute';
 
 const App = () => (
@@ -96,6 +103,15 @@ const App = () => (
             </ProtectedRoute>
           }
         />
+
+        {/* Footer Pages */}
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/how-it-works" element={<HowItWorksPage />} />
+        <Route path="/faq" element={<FAQPage />} />
+        <Route path="/pricing" element={<PricingPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
       </Routes>
     </Layout>
   </BrowserRouter>
