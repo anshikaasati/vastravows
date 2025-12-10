@@ -171,16 +171,17 @@ const AddItemPage = () => {
       if (id) {
         // Update
         await itemApi.update(id, formData);
-        toast.success('Item updated successfully');
+        toast.success('Item updated successfully!', { duration: 4000 });
       } else {
         // Create
         await itemApi.create(formData);
-        toast.success(`Item "${form.title}" listed successfully!`);
+        toast.success(`Item "${form.title}" listed successfully!`, { duration: 4000 });
       }
       setForm(initialState);
       setFiles([]);
       setPreviews([]);
-      navigate('/profile');
+      // Don't navigate to payment page, just show success and stay on page
+      // User can add more items or navigate manually
     } catch (error) {
       console.error(error);
       toast.error(error.response?.data?.message || 'Failed to list item');

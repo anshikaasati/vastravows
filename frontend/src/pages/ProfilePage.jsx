@@ -206,46 +206,61 @@ const ProfilePage = () => {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8 space-y-8 md:space-y-10">
-      <section className="glass-panel rounded-3xl p-4 md:p-8 animate-fade-in">
-        <h2 className="text-xl md:text-2xl font-display font-bold mb-6 text-gray-900">My Profile</h2>
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/5 py-12">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 
-        {/* Role Toggle */}
-        <div className="mb-6 p-4 bg-gradient-to-r from-primary/10 to-primary-dark/10 rounded-xl border border-primary/20">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className={`font-semibold flex items-center gap-2 ${user?.isLenderEnabled ? 'text-primary' : 'text-gray-900'}`}>
-                <Shield className={`w-5 h-5 ${user?.isLenderEnabled ? 'text-primary' : 'text-gray-400'}`} />
-                Lender Mode
-                {user?.isVerified && (
-                  <CheckCircle className="w-5 h-5 text-green-500" title="Verified Lender" />
-                )}
-              </h3>
-              <p className="text-sm text-gray-600 mt-1">
-                {user?.isLenderEnabled ? 'You can list items for rent' : 'Enable to list your items'}
-              </p>
+        {/* Profile Header */}
+        <div className="glass-card rounded-3xl p-8 animate-fade-in">
+          <div className="flex items-center gap-6 mb-8">
+            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-3xl font-display font-bold shadow-xl">
+              {user?.name?.charAt(0).toUpperCase()}
             </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={user?.isLenderEnabled || false}
-                onChange={(e) => handleToggleLender(e.target.checked)}
-                className="sr-only peer"
-              />
-              <div className="w-14 h-7 bg-gray-400 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary"></div>
-            </label>
+            <div>
+              <h1 className="text-4xl font-display font-bold text-primary mb-2">My Profile</h1>
+              <p className="text-gray-600">{user?.email}</p>
+            </div>
+          </div>
+
+          {/* Lender Mode Toggle */}
+          <div className="p-6 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-2xl border-2 border-primary/20">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className={`font-display text-lg font-semibold flex items-center gap-2 ${user?.isLenderEnabled ? 'text-primary' : 'text-gray-900'}`}>
+                  <Shield className={`w-6 h-6 ${user?.isLenderEnabled ? 'text-primary' : 'text-gray-400'}`} />
+                  Lender Mode
+                  {user?.isVerified && (
+                    <CheckCircle className="w-5 h-5 text-green-500" title="Verified Lender" />
+                  )}
+                </h3>
+                <p className="text-sm text-gray-600 mt-1">
+                  {user?.isLenderEnabled ? 'You can list items for rent' : 'Enable to list your items'}
+                </p>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={user?.isLenderEnabled || false}
+                  onChange={(e) => handleToggleLender(e.target.checked)}
+                  className="sr-only peer"
+                />
+                <div className="w-14 h-7 bg-gray-400 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary"></div>
+              </label>
+            </div>
           </div>
         </div>
 
-        <form onSubmit={handleUpdate} className="space-y-6">
+        {/* Profile Form */}
+        <form onSubmit={handleUpdate} className="glass-card rounded-3xl p-8 space-y-8">
+          <h2 className="text-2xl font-display font-bold text-primary mb-6">Personal Information</h2>
+
           {/* Basic Info */}
-          <div className="grid gap-4 md:gap-6 md:grid-cols-2">
+          <div className="grid gap-6 md:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
               <input
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary/20"
+                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
                 required
               />
             </div>
@@ -371,14 +386,17 @@ const ProfilePage = () => {
                       className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
                     <input
                       value={form.address.country}
                       onChange={(e) => setForm({ ...form, address: { ...form.address, country: e.target.value } })}
+                      placeholder="India"
                       className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
+
                 </div>
               </div>
 
@@ -471,86 +489,87 @@ const ProfilePage = () => {
             </button>
           </div>
         </div>
-      </section>
 
-      {user?.isLenderEnabled && (
-        <section className="glass-panel rounded-3xl p-4 md:p-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl md:text-2xl font-display font-bold text-gray-900">My Attires</h2>
-            <span className="px-3 py-1 bg-white/50 rounded-full text-xs md:text-sm font-medium text-gray-600 border border-gray-200">
-              {items.length} Listed
-            </span>
-          </div>
-          {items.length === 0 ? (
-            <div className="text-center py-12 bg-white/30 rounded-2xl border border-dashed border-gray-300">
-              <p className="text-gray-500 mb-4">You haven&apos;t listed any attire yet.</p>
-              <Link to="/add-item" className="text-primary font-semibold hover:underline">
-                Start listing now
-              </Link>
+        {/* My Attires Section */}
+        {user?.isLenderEnabled && (
+          <section className="glass-card rounded-3xl p-6 md:p-8 mt-8">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl md:text-2xl font-display font-bold text-gray-900">My Attires</h2>
+              <span className="px-3 py-1 bg-white/50 rounded-full text-xs md:text-sm font-medium text-gray-600 border border-gray-200">
+                {items.length} Listed
+              </span>
             </div>
-          ) : (
-            <div className="grid gap-4 md:gap-6">
-              {items.map((item) => (
-                <div key={item._id} className="glass-card rounded-2xl p-4 flex flex-col sm:flex-row gap-4 md:gap-6 group">
-                  <div className="w-full sm:w-40 md:w-48 aspect-[4/3] rounded-xl overflow-hidden">
-                    <img
-                      src={item.images?.[0] || 'https://via.placeholder.com/120x120?text=No+Image'}
-                      alt={item.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                    />
-                  </div>
-                  <div className="flex-1 py-1 md:py-2 flex flex-col">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-1">{item.title}</h3>
-                        <p className="text-xs md:text-sm text-gray-500 uppercase tracking-wider font-medium mb-2 md:mb-4">
-                          {item.gender} • {item.subcategory?.replace(/-/g, ' ')}
-                        </p>
-                      </div>
-                      <div className="flex gap-2">
-                        <Link
-                          to={`/items/${item._id}`}
-                          className="p-2 text-gray-400 hover:text-primary transition"
-                          title="View"
-                        >
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                        </Link>
-                        <Link
-                          to={`/items/edit/${item._id}`}
-                          className="p-2 text-gray-400 hover:text-blue-500 transition"
-                          title="Edit"
-                        >
-                          <Edit className="w-5 h-5" />
-                        </Link>
-                        <button
-                          onClick={() => handleDeleteItem(item._id)}
-                          className="p-2 text-gray-400 hover:text-red-500 transition"
-                          title="Delete"
-                        >
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                        </button>
-                      </div>
+            {items.length === 0 ? (
+              <div className="text-center py-12 bg-white/30 rounded-2xl border border-dashed border-gray-300">
+                <p className="text-gray-500 mb-4">You haven&apos;t listed any attire yet.</p>
+                <Link to="/add-item" className="text-primary font-semibold hover:underline">
+                  Start listing now
+                </Link>
+              </div>
+            ) : (
+              <div className="grid gap-4 md:gap-6">
+                {items.map((item) => (
+                  <div key={item._id} className="bg-white/50 rounded-2xl p-4 flex flex-col sm:flex-row gap-4 md:gap-6 group border border-gray-100">
+                    <div className="w-full sm:w-40 md:w-48 aspect-[4/3] rounded-xl overflow-hidden bg-gray-100">
+                      <img
+                        src={item.images?.[0] || 'https://via.placeholder.com/120x120?text=No+Image'}
+                        alt={item.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                      />
                     </div>
-
-                    <div className="flex items-center gap-6 mt-auto pt-4 md:pt-0">
-                      <div>
-                        <span className="text-xs text-gray-500 block">Rent Price</span>
-                        <span className="font-bold text-gray-900">₹{item.rentPricePerDay}<span className="text-xs font-normal text-gray-500">/day</span></span>
-                      </div>
-                      {item.salePrice && (
-                        <div>
-                          <span className="text-xs text-gray-500 block">Sale Price</span>
-                          <span className="font-bold text-gray-900">₹{item.salePrice}</span>
+                    <div className="flex-1 py-1 md:py-2 flex flex-col">
+                      <div className="flex justify-between items-start mb-2">
+                        <div className="flex-1">
+                          <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-1">{item.title}</h3>
+                          <p className="text-xs md:text-sm text-gray-500 uppercase tracking-wider font-medium mb-2 md:mb-4">
+                            {item.gender} • {item.subcategory?.replace(/-/g, ' ')}
+                          </p>
                         </div>
-                      )}
+                        <div className="flex gap-2 ml-4">
+                          <Link
+                            to={`/items/${item._id}`}
+                            className="p-2 text-gray-400 hover:text-primary-berry transition"
+                            title="View"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                          </Link>
+                          <Link
+                            to={`/items/edit/${item._id}`}
+                            className="p-2 text-gray-400 hover:text-blue-500 transition"
+                            title="Edit"
+                          >
+                            <Edit className="w-5 h-5" />
+                          </Link>
+                          <button
+                            onClick={() => handleDeleteItem(item._id)}
+                            className="p-2 text-gray-400 hover:text-red-500 transition"
+                            title="Delete"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-6 mt-auto pt-4">
+                        <div>
+                          <span className="text-xs text-gray-500 block">Rent Price</span>
+                          <span className="font-bold text-gray-900">₹{item.rentPricePerDay}<span className="text-xs font-normal text-gray-500">/day</span></span>
+                        </div>
+                        {item.salePrice && (
+                          <div>
+                            <span className="text-xs text-gray-500 block">Sale Price</span>
+                            <span className="font-bold text-gray-900">₹{item.salePrice}</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-      )}
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+      </div>
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (

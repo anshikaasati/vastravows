@@ -34,100 +34,107 @@ const Navbar = () => {
   };
 
   const navLinks = [
-    { name: 'Collections', path: '/items' },
-    { name: 'Wishlist', path: '/wishlist' },
+    { name: 'Home', path: '/' },
+    { name: 'Shop', path: '/items' },
     { name: 'Bookings', path: '/bookings' },
+    { name: 'FAQs', path: '/faq' },
+    { name: 'Contact', path: '/contact' },
   ];
 
   return (
-    <header className={`sticky top-0 z-50 transition-all duration-500 border-b ${scrolled
-      ? 'bg-white/90 backdrop-blur-xl border-gold/20 py-3 shadow-md'
-      : 'bg-transparent border-transparent py-5'
+    <header className={`sticky top-0 z-50 transition-all duration-500 ${scrolled
+      ? 'bg-white/95 backdrop-blur-xl border-b border-gold/20 py-3 shadow-md'
+      : 'bg-white/30 backdrop-blur-sm border-b border-transparent py-5'
       }`}>
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center">
 
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br from-primary to-secondary text-white shadow-lg group-hover:scale-105 transition-transform duration-300">
-            <Sparkles className="w-5 h-5" />
-          </div>
-          <div>
-            <h1 className="font-display text-2xl font-bold text-primary tracking-tight leading-none group-hover:text-secondary transition-colors">
-              Vastra Vows
-            </h1>
-            <p className="text-[10px] uppercase tracking-[0.25em] text-secondary font-medium pl-0.5">
-              Luxe Rentals
-            </p>
-          </div>
-        </Link>
-
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => {
-            const isActive = location.pathname === link.path;
-
-            return (
-              <Link
-                key={link.name}
-                to={link.path}
-                className={`text-sm font-medium transition-colors relative group py-1 tracking-wide ${isActive ? 'text-primary font-semibold' : 'text-gray-700 hover:text-primary'
-                  }`}
-              >
-                {link.name}
-                <span className={`absolute bottom-0 left-0 h-0.5 bg-secondary transition-all duration-300 ${isActive ? 'w-full' : 'w-0 group-hover:w-full'
-                  }`}></span>
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* Actions */}
-        <div className="flex items-center gap-4">
-          {/* Search Toggle */}
-          <div className="relative flex items-center">
-            <div className={`flex items-center transition-all duration-300 ${searchOpen ? 'w-48 opacity-100 mr-2' : 'w-0 opacity-0 overflow-hidden'}`}>
-              <input
-                type="text"
-                placeholder="Search..."
-                className="w-full bg-gray-50/50 border border-gray-200 rounded-full py-1.5 px-4 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                autoFocus
-              />
+          {/* Logo - Left */}
+          <Link to="/" className="flex items-center gap-3 group flex-shrink-0">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br from-primary to-secondary text-white shadow-lg group-hover:scale-105 transition-transform duration-300">
+              <Sparkles className="w-5 h-5" />
             </div>
-            <button
-              onClick={() => {
-                if (searchOpen && searchQuery) {
-                  handleSearch();
-                } else {
-                  setSearchOpen(!searchOpen);
-                }
-              }}
-              className={`p-2 transition-colors ${searchOpen ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
-            >
-              <Search className="w-5 h-5" />
-            </button>
-          </div>
-
-          <Link to="/cart" className="relative p-2 text-gray-700 hover:text-primary transition-colors group">
-            <ShoppingBag className="w-5 h-5" />
-            <span className="absolute top-0 right-0 w-2 h-2 bg-secondary rounded-full transform scale-0 group-hover:scale-100 transition-transform shadow-sm"></span>
+            <div>
+              <h1 className="font-display text-2xl font-bold text-primary tracking-tight leading-none group-hover:text-secondary transition-colors">
+                Vastra Vows
+              </h1>
+              <p className="text-[10px] uppercase tracking-[0.25em] text-secondary font-medium pl-0.5">
+                Luxe Rentals
+              </p>
+            </div>
           </Link>
 
-          {user ? (
-            <div className="hidden md:flex items-center gap-3 pl-4 border-l border-gray-200">
-              <div className="flex flex-col text-right hidden lg:block">
-                <span className="text-xs text-gray-500">Welcome, </span>
-                <span className="text-sm font-display font-semibold text-primary leading-none">{user.name?.split(' ')[0]}</span>
+          {/* Desktop Nav - Center */}
+          <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+            {navLinks.map((link) => {
+              const isActive = location.pathname === link.path;
+
+              return (
+                <Link
+                  key={link.name}
+                  to={link.path}
+                  className={`text-sm font-medium transition-colors relative group py-1 tracking-wide ${isActive ? 'text-primary font-semibold' : 'text-gray-700 hover:text-primary'
+                    }`}
+                >
+                  {link.name}
+                  <span className={`absolute bottom-0 left-0 h-0.5 bg-secondary transition-all duration-300 ${isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                    }`}></span>
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* Actions - Right */}
+          <div className="flex items-center gap-3">
+            {/* Search Toggle */}
+            <div className="relative flex items-center">
+              <div className={`flex items-center transition-all duration-300 ${searchOpen ? 'w-48 opacity-100 mr-2' : 'w-0 opacity-0 overflow-hidden'}`}>
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="w-full bg-gray-50/50 border border-gray-200 rounded-full py-1.5 px-4 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                  autoFocus
+                />
               </div>
-              <div className="relative group">
+              <button
+                onClick={() => {
+                  if (searchOpen && searchQuery) {
+                    handleSearch();
+                  } else {
+                    setSearchOpen(!searchOpen);
+                  }
+                }}
+                className={`p-2 transition-colors ${searchOpen ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
+              >
+                <Search className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Wishlist */}
+            <Link to="/wishlist" className="relative p-2 text-gray-700 hover:text-primary transition-colors group">
+              <Heart className="w-5 h-5" />
+              <span className="absolute top-0 right-0 w-2 h-2 bg-secondary rounded-full transform scale-0 group-hover:scale-100 transition-transform shadow-sm"></span>
+            </Link>
+
+            {/* Cart */}
+            <Link to="/cart" className="relative p-2 text-gray-700 hover:text-primary transition-colors group">
+              <ShoppingBag className="w-5 h-5" />
+              <span className="absolute top-0 right-0 w-2 h-2 bg-secondary rounded-full transform scale-0 group-hover:scale-100 transition-transform shadow-sm"></span>
+            </Link>
+
+            {/* Profile / Auth */}
+            {user ? (
+              <div className="hidden md:block relative group">
                 <button className="w-9 h-9 rounded-full bg-primary/5 border border-primary/20 flex items-center justify-center text-primary overflow-hidden hover:bg-primary/10 transition-colors">
                   <User className="w-5 h-5" />
                 </button>
                 <div className="absolute right-0 top-full mt-2 w-48 py-2 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 flex flex-col z-50">
-                  <div className="px-4 py-2 border-b border-gray-50 mb-1">
-                    <p className="text-xs text-gray-500 uppercase tracking-widest">Account</p>
+                  <div className="px-4 py-3 border-b border-gray-50">
+                    <p className="text-sm font-semibold text-primary">Hi! {user.name?.split(' ')[0]}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">{user.email}</p>
                   </div>
                   <Link to="/profile" className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary flex items-center gap-2">
                     <User className="w-4 h-4" /> Profile
@@ -137,28 +144,27 @@ const Navbar = () => {
                   </button>
                 </div>
               </div>
-            </div>
-          ) : (
-            <div className="hidden md:flex items-center gap-3">
-              <Link to="/login" className="px-4 py-2 text-sm font-medium text-primary hover:text-secondary transition-colors">
-                Login
-              </Link>
-              <Link to="/register" className="px-5 py-2 rounded-full bg-primary text-white text-sm font-medium shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5 transition-all duration-300">
-                Get Started
-              </Link>
-            </div>
-          )}
+            ) : (
+              <div className="hidden md:flex items-center gap-3">
+                <Link to="/login" className="px-4 py-2 text-sm font-medium text-primary hover:text-secondary transition-colors">
+                  Login
+                </Link>
+                <Link to="/register" className="px-5 py-2 rounded-full bg-primary text-white text-sm font-medium shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5 transition-all duration-300">
+                  Get Started
+                </Link>
+              </div>
+            )}
 
-          {/* Mobile Toggle */}
-          <button
-            className="md:hidden p-2 text-gray-700 hover:text-primary"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+            {/* Mobile Toggle */}
+            <button
+              className="md:hidden p-2 text-gray-700 hover:text-primary"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
       </div>
-
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden absolute top-full left-0 w-full bg-white/95 backdrop-blur-xl border-t border-gray-100 shadow-xl animate-fade-in-up">
