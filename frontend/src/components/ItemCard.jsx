@@ -9,13 +9,13 @@ import toast from 'react-hot-toast';
 const ItemCard = ({ item }) => {
   const { token } = useAuth();
   const categoryColors = {
-    clothes: { bg: 'bg-red-100', text: 'text-red-700', border: 'border-red-300', ring: 'ring-primary-berry/20' },
-    jewellery: { bg: 'bg-teal-100', text: 'text-teal-700', border: 'border-teal-300', ring: 'ring-teal-300/50' },
-    accessories: { bg: 'bg-purple-100', text: 'text-purple-700', border: 'border-purple-300', ring: 'ring-purple-300/50' },
-    watch: { bg: 'bg-blue-100', text: 'text-blue-700', border: 'border-blue-300', ring: 'ring-blue-300/50' },
-    shoes: { bg: 'bg-orange-100', text: 'text-orange-700', border: 'border-orange-300', ring: 'ring-orange-300/50' }
+    clothes: { bg: 'bg-[#FFF9F2]', text: 'text-primary', border: 'border-primary/20', ring: 'ring-primary/20' },
+    jewellery: { bg: 'bg-[#FFF9F2]', text: 'text-[#6d0b20]', border: 'border-primary/20', ring: 'ring-primary/10' },
+    accessories: { bg: 'bg-[#FFF9F2]', text: 'text-[#ff8597]', border: 'border-primary/20', ring: 'ring-primary/10' },
+    watch: { bg: 'bg-[#FFF9F2]', text: 'text-[#4A3728]', border: 'border-primary/20', ring: 'ring-primary/10' },
+    shoes: { bg: 'bg-[#FFF9F2]', text: 'text-primary', border: 'border-primary/20', ring: 'ring-primary/10' }
   };
-  const colors = categoryColors[item.category] || { bg: 'bg-indigo-100', text: 'text-indigo-700', border: 'border-indigo-300', ring: 'ring-indigo-300/20' };
+  const colors = categoryColors[item.category] || { bg: 'bg-[#FFF9F2]', text: 'text-primary', border: 'border-primary/20', ring: 'ring-primary/20' };
 
   const getBadgeText = () => {
     if (item.salePrice) return 'FOR SALE';
@@ -29,14 +29,8 @@ const ItemCard = ({ item }) => {
   };
 
   const getBadgeColor = () => {
-    if (item.salePrice) return 'bg-gray-700';
-    const categoryBadges = {
-      jewellery: 'bg-teal-600',
-      accessories: 'bg-purple-600',
-      watch: 'bg-blue-600',
-      shoes: 'bg-orange-600'
-    };
-    return categoryBadges[item.category] || 'bg-primary-berry';
+    if (item.salePrice) return 'bg-[#880e28]'; // Darker Wine for Sale
+    return 'bg-primary'; // Primary Wine for everything else
   };
 
   const badgeText = getBadgeText();
@@ -61,57 +55,58 @@ const ItemCard = ({ item }) => {
   return (
     <Link to={`/items/${item._id}`}>
       <div
-        className={`glass-panel rounded-3xl overflow-hidden transition duration-300 relative group cursor-pointer border border-white/50 ring-1 ${colors.ring}`}
+        className={`glass-card rounded-3xl overflow-hidden relative group cursor-pointer ring-1 ${colors.ring}`}
       >
-        <span className={`absolute top-4 left-4 ${badgeColor} text-white text-xs font-bold uppercase px-3 py-1.5 rounded-full shadow-lg z-10`}>
+        <span className={`absolute top-4 left-4 ${badgeColor} text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-lg z-10`}>
           {badgeText}
         </span>
         <button
           onClick={handleToggle}
-          className="absolute top-4 right-4 text-white p-2 rounded-full bg-black/40 hover:bg-red-500 transition duration-200 z-10"
+          className="absolute top-4 right-4 text-white p-2 rounded-full bg-black/20 hover:bg-white hover:text-red-500 backdrop-blur-sm transition duration-200 z-10"
         >
-          <Heart className={`w-5 h-5 ${isFavorite ? 'fill-white' : ''}`} />
+          <Heart className={`w-5 h-5 ${isFavorite ? 'fill-red-500 text-red-500' : ''}`} />
         </button>
-        <div className="h-64 flex items-center justify-center overflow-hidden relative">
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+        <div className="h-72 flex items-center justify-center overflow-hidden relative">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent z-[1]" />
           <img
             src={item.images?.[0] || `https://placehold.co/600x400/9d174d/fce7f3?text=${encodeURIComponent(item.title)}`}
             alt={item.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition duration-700 transform ease-in-out"
+            className="w-full h-full object-cover group-hover:scale-110 transition duration-1000 transform ease-out"
             onError={(e) => {
               e.target.src = `https://placehold.co/600x400/9d174d/fce7f3?text=${encodeURIComponent(item.title)}`;
             }}
           />
         </div>
-        <div className="p-5 space-y-3">
-          <h3 className="text-xl font-bold text-gray-900 truncate">{item.title}</h3>
-          <p className="text-sm text-gray-500 flex items-center gap-2">
-            <span className="inline-block w-2 h-2 rounded-full bg-secondary-gold" />
+        <div className="p-5 space-y-3 relative z-[2] -mt-10 pt-10 bg-gradient-to-b from-transparent to-white/90">
+          {/* This gradient overlay might be tricky with glassmorphism, let's keep it clean */}
+        </div>
+        <div className="p-5 pt-0 space-y-3">
+          <h3 className="text-lg font-display font-medium text-gray-900 truncate">{item.title}</h3>
+          <p className="text-xs text-gray-500 flex items-center gap-2 font-medium uppercase tracking-wide">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-secondary" />
             {item.location?.city || 'Location not specified'}
           </p>
           <div className="flex items-center justify-between">
             {item.salePrice ? (
-              <span className="text-3xl font-extrabold text-gray-900">
+              <span className="text-2xl font-display font-bold text-primary">
                 ₹{item.salePrice}
               </span>
             ) : (
-              <span className="text-3xl font-extrabold text-secondary-gold">
+              <span className="text-2xl font-display font-bold text-primary">
                 ₹{item.rentPricePerDay}
-                <span className="text-sm font-medium text-gray-500">/day</span>
+                <span className="text-xs font-sans font-medium text-gray-500 ml-1">/day</span>
               </span>
             )}
-            <div className="flex items-center text-yellow-500">
-              <Star className="w-5 h-5 fill-yellow-500 mr-1" />
-              <span className="text-base font-semibold text-gray-700">
-                {avgRating.toFixed(1)} ({reviewCount})
+            <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-lg border border-yellow-100">
+              <Star className="w-3.5 h-3.5 fill-yellow-500 text-yellow-500" />
+              <span className="text-xs font-bold text-gray-700">
+                {avgRating.toFixed(1)}
               </span>
             </div>
           </div>
-          <p className="text-xs uppercase tracking-[0.3em] text-gray-400">
-            {item.gender} • {item.subcategory?.replace(/-/g, ' ')}
-          </p>
-          <button className="mt-2 w-full text-white py-3 rounded-xl font-semibold text-base btn-gradient-vows shadow-md">
-            {item.salePrice ? 'Purchase Now' : 'Book Fitting'}
+
+          <button className="w-full py-3 rounded-xl font-medium text-sm btn-primary shadow-lg mt-2 opacity-90 group-hover:opacity-100 transition-opacity">
+            {item.salePrice ? 'View Details' : 'Book Now'}
           </button>
         </div>
       </div>

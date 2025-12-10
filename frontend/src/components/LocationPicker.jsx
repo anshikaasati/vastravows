@@ -141,7 +141,7 @@ const LocationPicker = ({ onLocationSelect, onClose }) => {
                 <button
                     onClick={getCurrentLocation}
                     disabled={gettingLocation}
-                    className="ml-3 flex items-center gap-2 px-4 py-2.5 bg-primary-berry text-white rounded-lg hover:bg-primary-berry/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
+                    className="ml-3 flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
                 >
                     {gettingLocation ? (
                         <Loader className="w-4 h-4 animate-spin" />
@@ -158,7 +158,7 @@ const LocationPicker = ({ onLocationSelect, onClose }) => {
                 {loading ? (
                     <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
                         <div className="text-center">
-                            <Loader className="w-8 h-8 animate-spin text-primary-berry mx-auto mb-2" />
+                            <Loader className="w-8 h-8 animate-spin text-primary mx-auto mb-2" />
                             <p className="text-gray-500">Loading map...</p>
                         </div>
                     </div>
@@ -185,11 +185,11 @@ const LocationPicker = ({ onLocationSelect, onClose }) => {
                 <p className="text-xs font-semibold text-gray-600 mb-2">Selected Address:</p>
                 {fetchingAddress ? (
                     <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                        <Loader className="w-4 h-4 animate-spin text-primary-berry" />
+                        <Loader className="w-4 h-4 animate-spin text-primary" />
                         <span className="text-sm text-gray-600">Fetching address...</span>
                     </div>
                 ) : (
-                    <div className="text-sm font-medium text-gray-900 bg-gradient-to-r from-primary-berry/10 to-primary-berry/5 p-4 rounded-lg border-2 border-primary-berry/20">
+                    <div className="text-sm font-medium text-gray-900 bg-gradient-to-r from-primary/10 to-primary/5 p-4 rounded-lg border-2 border-primary/20">
                         {address || 'No location selected'}
                     </div>
                 )}
@@ -205,7 +205,7 @@ const LocationPicker = ({ onLocationSelect, onClose }) => {
                 <button
                     onClick={onClose}
                     disabled={!position}
-                    className="px-6 py-2.5 bg-primary-berry text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
+                    className="px-6 py-2.5 bg-primary text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
                 >
                     Confirm Location
                 </button>

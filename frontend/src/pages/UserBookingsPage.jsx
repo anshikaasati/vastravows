@@ -37,68 +37,82 @@ const UserBookingsPage = () => {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8 space-y-6 md:space-y-8">
-      <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900">My Bookings</h2>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="flex flex-col items-center justify-center text-center my-12 space-y-4">
+        <h2 className="text-4xl md:text-5xl font-display font-medium text-primary italic">My Bookings</h2>
+        <div className="w-16 h-1 bg-secondary mx-auto"></div>
+        <p className="text-gray-500 max-w-lg mx-auto font-light">Track your upcoming elegance. Manage your rentals with ease.</p>
+      </div>
 
       {bookings.length === 0 ? (
-        <div className="glass-panel rounded-3xl p-8 md:p-12 text-center">
-          <div className="w-12 h-12 md:w-16 md:h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Calendar className="w-6 h-6 md:w-8 md:h-8 text-gray-400" />
+        <div className="glass-panel rounded-3xl p-12 text-center max-w-2xl mx-auto">
+          <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+            <Calendar className="w-10 h-10 text-gray-400" />
           </div>
-          <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-2">No bookings yet</h3>
-          <p className="text-sm md:text-base text-gray-500">Browse our collection and book your first look!</p>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">No bookings yet</h3>
+          <p className="text-gray-500 mb-6">Browse our collection and book your first look!</p>
+          <a href="/items" className="inline-block px-8 py-3 bg-primary text-white font-semibold rounded-full hover:bg-primary-dark transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+            Explore Collection
+          </a>
         </div>
       ) : (
-        <div className="grid gap-4 md:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {bookings.map((booking) => (
-            <div key={booking._id} className="glass-card rounded-2xl p-4 md:p-6 flex flex-col sm:flex-row gap-4 md:gap-6 animate-fade-in">
-              <div className="w-full sm:w-40 md:w-48 aspect-[4/3] rounded-xl overflow-hidden shadow-sm">
+            <div key={booking._id} className="glass-card rounded-2xl overflow-hidden flex flex-col h-full group bg-white hover:shadow-2xl transition-all duration-300 border border-gray-100">
+              {/* Image Header */}
+              <div className="relative aspect-[4/5] overflow-hidden bg-gray-100">
                 <img
-                  src={booking.itemId?.images?.[0]}
+                  src={booking.itemId?.images?.[0] || 'https://via.placeholder.com/300x400?text=No+Image'}
                   alt={booking.itemId?.title}
-                  className="w-full h-full object-cover hover:scale-105 transition duration-500"
+                  className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
                 />
+
+                {/* Status Badge */}
+                <div className="absolute top-3 right-3">
+                  <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm backdrop-blur-md ${booking.status === 'confirmed' ? 'bg-green-100/90 text-green-700' :
+                      booking.status === 'cancelled' ? 'bg-red-100/90 text-red-700' :
+                        'bg-yellow-100/90 text-yellow-700'
+                    }`}>
+                    {booking.status}
+                  </span>
+                </div>
               </div>
 
-              <div className="flex-1 flex flex-col justify-between">
-                <div>
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-lg md:text-xl font-bold text-gray-900">{booking.itemId?.title}</h3>
-                    <span className={`px-2 md:px-3 py-1 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-wider ${booking.status === 'confirmed' ? 'bg-green-100 text-green-700' :
-                      booking.status === 'cancelled' ? 'bg-red-100 text-red-700' :
-                        'bg-yellow-100 text-yellow-700'
-                      }`}>
-                      {booking.status}
-                    </span>
+              {/* Content */}
+              <div className="p-4 flex-1 flex flex-col">
+                <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-1" title={booking.itemId?.title}>
+                  {booking.itemId?.title}
+                </h3>
+
+                <div className="mt-4 space-y-3 flex-1">
+                  {/* Dates */}
+                  <div className="bg-gray-50 p-3 rounded-lg border border-gray-200/50">
+                    <div className="flex justify-between items-center text-xs mb-1">
+                      <span className="text-gray-500 uppercase tracking-wide">Start Date</span>
+                      <span className="font-medium text-gray-900">{new Date(booking.startDate).toLocaleDateString()}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-gray-500 uppercase tracking-wide">End Date</span>
+                      <span className="font-medium text-gray-900">{new Date(booking.endDate).toLocaleDateString()}</span>
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3 md:gap-4 mb-4">
-                    <div className="bg-white/50 p-2 md:p-3 rounded-lg border border-white/60">
-                      <p className="text-[10px] md:text-xs text-gray-500 mb-1">Start Date</p>
-                      <p className="font-semibold text-sm md:text-base text-gray-900">{new Date(booking.startDate).toLocaleDateString()}</p>
-                    </div>
-                    <div className="bg-white/50 p-2 md:p-3 rounded-lg border border-white/60">
-                      <p className="text-[10px] md:text-xs text-gray-500 mb-1">End Date</p>
-                      <p className="font-semibold text-sm md:text-base text-gray-900">{new Date(booking.endDate).toLocaleDateString()}</p>
-                    </div>
+                  {/* Price */}
+                  <div className="flex justify-between items-center border-t border-gray-100 pt-3">
+                    <span className="text-sm text-gray-500">Total</span>
+                    <span className="text-lg font-bold text-primary">₹{booking.totalAmount}</span>
                   </div>
                 </div>
 
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-4 border-t border-gray-200/50 gap-3">
-                  <div className="text-sm md:text-base">
-                    <span className="text-gray-500">Total Amount: </span>
-                    <span className="font-bold text-gray-900">₹{booking.totalAmount}</span>
-                  </div>
-
-                  {booking.status !== 'cancelled' && (
-                    <button
-                      onClick={() => handleCancel(booking._id)}
-                      className="px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 rounded-lg transition border border-transparent hover:border-red-100 w-full sm:w-auto text-center"
-                    >
-                      Cancel Booking
-                    </button>
-                  )}
-                </div>
+                {/* Actions */}
+                {booking.status !== 'cancelled' && (
+                  <button
+                    onClick={() => handleCancel(booking._id)}
+                    className="mt-4 w-full py-2.5 text-xs font-bold uppercase tracking-widest text-red-500 hover:text-white border border-red-200 hover:bg-red-500 rounded-lg transition-all duration-300"
+                  >
+                    Cancel Booking
+                  </button>
+                )}
               </div>
             </div>
           ))}

@@ -30,6 +30,14 @@ const App = () => (
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/items/edit/:id"
+          element={
+            <ProtectedRoute>
+              <AddItemPage />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/items" element={<ItemsPage />} />
         <Route path="/items/:id" element={<ItemDetailPage />} />
         <Route

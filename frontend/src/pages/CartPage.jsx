@@ -16,7 +16,7 @@ const CartPage = () => {
                 <p className="text-gray-500 mb-8">Looks like you haven't added any items yet.</p>
                 <Link
                     to="/items"
-                    className="px-8 py-3 bg-primary-berry text-white font-semibold rounded-xl shadow-lg hover:bg-primary-dark transition"
+                    className="px-8 py-3 btn-primary text-white font-bold rounded-xl shadow-lg transition"
                 >
                     Start Shopping
                 </Link>
@@ -102,7 +102,7 @@ const CartPage = () => {
 
                         <button
                             onClick={() => navigate('/booking')}
-                            className="w-full py-4 bg-gray-900 text-white font-bold rounded-xl shadow-lg hover:bg-gray-800 transition flex items-center justify-center gap-2"
+                            className="w-full py-4 btn-primary font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2"
                         >
                             Proceed to Checkout
                             <ArrowRight className="w-5 h-5" />

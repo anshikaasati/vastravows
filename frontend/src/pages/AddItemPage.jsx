@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { X, Image, Info, Upload, Trash2, ShieldCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { itemApi, paymentApi, authApi } from '../api/services';
@@ -22,6 +22,7 @@ const initialState = {
 };
 
 const AddItemPage = () => {
+  const { id } = useParams(); // Get ID from router
   const { user, setUser } = useAuth();
   const [form, setForm] = useState(initialState);
   const [files, setFiles] = useState([]);
@@ -32,18 +33,71 @@ const AddItemPage = () => {
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
+  // Load existing item data if editing
   useEffect(() => {
+    if (id) {
+      const fetchItem = async () => {
+        setLoading(true);
+        try {
+          const { data } = await itemApi.getById(id);
+          const item = data.item;
+
+          // Populate form
+          setForm({
+            title: item.title || '',
+            description: item.description || '',
+            gender: item.gender || '',
+            category: item.category || 'clothes',
+            subcategory: item.subcategory || '',
+            size: Array.isArray(item.size) ? item.size : item.size?.split(', ') || [],
+            rentPricePerDay: item.rentPricePerDay || '',
+            salePrice: item.salePrice || '',
+            depositAmount: item.depositAmount || '',
+            city: item.location?.city || '',
+            pincode: item.location?.pincode || '',
+            addressLine: item.addressLine || '',
+            listingType: item.salePrice ? 'Sale' : 'Rental'
+          });
+
+          // Handle images (displaying existing ones as previews)
+          if (item.images && item.images.length > 0) {
+            setPreviews(item.images);
+            // Note: We can't convert URLs back to File objects easily for 'files' state, 
+            // so we'll need logic to handle 'keeping existing images' vs 'uploading new ones'.
+            // For simplicity in this edit, we might strictly upload NEW images or we need a way to track "remaining existing images".
+            // Let's assume simpler: We just clear files and show previews. 
+            // Use a separate state for 'existingImages' if needed, but for now we'll rely on the backend handling text vs file updates?
+            // Actually, simplest is: if user uploads 0 new files, we send nothing for images. 
+            // If they upload files, we append. Ideally, we should allow deleting specific existing images, but that requires backend support for 'deleteImages' or 'keepImages'.
+            // We'll stick to: Previews show current state.
+          }
+
+        } catch (error) {
+          toast.error('Failed to load item details');
+          navigate('/profile');
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchItem();
+    }
+  }, [id, navigate]);
+
+  useEffect(() => {
+    if (id) {
+      setShowSubscriptionModal(false);
+      return;
+    }
     if (user && user.subscriptionStatus !== 'active') {
+      // Only show sub modal for NEW items
       setShowSubscriptionModal(true);
     }
-  }, [user]);
+  }, [user, id]);
 
   const handleSubscribe = async () => {
     setLoading(true);
     try {
-      // 1. Create Subscription
       const { data: subscription } = await paymentApi.createSubscription();
-
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         subscription_id: subscription.id,
@@ -52,55 +106,31 @@ const AddItemPage = () => {
         image: "https://i.imgur.com/3g7nmJC.png",
         handler: async function (razorpayResponse) {
           try {
-            // 2. Verify Subscription
             await paymentApi.verifySubscription({
               ...razorpayResponse,
               userId: user.id || user._id
             });
-
-            toast.success('Subscription activated! You can now list items.');
-
-            // Update local user state
+            toast.success('Subscription activated!');
             const updatedUser = { ...user, subscriptionStatus: 'active' };
             setUser(updatedUser);
             setShowSubscriptionModal(false);
-
-            // Optional: Refresh user from backend to be sure
             const { data: me } = await authApi.me();
             setUser(me);
-
           } catch (err) {
             toast.error('Subscription verification failed');
-            console.error(err);
           }
         },
-        prefill: {
-          name: user.name,
-          email: user.email,
-          contact: user.phone
-        },
-        theme: {
-          color: "#D4AF37",
-          backdrop_color: "rgba(212, 175, 55, 0.1)"
-        },
-        modal: {
-          ondismiss: function () {
-            toast.error('Subscription cancelled');
-            setLoading(false);
-          }
-        }
+        prefill: { name: user.name, email: user.email, contact: user.phone },
+        theme: { color: "#D4AF37", backdrop_color: "rgba(212, 175, 55, 0.1)" }
       };
-
       if (!window.Razorpay) {
-        toast.error('Payment SDK failed to load. Please refresh.');
+        toast.error('Payment SDK failed to load.');
         setLoading(false);
         return;
       }
-
       const rzp = new window.Razorpay(options);
       rzp.open();
     } catch (error) {
-      console.error(error);
       toast.error('Failed to initiate subscription');
       setLoading(false);
     }
@@ -108,38 +138,18 @@ const AddItemPage = () => {
 
   const handleContinueFree = () => {
     setShowSubscriptionModal(false);
-    toast('You are on the Free Tier. ₹50 fee per rental.', {
-      icon: 'ℹ️',
-      duration: 4000
-    });
+    toast('You are on the Free Tier. ₹50 fee per rental.', { icon: 'ℹ️', duration: 4000 });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.title.trim()) {
-      toast.error('Please enter an item name.');
-      return;
-    }
-    if (!form.gender) {
-      toast.error('Please select Men\'s or Women\'s collection.');
-      return;
-    }
-    if (!form.subcategory) {
-      toast.error('Please select a subcategory.');
-      return;
-    }
-    if (!form.size || form.size.length === 0) {
-      toast.error('Please select at least one size.');
-      return;
-    }
-    if (!form.addressLine.trim()) {
-      toast.error('Please enter the complete address.');
-      return;
-    }
-    if (!files.length) {
-      toast.error('Please upload at least one image');
-      return;
-    }
+    if (!form.title.trim()) return toast.error('Please enter an item name.');
+    if (!form.gender) return toast.error('Please select collection.');
+    if (!form.subcategory) return toast.error('Please select a subcategory.');
+    if (!form.size || form.size.length === 0) return toast.error('Please select size.');
+    if (!form.addressLine.trim()) return toast.error('Please enter address.');
+    // If Editing, files are optional (keep existing). If New, required.
+    if (!id && !files.length) return toast.error('Please upload at least one image');
 
     const formData = new FormData();
     formData.append('title', form.title);
@@ -158,18 +168,22 @@ const AddItemPage = () => {
 
     setLoading(true);
     try {
-      // Create Item
-      const { data: item } = await itemApi.create(formData);
-      toast.success(`Item "${form.title}" listed successfully!`);
-
+      if (id) {
+        // Update
+        await itemApi.update(id, formData);
+        toast.success('Item updated successfully');
+      } else {
+        // Create
+        await itemApi.create(formData);
+        toast.success(`Item "${form.title}" listed successfully!`);
+      }
       setForm(initialState);
       setFiles([]);
       setPreviews([]);
       navigate('/profile');
-
     } catch (error) {
       console.error(error);
-      toast.error(error.response?.data?.message || 'Failed to process listing');
+      toast.error(error.response?.data?.message || 'Failed to list item');
     } finally {
       setLoading(false);
     }
@@ -241,10 +255,10 @@ const AddItemPage = () => {
           <div className="p-6">
             {/* Header */}
             <div className="flex justify-between items-center border-b pb-4 mb-4">
-              <h2 className="text-2xl font-bold text-primary-berry">List Your Exquisite Attire</h2>
+              <h2 className="text-2xl font-bold text-primary">{id ? 'Edit Your Attire' : 'List Your Exquisite Attire'}</h2>
               <button
                 onClick={() => navigate('/')}
-                className="text-gray-400 hover:text-primary-berry transition"
+                className="text-gray-400 hover:text-primary transition"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -262,7 +276,7 @@ const AddItemPage = () => {
                   placeholder="e.g., Sabyasachi Velvet Sherwani"
                   value={form.title}
                   onChange={(e) => setForm({ ...form, title: e.target.value })}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary-berry focus:border-primary-berry transition"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition"
                   required
                 />
               </div>
@@ -277,7 +291,7 @@ const AddItemPage = () => {
                   placeholder="Describe the fabric, embroidery, size, and rental terms."
                   value={form.description}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary-berry focus:border-primary-berry transition"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition"
                   required
                 />
               </div>
@@ -291,7 +305,7 @@ const AddItemPage = () => {
                   <select
                     value={form.gender}
                     onChange={(e) => setForm({ ...form, gender: e.target.value, subcategory: '' })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary-berry focus:border-primary-berry transition"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition"
                     required
                   >
                     <option value="">Select</option>
@@ -306,7 +320,7 @@ const AddItemPage = () => {
                   <select
                     value={form.subcategory}
                     onChange={(e) => setForm({ ...form, subcategory: e.target.value })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary-berry focus:border-primary-berry transition"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition"
                     required
                     disabled={!form.gender}
                   >
@@ -350,7 +364,7 @@ const AddItemPage = () => {
                     id="item-type"
                     value={form.category}
                     onChange={(e) => setForm({ ...form, category: e.target.value })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary-berry focus:border-primary-berry transition"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition"
                   >
                     <option value="clothes">Clothes</option>
                     <option value="jewellery">Jewellery</option>
@@ -367,7 +381,7 @@ const AddItemPage = () => {
                     id="listing-type"
                     value={form.listingType}
                     onChange={(e) => setForm({ ...form, listingType: e.target.value })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary-berry focus:border-primary-berry transition"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition"
                   >
                     <option value="Rental">Rental (Per Day/Week)</option>
                     <option value="Sale">For Sale</option>
@@ -397,7 +411,7 @@ const AddItemPage = () => {
                             });
                           }
                         }}
-                        className="rounded border-gray-300 text-primary-berry focus:ring-primary-berry"
+                        className="rounded border-gray-300 text-primary focus:ring-primary"
                       />
                       <span>{size}</span>
                     </label>
@@ -420,7 +434,7 @@ const AddItemPage = () => {
                         ? setForm({ ...form, salePrice: e.target.value })
                         : setForm({ ...form, rentPricePerDay: e.target.value })
                     }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary-berry focus:border-primary-berry transition"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition"
                     required
                   />
                 </div>
@@ -435,7 +449,7 @@ const AddItemPage = () => {
                       placeholder="e.g., 5000"
                       value={form.depositAmount}
                       onChange={(e) => setForm({ ...form, depositAmount: e.target.value })}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary-berry focus:border-primary-berry transition"
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition"
                     />
                   </div>
                 )}
@@ -451,7 +465,7 @@ const AddItemPage = () => {
                     id="city"
                     value={form.city}
                     onChange={(e) => setForm({ ...form, city: e.target.value })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary-berry focus:border-primary-berry transition"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition"
                     required
                   />
                 </div>
@@ -464,7 +478,7 @@ const AddItemPage = () => {
                     id="pincode"
                     value={form.pincode}
                     onChange={(e) => setForm({ ...form, pincode: e.target.value })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary-berry focus:border-primary-berry transition"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition"
                     required
                   />
                 </div>
@@ -480,7 +494,7 @@ const AddItemPage = () => {
                   placeholder="House / Flat, Street, Area, Landmark"
                   value={form.addressLine}
                   onChange={(e) => setForm({ ...form, addressLine: e.target.value })}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary-berry focus:border-primary-berry transition"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition"
                   required
                 />
               </div>
@@ -497,8 +511,8 @@ const AddItemPage = () => {
                   onDragOver={handleDrag}
                   onDrop={handleDrop}
                   className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-colors ${dragActive
-                    ? 'border-primary-berry bg-primary-berry/5'
-                    : 'border-secondary-gold bg-secondary-gold/10 hover:bg-secondary-gold/20'
+                    ? 'border-primary bg-primary/5'
+                    : 'border-primary/30 bg-primary/5 hover:bg-primary/10'
                     }`}
                 >
                   <input
@@ -516,7 +530,7 @@ const AddItemPage = () => {
                   />
 
                   <div className="flex flex-col items-center justify-center">
-                    <Upload className={`w-12 h-12 mb-3 ${dragActive ? 'text-primary-berry' : 'text-secondary-gold'}`} />
+                    <Upload className="w-12 h-12 mb-3 text-primary" />
                     <p className="text-sm font-semibold text-gray-700 mb-1">
                       {dragActive ? 'Drop images here' : 'Drag & drop images here'}
                     </p>
@@ -524,7 +538,7 @@ const AddItemPage = () => {
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="px-6 py-2 bg-secondary-gold text-white font-semibold rounded-lg hover:bg-secondary-dark transition"
+                      className="px-6 py-2 bg-secondary text-white font-semibold rounded-lg hover:bg-secondary-dark transition"
                     >
                       <Image className="w-4 h-4 inline mr-2" />
                       Browse Files
@@ -567,7 +581,7 @@ const AddItemPage = () => {
                       <button
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
-                        className="mt-3 text-sm text-primary-berry hover:text-primary-dark font-semibold"
+                        className="mt-3 text-sm text-primary hover:text-primary-dark font-semibold"
                       >
                         + Add more images
                       </button>
@@ -576,7 +590,7 @@ const AddItemPage = () => {
                 )}
               </div>
 
-              <div className="mb-4 p-4 bg-yellow-50 rounded-lg text-sm text-secondary-gold border border-secondary-gold">
+              <div className="mb-4 p-4 bg-yellow-50 rounded-lg text-sm text-secondary border border-secondary">
                 <p className="font-semibold flex items-center">
                   <Info className="w-4 h-4 mr-2" />
                   Important Note
@@ -587,7 +601,7 @@ const AddItemPage = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 text-white font-bold rounded-xl btn-gradient-vows shadow-lg text-lg disabled:opacity-50"
+                className="w-full py-3 text-white font-bold rounded-xl btn-primary shadow-lg text-lg disabled:opacity-50"
               >
                 {loading ? 'Publishing...' : 'Publish Listing'}
               </button>
@@ -595,12 +609,12 @@ const AddItemPage = () => {
           </div>
         </div>
       </div>
-      {/* Subscription Modal */}
-      {showSubscriptionModal && (
+      {/* Subscription Modal - NEVER show if editing (id exists) */}
+      {showSubscriptionModal && !id && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-8 max-w-lg w-full animate-fade-in shadow-2xl text-center">
-            <div className="w-16 h-16 bg-primary-berry/10 rounded-full flex items-center justify-center mx-auto mb-6">
-              <ShieldCheck className="w-8 h-8 text-primary-berry" />
+            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+              <ShieldCheck className="w-8 h-8 text-primary" />
             </div>
             <h3 className="text-2xl font-display font-bold text-gray-900 mb-2">Choose Your Lender Plan</h3>
             <p className="text-gray-600 mb-6">
@@ -620,11 +634,11 @@ const AddItemPage = () => {
               </div>
 
               {/* Premium Tier */}
-              <div className="border-2 border-primary-berry bg-primary-berry/5 rounded-xl p-4 relative cursor-pointer" onClick={handleSubscribe}>
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary-berry text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+              <div className="border-2 border-primary bg-primary/5 rounded-xl p-4 relative cursor-pointer" onClick={handleSubscribe}>
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-secondary text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
                   RECOMMENDED
                 </div>
-                <h4 className="font-bold text-primary-berry mb-1">Premium</h4>
+                <h4 className="font-bold text-primary mb-1">Premium</h4>
                 <p className="text-xs text-gray-500 mb-3">₹100 / month</p>
                 <ul className="text-xs text-gray-700 space-y-2 text-left">
                   <li className="flex items-center"><span className="text-green-500 mr-1">✔</span> Unlimited Listings</li>
@@ -639,7 +653,7 @@ const AddItemPage = () => {
               <button
                 onClick={handleSubscribe}
                 disabled={loading}
-                className="w-full py-3 bg-gradient-to-r from-primary-berry to-primary-plum text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5 disabled:opacity-70"
+                className="w-full py-3 bg-gradient-to-r from-primary to-primary-dark text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5 disabled:opacity-70"
               >
                 {loading ? 'Processing...' : 'Subscribe to Premium (₹100/mo)'}
               </button>

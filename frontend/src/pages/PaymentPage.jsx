@@ -35,9 +35,8 @@ const PaymentPage = () => {
           {paymentMethods.map((method) => (
             <label
               key={method.id}
-              className={`flex items-center justify-between border rounded-xl p-4 cursor-pointer ${
-                selectedMethod === method.id ? 'border-primary-berry bg-primary-berry/5' : 'border-gray-200'
-              }`}
+              className={`flex items-center justify-between border rounded-xl p-4 cursor-pointer ${selectedMethod === method.id ? 'border-primary bg-primary/5' : 'border-gray-200'
+                }`}
             >
               <div>
                 <p className="font-semibold">{method.label}</p>
@@ -57,7 +56,7 @@ const PaymentPage = () => {
               />
             </label>
           ))}
-          <button type="submit" className="w-full bg-primary-berry text-white py-3 rounded-md font-semibold">
+          <button type="submit" className="w-full btn-primary text-white py-3 rounded-md font-semibold">
             Continue
           </button>
         </form>

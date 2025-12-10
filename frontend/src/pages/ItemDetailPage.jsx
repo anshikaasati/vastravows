@@ -144,7 +144,7 @@ const ItemDetailPage = () => {
             {item.images?.length > 1 && (
               <div className="grid grid-cols-4 gap-2 md:gap-4">
                 {item.images.slice(1).map((src, idx) => (
-                  <div key={idx} className="aspect-square rounded-xl overflow-hidden cursor-pointer border-2 border-transparent hover:border-primary-berry transition">
+                  <div key={idx} className="aspect-square rounded-xl overflow-hidden cursor-pointer border-2 border-transparent hover:border-primary transition">
                     <img src={src} alt={`View ${idx + 2}`} className="w-full h-full object-cover" />
                   </div>
                 ))}
@@ -165,7 +165,7 @@ const ItemDetailPage = () => {
                 <span className="text-2xl md:text-3xl font-bold text-gray-900">₹{item.salePrice}</span>
               ) : (
                 <div className="flex items-baseline gap-2">
-                  <span className="text-2xl md:text-3xl font-bold text-primary-berry">₹{item.rentPricePerDay}</span>
+                  <span className="text-2xl md:text-3xl font-bold text-primary">₹{item.rentPricePerDay}</span>
                   <span className="text-gray-500 font-medium">/ day</span>
                 </div>
               )}
@@ -193,10 +193,10 @@ const ItemDetailPage = () => {
                           onClick={() => !isInCart && setSelectedSize(size)}
                           disabled={isInCart}
                           className={`w-12 h-12 rounded-lg border-2 flex items-center justify-center font-semibold transition-all ${selectedSize === size
-                              ? 'border-primary-berry bg-primary-berry text-white shadow-lg scale-110'
-                              : isInCart
-                                ? 'border-gray-100 bg-gray-100 text-gray-400 cursor-not-allowed'
-                                : 'border-gray-200 text-gray-700 hover:border-primary-berry/50'
+                            ? 'border-primary bg-primary text-white shadow-lg scale-110'
+                            : isInCart
+                              ? 'border-gray-100 bg-gray-100 text-gray-400 cursor-not-allowed'
+                              : 'border-gray-200 text-gray-700 hover:border-primary/50'
                             }`}
                           title={isInCart ? 'Already in cart' : size}
                         >
@@ -227,7 +227,7 @@ const ItemDetailPage = () => {
             </div>
 
             <div className="flex items-center gap-4 p-4 bg-white/50 rounded-xl border border-white/60">
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-primary-berry to-secondary-gold flex items-center justify-center text-white font-bold text-lg md:text-xl">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-lg md:text-xl">
                 {item.ownerId?.name?.charAt(0)}
               </div>
               <div>
@@ -265,9 +265,9 @@ const ItemDetailPage = () => {
                 <input
                   name="comment"
                   placeholder="Share your experience with this attire..."
-                  className="flex-1 px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20 text-sm md:text-base"
+                  className="flex-1 px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary/20 text-sm md:text-base"
                 />
-                <button type="submit" className="px-6 py-3 rounded-xl bg-gray-900 text-white font-semibold hover:bg-gray-800 transition shadow-lg w-full sm:w-auto">
+                <button type="submit" className="px-6 py-3 rounded-xl btn-primary shadow-lg w-full sm:w-auto">
                   Post
                 </button>
               </div>
@@ -342,7 +342,7 @@ const ItemDetailPage = () => {
             <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={handleAddToCart}
-                className="w-full py-3 rounded-xl border-2 border-primary-berry text-primary-berry font-bold hover:bg-primary-berry hover:text-white transition flex items-center justify-center gap-2"
+                className="w-full py-3 rounded-xl btn-outline font-bold hover:text-white transition flex items-center justify-center gap-2"
               >
                 <ShoppingBag className="w-5 h-5" />
                 Add to Cart
@@ -350,15 +350,14 @@ const ItemDetailPage = () => {
 
               {item.salePrice ? (
                 <button
-                  onClick={handleBuyNow}
-                  className="w-full py-3 rounded-xl btn-gradient-outline font-semibold"
+                  className="w-full py-3 rounded-xl btn-primary font-semibold shadow-lg"
                 >
                   Buy Now
                 </button>
               ) : (
                 <button
                   onClick={handleRentNow}
-                  className="w-full py-3 rounded-xl btn-gradient-vows font-bold text-white shadow-lg"
+                  className="w-full py-3 rounded-xl btn-primary font-bold text-white shadow-lg"
                 >
                   Rent Now
                 </button>

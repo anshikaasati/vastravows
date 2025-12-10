@@ -1,13 +1,16 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Sparkles, Menu, X } from 'lucide-react';
+import { Sparkles, Menu, X, ShoppingBag, Heart, User, Search } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,115 +25,164 @@ const Navbar = () => {
     navigate('/');
   };
 
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      navigate(`/items?search=${encodeURIComponent(searchQuery)}`);
+      setSearchOpen(false);
+      setSearchQuery('');
+    }
+  };
+
+  const navLinks = [
+    { name: 'Collections', path: '/items' },
+    { name: 'Wishlist', path: '/wishlist' },
+    { name: 'Bookings', path: '/bookings' },
+  ];
+
   return (
-    <header className={`sticky top-0 z-30 transition-all duration-300 ${scrolled ? 'py-2' : 'py-4'
+    <header className={`sticky top-0 z-50 transition-all duration-500 border-b ${scrolled
+      ? 'bg-white/90 backdrop-blur-xl border-gold/20 py-3 shadow-md'
+      : 'bg-transparent border-transparent py-5'
       }`}>
-      <div className={`transition-all duration-300 ${scrolled
-        ? 'backdrop-blur-xl bg-white/80 shadow-glow border-b border-white/40'
-        : 'bg-transparent'
-        }`}>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-2 flex justify-between items-center">
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-berry via-rose-500 to-secondary-gold text-white flex items-center justify-center shadow-lg group-hover:scale-105 transition duration-300">
-              <Sparkles className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="font-display text-xl tracking-wide text-primary-berry">Vastra Vows</p>
-              <p className="text-[10px] uppercase tracking-[0.2em] text-secondary-gold font-semibold">
-                Luxe Rentals
-              </p>
-            </div>
-          </Link>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
 
-          <nav className="hidden md:flex items-center gap-8 text-sm font-semibold text-gray-600">
-            <Link to="/items" className="hover:text-primary-berry transition relative group">
-              Collections
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-berry transition-all group-hover:w-full"></span>
-            </Link>
-            <Link to="/wishlist" className="hover:text-primary-berry transition relative group">
-              Wishlist
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-berry transition-all group-hover:w-full"></span>
-            </Link>
-            <Link to="/bookings" className="hover:text-primary-berry transition relative group">
-              Bookings
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-berry transition-all group-hover:w-full"></span>
-            </Link>
-            <Link to="/cart" className="hover:text-primary-berry transition relative group flex items-center gap-1">
-              Cart
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-berry transition-all group-hover:w-full"></span>
-            </Link>
-          </nav>
+        {/* Logo */}
+        <Link to="/" className="flex items-center gap-3 group">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br from-primary to-secondary text-white shadow-lg group-hover:scale-105 transition-transform duration-300">
+            <Sparkles className="w-5 h-5" />
+          </div>
+          <div>
+            <h1 className="font-display text-2xl font-bold text-primary tracking-tight leading-none group-hover:text-secondary transition-colors">
+              Vastra Vows
+            </h1>
+            <p className="text-[10px] uppercase tracking-[0.25em] text-secondary font-medium pl-0.5">
+              Luxe Rentals
+            </p>
+          </div>
+        </Link>
 
-          <div className="flex items-center space-x-4">
-            {user ? (
-              <div className="hidden md:flex items-center space-x-3">
-                <Link
-                  to="/profile"
-                  className="px-4 py-2 rounded-full bg-white/50 border border-white/60 text-primary-berry text-sm font-semibold hover:bg-white hover:shadow-sm transition"
-                >
-                  Hi, {user.name?.split(' ')[0]}
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="text-sm text-gray-500 hover:text-primary-berry font-medium transition"
-                >
-                  Logout
-                </button>
-              </div>
-            ) : (
-              <div className="hidden md:flex items-center gap-4">
-                <Link to="/login" className="text-sm font-medium text-gray-600 hover:text-primary-berry transition">
-                  Login
-                </Link>
-                <Link
-                  to="/register"
-                  className="px-5 py-2.5 rounded-full btn-gradient-vows text-sm font-semibold shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5"
-                >
-                  Join Community
-                </Link>
-              </div>
-            )}
+        {/* Desktop Nav */}
+        <nav className="hidden md:flex items-center gap-8">
+          {navLinks.map((link) => {
+            const isActive = location.pathname === link.path;
+
+            return (
+              <Link
+                key={link.name}
+                to={link.path}
+                className={`text-sm font-medium transition-colors relative group py-1 tracking-wide ${isActive ? 'text-primary font-semibold' : 'text-gray-700 hover:text-primary'
+                  }`}
+              >
+                {link.name}
+                <span className={`absolute bottom-0 left-0 h-0.5 bg-secondary transition-all duration-300 ${isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                  }`}></span>
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Actions */}
+        <div className="flex items-center gap-4">
+          {/* Search Toggle */}
+          <div className="relative flex items-center">
+            <div className={`flex items-center transition-all duration-300 ${searchOpen ? 'w-48 opacity-100 mr-2' : 'w-0 opacity-0 overflow-hidden'}`}>
+              <input
+                type="text"
+                placeholder="Search..."
+                className="w-full bg-gray-50/50 border border-gray-200 rounded-full py-1.5 px-4 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                autoFocus
+              />
+            </div>
             <button
-              className="md:hidden p-2 border border-white/40 rounded-xl bg-white/30 text-gray-700 hover:bg-white hover:border-primary-berry transition"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              onClick={() => {
+                if (searchOpen && searchQuery) {
+                  handleSearch();
+                } else {
+                  setSearchOpen(!searchOpen);
+                }
+              }}
+              className={`p-2 transition-colors ${searchOpen ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
             >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              <Search className="w-5 h-5" />
             </button>
           </div>
+
+          <Link to="/cart" className="relative p-2 text-gray-700 hover:text-primary transition-colors group">
+            <ShoppingBag className="w-5 h-5" />
+            <span className="absolute top-0 right-0 w-2 h-2 bg-secondary rounded-full transform scale-0 group-hover:scale-100 transition-transform shadow-sm"></span>
+          </Link>
+
+          {user ? (
+            <div className="hidden md:flex items-center gap-3 pl-4 border-l border-gray-200">
+              <div className="flex flex-col text-right hidden lg:block">
+                <span className="text-xs text-gray-500">Welcome, </span>
+                <span className="text-sm font-display font-semibold text-primary leading-none">{user.name?.split(' ')[0]}</span>
+              </div>
+              <div className="relative group">
+                <button className="w-9 h-9 rounded-full bg-primary/5 border border-primary/20 flex items-center justify-center text-primary overflow-hidden hover:bg-primary/10 transition-colors">
+                  <User className="w-5 h-5" />
+                </button>
+                <div className="absolute right-0 top-full mt-2 w-48 py-2 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 flex flex-col z-50">
+                  <div className="px-4 py-2 border-b border-gray-50 mb-1">
+                    <p className="text-xs text-gray-500 uppercase tracking-widest">Account</p>
+                  </div>
+                  <Link to="/profile" className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary flex items-center gap-2">
+                    <User className="w-4 h-4" /> Profile
+                  </Link>
+                  <button onClick={handleLogout} className="px-4 py-2 text-sm text-left text-red-600 hover:bg-red-50 flex items-center gap-2">
+                    Logout
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="hidden md:flex items-center gap-3">
+              <Link to="/login" className="px-4 py-2 text-sm font-medium text-primary hover:text-secondary transition-colors">
+                Login
+              </Link>
+              <Link to="/register" className="px-5 py-2 rounded-full bg-primary text-white text-sm font-medium shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5 transition-all duration-300">
+                Get Started
+              </Link>
+            </div>
+          )}
+
+          {/* Mobile Toggle */}
+          <button
+            className="md:hidden p-2 text-gray-700 hover:text-primary"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
       </div>
 
+      {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 w-full bg-white/95 backdrop-blur-xl border-t border-gray-100 shadow-xl animate-fade-in">
-          <div className="px-6 py-6 space-y-4">
-            <Link to="/items" className="block text-lg font-medium text-gray-800 hover:text-primary-berry">
-              Collections
-            </Link>
-            <Link to="/wishlist" className="block text-lg font-medium text-gray-800 hover:text-primary-berry">
-              Wishlist
-            </Link>
-            <Link to="/cart" className="block text-lg font-medium text-gray-800 hover:text-primary-berry">
-              Cart
-            </Link>
-            <Link to="/profile" className="block text-lg font-medium text-gray-800 hover:text-primary-berry">
-              Profile
-            </Link>
+        <div className="md:hidden absolute top-full left-0 w-full bg-white/95 backdrop-blur-xl border-t border-gray-100 shadow-xl animate-fade-in-up">
+          <div className="p-4 space-y-2">
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                to={link.path}
+                className="block px-4 py-3 rounded-lg hover:bg-gray-50 text-gray-700 font-medium hover:text-primary transition-colors flex justify-between items-center"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {link.name}
+              </Link>
+            ))}
             <div className="h-px bg-gray-100 my-2"></div>
             {user ? (
-              <button
-                onClick={handleLogout}
-                className="block w-full text-left text-lg font-medium text-red-500 hover:text-red-600"
-              >
-                Logout
-              </button>
+              <>
+                <Link to="/profile" className="block px-4 py-3 text-gray-700 font-medium hover:text-primary">Profile</Link>
+                <button onClick={handleLogout} className="block w-full text-left px-4 py-3 text-red-600 font-medium hover:bg-red-50 rounded-lg">Logout</button>
+              </>
             ) : (
-              <div className="grid grid-cols-2 gap-4 pt-2">
-                <Link to="/login" className="text-center py-3 rounded-xl border border-gray-200 font-semibold text-gray-700">
-                  Login
-                </Link>
-                <Link to="/register" className="text-center py-3 rounded-xl btn-gradient-vows text-white font-semibold shadow-lg">
-                  Register
-                </Link>
+              <div className="grid grid-cols-2 gap-3 p-2">
+                <Link to="/login" className="flex items-center justify-center py-2.5 rounded-lg border border-gray-200 font-medium text-gray-700">Login</Link>
+                <Link to="/register" className="flex items-center justify-center py-2.5 rounded-lg bg-primary text-white font-medium shadow-md">Sign Up</Link>
               </div>
             )}
           </div>

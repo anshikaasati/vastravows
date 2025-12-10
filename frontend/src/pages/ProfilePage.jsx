@@ -4,7 +4,9 @@ import { authApi, itemApi, paymentApi } from '../api/services';
 import toast from 'react-hot-toast';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { Link, useNavigate } from 'react-router-dom';
-import { Trash2, Shield, Upload, CheckCircle, XCircle } from 'lucide-react';
+import { Trash2, Shield, Upload, CheckCircle, XCircle, Edit } from 'lucide-react';
+
+
 
 const ProfilePage = () => {
   const { user, setUser, token, logout } = useAuth();
@@ -209,11 +211,11 @@ const ProfilePage = () => {
         <h2 className="text-xl md:text-2xl font-display font-bold mb-6 text-gray-900">My Profile</h2>
 
         {/* Role Toggle */}
-        <div className="mb-6 p-4 bg-gradient-to-r from-primary-berry/10 to-primary-plum/10 rounded-xl border border-primary-berry/20">
+        <div className="mb-6 p-4 bg-gradient-to-r from-primary/10 to-primary-dark/10 rounded-xl border border-primary/20">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-semibold text-gray-900 flex items-center gap-2">
-                <Shield className="w-5 h-5 text-primary-berry" />
+              <h3 className={`font-semibold flex items-center gap-2 ${user?.isLenderEnabled ? 'text-primary' : 'text-gray-900'}`}>
+                <Shield className={`w-5 h-5 ${user?.isLenderEnabled ? 'text-primary' : 'text-gray-400'}`} />
                 Lender Mode
                 {user?.isVerified && (
                   <CheckCircle className="w-5 h-5 text-green-500" title="Verified Lender" />
@@ -230,7 +232,7 @@ const ProfilePage = () => {
                 onChange={(e) => handleToggleLender(e.target.checked)}
                 className="sr-only peer"
               />
-              <div className="w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-berry/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary-berry"></div>
+              <div className="w-14 h-7 bg-gray-400 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary"></div>
             </label>
           </div>
         </div>
@@ -243,7 +245,7 @@ const ProfilePage = () => {
               <input
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
+                className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary/20"
                 required
               />
             </div>
@@ -256,7 +258,7 @@ const ProfilePage = () => {
               <input
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
+                className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary/20"
               />
             </div>
             <div>
@@ -296,7 +298,7 @@ const ProfilePage = () => {
                       value={form.upiId || ''}
                       onChange={(e) => setForm({ ...form, upiId: e.target.value })}
                       placeholder="username@bank"
-                      className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
+                      className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
                   <div>
@@ -305,7 +307,7 @@ const ProfilePage = () => {
                       value={form.bankAccountHolderName || ''}
                       onChange={(e) => setForm({ ...form, bankAccountHolderName: e.target.value })}
                       placeholder="As per bank records"
-                      className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
+                      className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
                   <div>
@@ -314,7 +316,7 @@ const ProfilePage = () => {
                       value={form.bankAccountNumber || ''}
                       onChange={(e) => setForm({ ...form, bankAccountNumber: e.target.value })}
                       placeholder="1234567890"
-                      className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
+                      className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
                   <div>
@@ -323,7 +325,7 @@ const ProfilePage = () => {
                       value={form.bankIfscCode || ''}
                       onChange={(e) => setForm({ ...form, bankIfscCode: e.target.value })}
                       placeholder="SBIN0001234"
-                      className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
+                      className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
                 </div>
@@ -339,7 +341,7 @@ const ProfilePage = () => {
                       value={form.address.street}
                       onChange={(e) => setForm({ ...form, address: { ...form.address, street: e.target.value } })}
                       placeholder="House/Flat No., Street Name"
-                      className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
+                      className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
                   <div>
@@ -348,7 +350,7 @@ const ProfilePage = () => {
                       value={form.address.city}
                       onChange={(e) => setForm({ ...form, address: { ...form.address, city: e.target.value } })}
                       placeholder="Mumbai"
-                      className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
+                      className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
                   <div>
@@ -357,7 +359,7 @@ const ProfilePage = () => {
                       value={form.address.state}
                       onChange={(e) => setForm({ ...form, address: { ...form.address, state: e.target.value } })}
                       placeholder="Maharashtra"
-                      className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
+                      className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
                   <div>
@@ -366,7 +368,7 @@ const ProfilePage = () => {
                       value={form.address.pincode}
                       onChange={(e) => setForm({ ...form, address: { ...form.address, pincode: e.target.value } })}
                       placeholder="400001"
-                      className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
+                      className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
                   <div>
@@ -374,7 +376,7 @@ const ProfilePage = () => {
                     <input
                       value={form.address.country}
                       onChange={(e) => setForm({ ...form, address: { ...form.address, country: e.target.value } })}
-                      className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
+                      className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
                 </div>
@@ -394,7 +396,7 @@ const ProfilePage = () => {
                     <select
                       value={form.idProofType}
                       onChange={(e) => setForm({ ...form, idProofType: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
+                      className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary/20"
                     >
                       <option value="">Select ID Type</option>
                       <option value="aadhar">Aadhar Card</option>
@@ -409,7 +411,7 @@ const ProfilePage = () => {
                       value={form.idProofNumber}
                       onChange={(e) => setForm({ ...form, idProofNumber: e.target.value })}
                       placeholder="Enter ID number"
-                      className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary-berry/20"
+                      className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
                   <div className="md:col-span-2">
@@ -482,7 +484,7 @@ const ProfilePage = () => {
           {items.length === 0 ? (
             <div className="text-center py-12 bg-white/30 rounded-2xl border border-dashed border-gray-300">
               <p className="text-gray-500 mb-4">You haven&apos;t listed any attire yet.</p>
-              <Link to="/add-item" className="text-primary-berry font-semibold hover:underline">
+              <Link to="/add-item" className="text-primary font-semibold hover:underline">
                 Start listing now
               </Link>
             </div>
@@ -508,10 +510,17 @@ const ProfilePage = () => {
                       <div className="flex gap-2">
                         <Link
                           to={`/items/${item._id}`}
-                          className="p-2 text-gray-400 hover:text-primary-berry transition"
+                          className="p-2 text-gray-400 hover:text-primary transition"
                           title="View"
                         >
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                        </Link>
+                        <Link
+                          to={`/items/edit/${item._id}`}
+                          className="p-2 text-gray-400 hover:text-blue-500 transition"
+                          title="Edit"
+                        >
+                          <Edit className="w-5 h-5" />
                         </Link>
                         <button
                           onClick={() => handleDeleteItem(item._id)}

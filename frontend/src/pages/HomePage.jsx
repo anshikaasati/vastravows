@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Sparkles, Crown, Shirt, Gem, Filter, Watch, ShoppingBag, Footprints } from 'lucide-react';
+import { Sparkles, Crown, Shirt, Gem, Filter, Watch, ShoppingBag, Footprints, Search, ArrowRight } from 'lucide-react';
 import ItemCard from '../components/ItemCard';
 import { itemApi } from '../api/services';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -79,7 +79,6 @@ const HomePage = () => {
         setGenderFilter(inferred.gender);
         setSearchCategory(effectiveCategory);
       } else {
-        // Fallback to text search if no category inferred
         params.append('search', searchPrompt);
       }
     }
@@ -94,189 +93,190 @@ const HomePage = () => {
     navigate(`/items?${params.toString()}`);
   };
 
-  const categoryOptions = {
-    women: [
-      { label: 'Women – Western', value: 'women:women-clothes-western', icon: Crown },
-      { label: 'Women – Traditional', value: 'women:women-clothes-traditional', icon: Crown },
-      { label: 'Women – Jewellery', value: 'women:women-jewellery', icon: Gem },
-      { label: 'Women – Accessories', value: 'women:women-accessories', icon: ShoppingBag },
-      { label: 'Women – Shoes', value: 'women:women-shoes', icon: Footprints },
-      { label: 'Women – Watches', value: 'women:women-watches', icon: Watch }
-    ],
-    men: [
-      { label: 'Men – Western', value: 'men:men-clothes-western', icon: Shirt },
-      { label: 'Men – Traditional', value: 'men:men-clothes-traditional', icon: Shirt },
-      { label: 'Men – Watches', value: 'men:men-watches', icon: Watch },
-      { label: 'Men – Shoes', value: 'men:men-shoes', icon: Footprints },
-      { label: 'Men – Accessories', value: 'men:men-accessories', icon: ShoppingBag }
-    ]
-  };
-
-  const handleCategoryFilter = (value) => {
-    setSearchCategory(value === 'all' ? '' : value);
-  };
+  const categories = [
+    { title: 'Traditional', image: '/images/cat-traditional.jpg', link: 'women:women-clothes-traditional' },
+    { title: 'Western', image: '/images/cat-western.jpg', link: 'women:women-clothes-western' },
+    { title: 'Accessories', image: '/images/cat-accessories.jpg', link: 'women:women-accessories' },
+  ];
 
   return (
-    <div className="min-h-screen space-y-16">
-      {/* Hero */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-20 md:pt-24">
-        <div className="hero-section relative overflow-hidden rounded-3xl">
-          <div className="hero-content grid lg:grid-cols-2 gap-8 md:gap-12 p-6 md:p-10">
-            <div className="text-left space-y-6">
-              <p className="text-[10px] md:text-xs uppercase tracking-[0.3em] md:tracking-[0.5em] text-secondary-gold font-semibold">Curated Luxury Rentals</p>
-              <h1 className="text-3xl sm:text-4xl md:text-6xl font-display leading-tight text-midnight">
-                Adorn your story with <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-berry to-secondary-gold">couture elegance</span>
-              </h1>
-              <p className="text-gray-600 text-sm md:text-lg leading-relaxed">
-                Discover designer lehengas, heirloom jewellery, heritage sherwanis, and statement accessories sourced from the country&apos;s most coveted closets.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link to="/items" className="btn-gradient-vows px-8 py-3.5 rounded-full text-sm font-semibold text-center shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5">
-                  Browse Collections
-                </Link>
-                {token ? (
-                  <Link to="/wishlist" className="btn-gradient-outline px-8 py-3.5 rounded-full text-sm font-semibold text-center hover:bg-white transition">
-                    View Wishlist
-                  </Link>
-                ) : (
-                  <Link to="/register" className="btn-gradient-outline px-8 py-3.5 rounded-full text-sm font-semibold text-center hover:bg-white transition">
-                    Become a Lender
-                  </Link>
-                )}
-              </div>
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <div className="relative h-[90vh] flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0">
+          <img
+            src="/images/hero-main.jpg"
+            alt="Hero Background"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+        </div>
 
-              <div className="grid grid-cols-3 gap-2 md:gap-4 text-center pt-4">
-                {[
-                  { label: 'Designers', value: '120+' },
-                  { label: 'Cities', value: '35' },
-                  { label: 'Curated', value: '2.4k+' }
-                ].map((stat) => (
-                  <div key={stat.label} className="p-3 md:p-4 glass-panel rounded-2xl border border-white/40">
-                    <p className="text-xl md:text-2xl font-bold text-primary-berry">{stat.value}</p>
-                    <p className="text-[10px] md:text-xs uppercase tracking-wide text-gray-500 font-medium">{stat.label}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+        <div className="relative z-10 container mx-auto px-4 text-center text-white space-y-8 animate-fade-in-up">
+          <p className="text-sm md:text-base font-medium tracking-[0.3em] uppercase text-secondary">
+            Curated Luxury Rentals
+          </p>
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-medium leading-tight hero-text-shadow text-white">
+            Vastra Vows<br />
+            <span className="italic font-light text-secondary-light">Collection</span>
+          </h1>
+          <p className="text-lg md:text-xl text-gray-100 max-w-2xl mx-auto font-light">
+            Step into our chic sanctuary, where style meets sustainability. Explore our curated collection of jewellery and women's apparel.
+          </p>
 
-            <div className="relative hidden lg:block">
-              <div className="absolute -inset-6 bg-gradient-to-tr from-secondary-gold/30 to-primary-berry/30 blur-3xl" />
-              <div className="relative grid grid-cols-2 gap-4">
-                {[
-                  'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80',
-                  'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=600&q=80',
-                  'https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format&fit=crop&w=600&q=80',
-                  'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=600&q=80'
-                ].map((img, idx) => (
-                  <div key={img} className={`rounded-2xl overflow-hidden shadow-glow ${idx % 2 ? 'translate-y-8' : ''}`}>
-                    <img src={img} alt="Editorial couture" className="w-full h-48 object-cover hover:scale-110 transition duration-700" />
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div className="pt-8 flex flex-col sm:flex-row gap-6 justify-center">
+            <Link
+              to="/items"
+              className="px-8 py-4 btn-primary text-white rounded-full font-serif text-lg transition-transform hover:-translate-y-1 shadow-lg"
+            >
+              Explore Collection
+            </Link>
+            {!token && (
+              <Link
+                to="/register"
+                className="btn-outline border-white text-white hover:bg-white hover:text-primary"
+              >
+                Join the Tribe
+              </Link>
+            )}
           </div>
-          <br></br>      
-          {/* Search */}
-          <div className="bg-white/90 backdrop-blur-md mx-4 md:mx-16 -mt-6 md:-mt-10 rounded-3xl p-4 md:p-6 shadow-glow flex flex-col lg:flex-row lg:items-center gap-4 mb-8 md:mb-12 border border-white/50 relative z-10">
-            <div className="flex-1 px-2 md:px-4 py-2">
-              <label htmlFor="prompt" className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 text-left">
-                Describe your look
-              </label>
-              <input
-                id="prompt"
-                type="text"
-                placeholder="Try “red bridal lehenga” or “sherwani for groom”"
-                value={searchPrompt}
-                onChange={(e) => setSearchPrompt(e.target.value)}
-                className="w-full text-base md:text-lg font-medium text-gray-900 placeholder-gray-400 bg-transparent focus:outline-none"
-              />
-            </div>
+        </div>
+      </div>
 
+      {/* Search Bar (Floating) */}
+      <div className="container mx-auto px-4 -mt-10 relative z-20">
+        <div className="max-w-4xl mx-auto glass-card rounded-full p-2 flex flex-col md:flex-row shadow-2xl">
+          <div className="flex-1 px-6 py-3 border-b md:border-b-0 md:border-r border-gray-200">
+            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Looking For?</label>
+            <input
+              type="text"
+              placeholder="Lehenga, Gown, Sherwani..."
+              className="w-full bg-transparent border-none outline-none ring-0 focus:ring-0 text-lg text-gray-800 placeholder-gray-400 font-medium"
+              value={searchPrompt}
+              onChange={(e) => setSearchPrompt(e.target.value)}
+            />
+          </div>
+          <div className="px-6 py-3 flex items-center">
             <button
               onClick={handleSearch}
-              className="w-full lg:w-auto px-8 py-4 btn-gradient-vows text-white font-bold rounded-2xl flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5"
+              className="bg-primary text-white p-4 rounded-full hover:bg-primary-dark transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2"
+              title="Search"
             >
-              <Sparkles className="w-5 h-5" />
-              <span className="text-base">Search</span>
+              <Search className="w-5 h-5" />
+              <span className="font-bold tracking-wider text-sm md:hidden">FIND</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* Main Content Area */}
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        {/* Filters & Categories */}
-        <div className="flex flex-col gap-6 mb-12">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <span className="text-sm md:text-base font-bold text-secondary-gold uppercase tracking-[0.2em]">
-              Browse Collections
-            </span>
-            <div className="flex p-1 bg-gray-100/50 rounded-full border border-gray-200 w-fit">
-              {['women', 'men'].map((gender) => (
-                <button
-                  key={gender}
-                  onClick={() => {
-                    setGenderFilter(gender);
-                    setSearchCategory('');
-                  }}
-                  className={`px-6 py-2 rounded-full text-xs md:text-sm font-bold transition-all duration-300 ${genderFilter === gender
-                      ? 'bg-white text-primary-berry shadow-md'
-                      : 'text-gray-500 hover:text-gray-700'
-                    }`}
-                >
-                  {gender === 'women' ? 'Women' : 'Men'}
-                </button>
-              ))}
+
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 space-y-24">
+
+        {/* Featured Categories */}
+        <section>
+          <div className="text-center mb-12 space-y-4">
+            <div className="flex justify-center mb-4 text-secondary">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="4"></circle>
+                <path d="M12 2v2"></path>
+                <path d="M12 20v2"></path>
+                <path d="M4.93 4.93l1.41 1.41"></path>
+                <path d="M17.66 17.66l1.41 1.41"></path>
+                <path d="M2 12h2"></path>
+                <path d="M20 12h2"></path>
+                <path d="M6.34 17.66l-1.41 1.41"></path>
+                <path d="M19.07 4.93l-1.41 1.41"></path>
+              </svg>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-display text-primary italic">Welcome to Vastra Vows</h2>
+            <p className="text-gray-500 max-w-xl mx-auto text-sm leading-relaxed">
+              Welcome to our chic sanctuary, where style meets sustainability. Step into a world of organic elegance and modern domination as you explore our curated collection of jewellery and women's apparel.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            {categories.map((cat) => (
+              <div
+                key={cat.title}
+                className="flex flex-col items-center cursor-pointer group"
+                onClick={() => {
+                  setSearchCategory(cat.link);
+                  setGenderFilter('women');
+                  document.getElementById('items-grid')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              >
+                <div className="relative w-full aspect-[3/4] mask-arch overflow-hidden mb-4 shadow-lg transition-transform duration-500 group-hover:-translate-y-2">
+                  <img
+                    src={cat.image}
+                    alt={cat.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  {/* Label overlay at bottom inside the arch, similar to reference */}
+                  <div className="absolute bottom-0 inset-x-0 h-16 bg-primary/90 flex items-center justify-center translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                    <span className="text-white font-display text-lg tracking-wider">Explore</span>
+                  </div>
+                </div>
+
+                {/* Boxed Label below */}
+                <div className="bg-primary text-white py-3 px-8 text-sm uppercase tracking-widest font-serif shadow-md transition-colors group-hover:bg-primary-dark">
+                  {cat.title}
+                </div>
+                <span className="mt-2 text-xs text-secondary-light group-hover:text-primary transition-colors">{cat.title} +</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Trending Items */}
+        <section id="items-grid" className="scroll-mt-24">
+          <div className="flex flex-col md:flex-row items-end justify-between mb-10 gap-4">
+            <div>
+              <h2 className="text-3xl md:text-5xl font-display text-primary mb-2">Trending Now</h2>
+              <p className="text-gray-500">Fresh from the runway to your wardrobe</p>
+            </div>
+
+            {/* Gender Toggle */}
+            <div className="flex items-center gap-2 p-1 bg-white border border-gray-200 rounded-full shadow-sm">
+              <button
+                onClick={() => setGenderFilter('women')}
+                className={`px-6 py-2 rounded-full text-sm font-semibold transition-all ${genderFilter === 'women' ? 'bg-primary text-white shadow' : 'text-gray-500 hover:text-gray-900'}`}
+              >
+                Women
+              </button>
+              <button
+                onClick={() => setGenderFilter('men')}
+                className={`px-6 py-2 rounded-full text-sm font-semibold transition-all ${genderFilter === 'men' ? 'bg-primary text-white shadow' : 'text-gray-500 hover:text-gray-900'}`}
+              >
+                Men
+              </button>
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-3">
-            {categoryOptions[genderFilter].map(({ label, value, icon: Icon }) => (
-              <button
-                key={value}
-                onClick={() => handleCategoryFilter(value)}
-                className={`px-5 py-3 rounded-2xl text-sm font-medium transition-all duration-200 flex items-center border ${searchCategory === value
-                    ? 'bg-primary-berry text-white border-primary-berry shadow-lg transform scale-105'
-                    : 'bg-white border-gray-100 text-gray-600 hover:border-primary-berry/30 hover:shadow-md'
-                  }`}
-              >
-                <Icon className={`w-4 h-4 mr-2 ${searchCategory === value ? 'text-white' : 'text-primary-berry'}`} />
-                {label.split('–')[1].trim()}
-              </button>
-            ))}
-            <button
-              onClick={() => handleCategoryFilter('all')}
-              className="px-5 py-3 rounded-2xl text-sm font-medium bg-gray-50 border border-gray-200 text-gray-600 hover:bg-gray-100 transition flex items-center"
-            >
-              <Filter className="w-4 h-4 mr-2" />
-              View All
-            </button>
-          </div>
-        </div>
+          {loading ? (
+            <div className="flex justify-center py-20"><LoadingSpinner /></div>
+          ) : items.length === 0 ? (
+            <div className="text-center py-20 bg-white/50 rounded-3xl border border-dashed border-gray-300">
+              <p className="text-gray-500">No items found in this collection yet.</p>
+              <button onClick={() => { setSearchCategory(''); setSearchPrompt(''); }} className="mt-4 text-primary font-medium hover:underline">Clear Filters</button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              {items.map((item) => (
+                <ItemCard key={item._id} item={item} />
+              ))}
+            </div>
+          )}
 
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl md:text-4xl font-display font-bold text-gray-900">Trending Now</h2>
-          <Link to="/items" className="text-sm font-semibold text-primary-berry hover:text-primary-dark flex items-center">
-            View All <span className="ml-1">→</span>
-          </Link>
-        </div>
+          <div className="mt-16 text-center">
+            <Link to="/items" className="inline-flex items-center gap-2 px-8 py-3 border border-primary text-primary rounded-full hover:bg-primary hover:text-white transition-colors">
+              <span>View All Collections</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </section>
 
-        {/* Product Listing Grid */}
-        {loading ? (
-          <LoadingSpinner />
-        ) : items.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">No items found. Be the first to list an item!</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {items.map((item) => (
-              <ItemCard key={item._id} item={item} />
-            ))}
-          </div>
-        )}
       </main>
-    </div>
+    </div >
   );
 };
 

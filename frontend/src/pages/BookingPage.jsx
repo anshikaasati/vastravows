@@ -205,9 +205,9 @@ const BookingPage = () => {
       <div className="mb-8 md:mb-12">
         <div className="flex items-center justify-center relative">
           <div className="absolute left-0 right-0 top-1/2 h-0.5 bg-gray-200 -z-10" />
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${step >= 1 ? 'bg-primary-berry text-white' : 'bg-gray-200 text-gray-500'}`}>1</div>
-          <div className={`w-32 h-0.5 mx-4 ${step >= 2 ? 'bg-primary-berry' : 'bg-gray-200'}`} />
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${step >= 2 ? 'bg-primary-berry text-white' : 'bg-gray-200 text-gray-500'}`}>2</div>
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${step >= 1 ? 'bg-primary text-white' : 'bg-gray-200 text-gray-500'}`}>1</div>
+          <div className={`w-32 h-0.5 mx-4 ${step >= 2 ? 'bg-primary' : 'bg-gray-200'}`} />
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${step >= 2 ? 'bg-primary text-white' : 'bg-gray-200 text-gray-500'}`}>2</div>
         </div>
         <div className="flex justify-center gap-28 mt-2 text-sm font-semibold text-gray-600">
           <span>Details</span>
@@ -326,7 +326,7 @@ const BookingPage = () => {
 
               <div className="border-t border-gray-200 my-2" />
 
-              <div className="flex justify-between text-xl font-bold text-primary-berry">
+              <div className="flex justify-between text-xl font-bold text-primary">
                 <span>Grand Total</span>
                 <span>₹{breakdown.grandTotal.toFixed(2)}</span>
               </div>
@@ -336,11 +336,11 @@ const BookingPage = () => {
               <div className="space-y-4">
                 <h4 className="font-semibold text-gray-900">Payment Method</h4>
                 <div className="grid grid-cols-2 gap-3">
-                  <label className={`cursor-pointer p-3 rounded-xl border-2 text-center transition-all ${formData.paymentMethod === 'online' ? 'border-primary-berry bg-primary-berry/5' : 'border-transparent bg-white/50'}`}>
+                  <label className={`cursor-pointer p-3 rounded-xl border-2 text-center transition-all ${formData.paymentMethod === 'online' ? 'border-primary bg-primary/5' : 'border-transparent bg-white/50'}`}>
                     <input type="radio" name="paymentMethod" value="online" checked={formData.paymentMethod === 'online'} onChange={handleInputChange} className="hidden" />
                     <span className="font-semibold block text-sm">Online Pay</span>
                   </label>
-                  <label className={`cursor-pointer p-3 rounded-xl border-2 text-center transition-all ${formData.paymentMethod === 'cod' ? 'border-primary-berry bg-primary-berry/5' : 'border-transparent bg-white/50'}`}>
+                  <label className={`cursor-pointer p-3 rounded-xl border-2 text-center transition-all ${formData.paymentMethod === 'cod' ? 'border-primary bg-primary/5' : 'border-transparent bg-white/50'}`}>
                     <input type="radio" name="paymentMethod" value="cod" checked={formData.paymentMethod === 'cod'} onChange={handleInputChange} className="hidden" />
                     <span className="font-semibold block text-sm">Cash on Delivery</span>
                   </label>
@@ -365,7 +365,7 @@ const BookingPage = () => {
                 <button
                   onClick={handleConfirmBooking}
                   disabled={loading}
-                  className="w-full py-4 rounded-xl btn-gradient-vows font-bold text-white shadow-lg disabled:opacity-70"
+                  className="w-full py-4 rounded-xl btn-primary font-bold text-white shadow-lg disabled:opacity-70"
                 >
                   {loading ? 'Processing...' : `Pay ₹${(formData.paymentMethod === 'online' ? breakdown.grandTotal : (breakdown.depositTotal + breakdown.platformFee + breakdown.deliveryCharges)).toFixed(2)}`}
                 </button>

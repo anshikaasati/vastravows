@@ -88,50 +88,46 @@ const ItemsPage = () => {
 
   return (
     <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <div>
-          <h2 className="text-4xl font-display font-bold text-gray-900 tracking-tight">Designer Collection</h2>
-          <p className="text-gray-500 mt-2">Curated luxury rentals for your special moments</p>
-        </div>
+      <div className="flex flex-col items-center justify-center text-center my-12 space-y-4">
+        <h2 className="text-5xl md:text-6xl font-display font-medium text-primary italic">The Collection</h2>
+        <div className="w-24 h-1 bg-secondary mx-auto"></div>
+        <p className="text-gray-500 max-w-lg mx-auto font-light">Explore our handpicked curation of luxury wear, where every piece tells a story of elegance and grace.</p>
       </div>
 
       {/* Filters & Categories */}
-      <div className="glass-panel rounded-3xl p-4 md:p-6 mb-10 space-y-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-gray-200/50">
-          <div className="flex flex-wrap gap-2 md:gap-3">
-            {['women', 'men'].map((gender) => (
-              <button
-                key={gender}
-                onClick={() => handleGenderToggle(gender)}
-                className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${genderFilter === gender
-                  ? 'bg-gray-900 text-white shadow-lg transform scale-105'
-                  : 'bg-white/50 text-gray-600 hover:bg-white hover:shadow-md'
-                  }`}
-              >
-                {gender === 'women' ? 'Women' : 'Men'}
-              </button>
-            ))}
-          </div>
-          <button
-            onClick={() => handleCategoryFilter('')}
-            className="w-full md:w-auto px-5 py-2.5 rounded-full bg-white border border-gray-200 text-gray-600 font-medium hover:bg-gray-50 transition flex items-center justify-center shadow-sm hover:shadow-md"
-          >
-            <Filter className="w-4 h-4 mr-2" />
-            Clear Filters
-          </button>
+      {/* Minimalist Filters */}
+      <div className="mb-16 flex flex-col items-center space-y-6">
+        <div className="flex bg-white rounded-full p-1 border border-secondary/30 shadow-sm">
+          {['women', 'men'].map((gender) => (
+            <button
+              key={gender}
+              onClick={() => handleGenderToggle(gender)}
+              className={`px-8 py-3 rounded-full text-sm uppercase tracking-widest font-medium transition-all duration-300 ${genderFilter === gender
+                ? 'bg-primary text-white shadow-md'
+                : 'text-gray-500 hover:text-primary'
+                }`}
+            >
+              {gender === 'women' ? 'Women' : 'Men'}
+            </button>
+          ))}
         </div>
 
-        <div className="flex flex-wrap gap-2 md:gap-3">
-          {categoryOptions[genderFilter].map(({ label, value, icon: Icon }) => (
+        <div className="flex flex-wrap justify-center gap-4">
+          <button
+            onClick={() => handleCategoryFilter('')}
+            className={`px-6 py-2 rounded-full border text-xs uppercase tracking-wider transition-colors ${!activeCategoryValue ? 'border-primary bg-primary text-white' : 'border-secondary/30 text-gray-500 hover:border-primary'}`}
+          >
+            All
+          </button>
+          {categoryOptions[genderFilter].map(({ label, value }) => (
             <button
               key={value}
               onClick={() => handleCategoryFilter(value)}
-              className={`px-4 md:px-5 py-2.5 rounded-2xl text-sm font-medium transition-all duration-200 flex items-center border ${activeCategoryValue === value
-                ? 'bg-primary-berry/10 border-primary-berry text-primary-berry shadow-sm'
-                : 'bg-white/40 border-transparent hover:bg-white hover:shadow-sm text-gray-600'
+              className={`px-6 py-2 rounded-full border text-xs uppercase tracking-wider transition-colors ${activeCategoryValue === value
+                ? 'border-primary bg-primary text-white'
+                : 'border-secondary/30 text-gray-500 hover:border-primary hover:text-primary'
                 }`}
             >
-              <Icon className={`w-4 h-4 mr-2 ${activeCategoryValue === value ? 'text-primary-berry' : 'text-gray-400'}`} />
               {label.split('–')[1].trim()}
             </button>
           ))}
@@ -149,9 +145,11 @@ const ItemsPage = () => {
           <p className="text-gray-500">Try adjusting your filters or search criteria.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {items.map((item) => (
-            <ItemCard key={item._id} item={item} />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          {items.map((item, index) => (
+            <div key={item._id} className="h-full">
+              <ItemCard item={item} />
+            </div>
           ))}
         </div>
       )}
