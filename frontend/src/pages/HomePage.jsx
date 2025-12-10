@@ -94,9 +94,9 @@ const HomePage = () => {
   };
 
   const categories = [
-    { title: 'Traditional', image: '/images/cat-traditional.jpg', link: 'women:women-clothes-traditional' },
-    { title: 'Western', image: '/images/cat-western.jpg', link: 'women:women-clothes-western' },
-    { title: 'Accessories', image: '/images/cat-accessories.jpg', link: 'women:women-accessories' },
+    { title: 'Traditional', image: '/images/cat-traditional.jpg?v=2', link: 'women:women-clothes-traditional' },
+    { title: 'Western', image: '/images/cat-western.jpg?v=2', link: 'women:women-clothes-western' },
+    { title: 'Accessories', image: '/images/cat-accessories.jpg?v=2', link: 'women:women-accessories' },
   ];
 
   return (
