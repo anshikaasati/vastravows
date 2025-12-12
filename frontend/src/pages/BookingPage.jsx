@@ -265,7 +265,7 @@ const BookingPage = () => {
                     </div>
                   </div>
 
-                  <button type="submit" className="w-full py-4 bg-gray-900 text-white font-bold uppercase tracking-widest text-xs rounded-xl shadow-lg hover:bg-gray-800 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 mt-4">
+                  <button type="submit" className="w-full py-4 bg-gradient-to-r from-[#d48496] to-[#760a1e] text-white font-bold uppercase tracking-widest text-xs rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 mt-4">
                     Continue to Payment
                   </button>
                 </form>

@@ -539,7 +539,7 @@ const AddItemPage = () => {
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="px-6 py-2 bg-secondary text-white font-semibold rounded-xl hover:bg-secondary-dark transition"
+                      className="px-6 py-2 bg-gradient-to-r from-[#d48496] to-[#760a1e] text-white font-semibold rounded-xl hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
                     >
                       <Image className="w-4 h-4 inline mr-2" />
                       Browse Files
@@ -654,7 +654,7 @@ const AddItemPage = () => {
               <button
                 onClick={handleSubscribe}
                 disabled={loading}
-                className="w-full py-3 bg-gradient-to-r from-primary to-primary-dark text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5 disabled:opacity-70"
+                className="w-full py-3 bg-gradient-to-r from-[#d48496] to-[#760a1e] text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5 disabled:opacity-70"
               >
                 {loading ? 'Processing...' : 'Subscribe to Premium (₹100/mo)'}
               </button>

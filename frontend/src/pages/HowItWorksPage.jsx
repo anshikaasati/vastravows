@@ -86,7 +86,7 @@ const HowItWorksPage = () => {
             </div>
 
             {/* For Lenders Section */}
-            <div className="bg-white py-24 border-y border-gray-100">
+            <div className="bg-gradient-to-br from-primary/5 to-secondary/5 py-24 border-y border-gray-100">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="max-w-4xl mx-auto text-center space-y-8">
                         <span className="text-xs font-bold tracking-[0.2em] text-primary uppercase">Join the Community</span>
@@ -110,7 +110,7 @@ const HowItWorksPage = () => {
                         </div>
 
                         <div className="pt-8">
-                            <Link to="/register" className="inline-block px-10 py-4 bg-gray-900 text-white font-bold uppercase tracking-widest text-xs rounded-xl shadow-lg hover:bg-gray-800 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+                            <Link to="/register" className="inline-block px-10 py-4 bg-gradient-to-r from-[#d48496] to-[#760a1e] text-white font-bold uppercase tracking-widest text-xs rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
                                 Start Lending
                             </Link>
                         </div>
@@ -120,11 +120,11 @@ const HowItWorksPage = () => {
 
             {/* CTA */}
             <div className="container mx-auto px-4 py-24 text-center">
-                <div className="bg-gradient-to-br from-primary via-[#d48496] to-secondary rounded-[3rem] p-12 md:p-20 text-white relative overflow-hidden">
+                <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-[3rem] p-12 md:p-20 relative overflow-hidden">
                     <div className="relative z-10 space-y-8">
-                        <h2 className="text-4xl md:text-6xl font-script mb-6">Ready to look stunning?</h2>
-                        <p className="text-white/90 text-lg max-w-xl mx-auto font-light">Join thousands of happy customers who are redefining their wardrobe with Vastra Vows.</p>
-                        <Link to="/items" className="inline-block px-10 py-5 bg-white text-primary font-bold uppercase tracking-widest text-xs rounded-xl shadow-2xl hover:shadow-white/20 hover:-translate-y-1 transition-all">
+                        <h2 className="text-4xl md:text-6xl font-script text-primary mb-6">Ready to look stunning?</h2>
+                        <p className="text-gray-900 text-lg max-w-xl mx-auto font-light">Join thousands of happy customers who are redefining their wardrobe with Vastra Vows.</p>
+                        <Link to="/items" className="inline-block px-10 py-5 bg-gradient-to-r from-[#d48496] to-[#760a1e] text-white font-bold uppercase tracking-widest text-xs rounded-xl shadow-2xl hover:shadow-xl hover:-translate-y-1 transition-all">
                             Browse Collection
                         </Link>
                     </div>
