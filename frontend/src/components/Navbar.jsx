@@ -73,11 +73,11 @@ const Navbar = () => {
                 <Link
                   key={link.name}
                   to={link.path}
-                  className={`text-sm font-medium transition-colors relative group py-1 tracking-wide ${isActive ? 'text-primary font-semibold' : 'text-gray-700 hover:text-primary'
+                  className={`text-xs uppercase font-display tracking-[0.2em] transition-colors relative group py-1 ${isActive ? 'text-primary font-bold' : 'text-gray-600 hover:text-primary'
                     }`}
                 >
                   {link.name}
-                  <span className={`absolute bottom-0 left-0 h-0.5 bg-secondary transition-all duration-300 ${isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                  <span className={`absolute -bottom-1 left-0 h-px bg-primary transition-all duration-300 ${isActive ? 'w-full' : 'w-0 group-hover:w-full'
                     }`}></span>
                 </Link>
               );

@@ -113,57 +113,51 @@ const HomePage = () => {
         </div>
 
         <div className="relative z-10 container mt-20 mx-auto px-4 text-center text-white space-y-8 animate-fade-in-up">
-          <p className="text-sm md:text-base font-medium tracking-[0.3em] uppercase text-secondary">
+          <p className="text-sm md:text-sm font-bold tracking-[0.4em] uppercase text-white/90">
             Curated Luxury Rentals
           </p>
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-medium leading-tight hero-text-shadow text-white">
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-normal leading-tight hero-text-shadow text-white">
             Vastra Vows<br />
-            <span className="italic font-light text-secondary-light">Collection</span>
+            <span className="italic font-normal text-white">Collection</span>
           </h1>
-          <p className="text-lg md:text-xl text-gray-100 max-w-2xl mx-auto font-light">
+          <p className="text-lg md:text-xl text-gray-100 max-w-2xl mx-auto font-light leading-relaxed">
             Step into our chic sanctuary, where style meets sustainability. Explore our curated collection of jewellery and women's apparel.
           </p>
 
           <div className="pt-8 flex flex-col sm:flex-row gap-6 justify-center">
             <Link
               to="/items"
-              className="px-8 py-4 btn-primary text-white rounded-full font-serif text-lg transition-transform hover:-translate-y-1 shadow-lg"
+              className="px-10 py-4 text-white uppercase tracking-widest text-xs font-bold rounded-full shadow-2xl hover:shadow-primary/50 hover:-translate-y-1 transition-all duration-300"
+              style={{
+                background: 'linear-gradient(90deg, #d48496 0%, #760a1e 100%)'
+              }}
             >
               Explore Collection
             </Link>
-            {!token && (
-              <Link
-                to="/register"
-                className="btn-outline border-white text-white hover:bg-white hover:text-primary"
-              >
-                Join the Tribe
-              </Link>
-            )}
           </div>
         </div>
       </div>
 
       {/* Search Bar (Floating) */}
       <div className="container mx-auto px-4 -mt-10 relative z-20">
-        <div className="max-w-4xl mx-auto glass-card rounded-full p-2 flex flex-col md:flex-row shadow-2xl">
-          <div className="flex-1 px-6 py-3 border-b md:border-b-0 md:border-r border-gray-200">
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Looking For?</label>
+        <div className="max-w-3xl mx-auto bg-white rounded-full p-2 pr-2 shadow-2xl flex items-center">
+          <div className="flex-1 px-8 py-4">
+            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Looking For?</label>
             <input
               type="text"
               placeholder="Lehenga, Gown, Sherwani..."
-              className="w-full bg-transparent border-none outline-none ring-0 focus:ring-0 text-lg text-gray-800 placeholder-gray-400 font-medium"
+              className="w-full bg-transparent border-none outline-none ring-0 focus:ring-0 text-xl text-gray-800 placeholder-gray-300 font-display italic"
               value={searchPrompt}
               onChange={(e) => setSearchPrompt(e.target.value)}
             />
           </div>
-          <div className="px-6 py-3 flex items-center">
+          <div className="p-1">
             <button
               onClick={handleSearch}
-              className="bg-primary text-white p-4 rounded-full hover:bg-primary-dark transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2"
+              className="w-14 h-14 rounded-full bg-[#600000] text-white flex items-center justify-center hover:bg-[#800000] transition-all duration-300 shadow-lg hover:scale-105"
               title="Search"
             >
-              <Search className="w-5 h-5" />
-              <span className="font-bold tracking-wider text-sm md:hidden">FIND</span>
+              <Search className="w-6 h-6" />
             </button>
           </div>
         </div>
@@ -174,23 +168,10 @@ const HomePage = () => {
 
         {/* Featured Categories */}
         <section>
-          <div className="text-center mb-12 space-y-4">
-            <div className="flex justify-center mb-4 text-secondary">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="4"></circle>
-                <path d="M12 2v2"></path>
-                <path d="M12 20v2"></path>
-                <path d="M4.93 4.93l1.41 1.41"></path>
-                <path d="M17.66 17.66l1.41 1.41"></path>
-                <path d="M2 12h2"></path>
-                <path d="M20 12h2"></path>
-                <path d="M6.34 17.66l-1.41 1.41"></path>
-                <path d="M19.07 4.93l-1.41 1.41"></path>
-              </svg>
-            </div>
-            <h2 className="text-4xl md:text-5xl font-display text-primary italic">Welcome to Vastra Vows</h2>
-            <p className="text-gray-500 max-w-xl mx-auto text-sm leading-relaxed">
-              Welcome to our chic sanctuary, where style meets sustainability. Step into a world of organic elegance and modern domination as you explore our curated collection of jewellery and women's apparel.
+          <div className="text-center mb-16 space-y-2">
+            <h2 className="text-5xl md:text-7xl font-script text-primary/80 mb-4">Welcome to Vastra Vows</h2>
+            <p className="text-gray-500 max-w-xl mx-auto text-sm leading-relaxed tracking-wide font-medium">
+              Welcome to our chic sanctuary, where style meets sustainability. Step into a world of organic elegance and modern domination as you explore our curated collection of jewellery and women&apos;s apparel.
             </p>
           </div>
 
@@ -233,8 +214,8 @@ const HomePage = () => {
         {/* New Arrivals Section (Replaces Trending From UI) */}
         <section id="items-grid" className="scroll-mt-24">
           <div className="text-center mb-10">
-            <h2 className="text-3xl md:text-4xl font-display text-primary mb-2">New Arrivals</h2>
-            <div className="w-16 h-0.5 bg-primary/20 mx-auto"></div>
+            <h2 className="text-2xl md:text-3xl font-display text-primary mb-2 uppercase tracking-tight">New Arrivals</h2>
+            <div className="hidden w-16 h-0.5 bg-primary/20 mx-auto"></div>
           </div>
 
           {loading ? (
@@ -246,7 +227,8 @@ const HomePage = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
-              {items.slice(0, 4).map((item) => (
+              {/* New Arrivals: Sort by createdAt (descending) */}
+              {[...items].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)).slice(0, 4).map((item) => (
                 <Link key={item._id} to={`/items/${item._id}`} className="group block">
                   {/* Minimal Card Style */}
                   <div className="relative aspect-[3/4] overflow-hidden bg-gray-100 mb-4">
@@ -299,7 +281,7 @@ const HomePage = () => {
 
               {/* Text Right */}
               <div className="text-center md:text-left space-y-6">
-                <p className="font-display italic text-3xl md:text-4xl text-secondary-dark">Let&apos;s shop our</p>
+                <p className="font-script text-4xl md:text-6xl text-secondary-dark transform -rotate-6 origin-bottom-left inline-block mb-4">Let&apos;s shop our</p>
                 <h2 className="text-6xl md:text-8xl font-display text-primary leading-none tracking-tight">
                   BEST<br />SELLERS
                 </h2>
@@ -319,12 +301,13 @@ const HomePage = () => {
         {/* Best Sellers Grid */}
         <section>
           <div className="text-center mb-10">
-            <h2 className="text-3xl md:text-4xl font-display text-primary mb-2">Best Sellers</h2>
-            <div className="w-16 h-0.5 bg-primary/20 mx-auto"></div>
+            <h2 className="text-2xl md:text-3xl font-display text-primary mb-2 uppercase tracking-tight">Best Sellers</h2>
+            <div className="hidden w-16 h-0.5 bg-primary/20 mx-auto"></div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
-            {items.slice(0, 4).reverse().map((item) => (
+            {/* Best Sellers: Sort by rating (descending) */}
+            {[...items].sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0)).slice(0, 4).map((item) => (
               <Link key={`bs-${item._id}`} to={`/items/${item._id}`} className="group block">
                 {/* Minimal Card Style */}
                 <div className="relative aspect-[3/4] overflow-hidden bg-gray-100 mb-4">
