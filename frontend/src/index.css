@@ -123,8 +123,8 @@ h6,
 
 /* Buttons - Boho Style */
 .btn-primary {
-  /* Gradient: Maroon (Light to Dark) */
-  background: linear-gradient(135deg, #f7b2b2 0%, #800000 100%);
+  /* Gradient: Soft Rose to Deep Maroon */
+  background: linear-gradient(90deg, #E68498 0%, #800000 100%);
   color: white;
   border: none;
   font-family: var(--font-serif);
@@ -133,14 +133,16 @@ h6,
   text-transform: uppercase;
   font-size: 0.85rem;
   padding: 0.75rem 2rem;
+  border-radius: 9999px;
+  /* Pill shape as seen in image */
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
 }
 
 .btn-primary:hover {
-  /* Slightly darker/richer gradient on hover */
-  background: linear-gradient(135deg, #b35555 0%, #4d0000 100%);
+  /* Slightly richer gradient on hover */
+  background: linear-gradient(90deg, #D67488 0%, #600000 100%);
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(128, 0, 0, 0.3);
 }

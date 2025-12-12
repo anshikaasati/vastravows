@@ -230,50 +230,129 @@ const HomePage = () => {
           </div>
         </section>
 
-        {/* Trending Items */}
+        {/* New Arrivals Section (Replaces Trending From UI) */}
         <section id="items-grid" className="scroll-mt-24">
-          <div className="flex flex-col md:flex-row items-end justify-between mb-10 gap-4">
-            <div>
-              <h2 className="text-3xl md:text-5xl font-display text-primary mb-2">Trending Now</h2>
-              <p className="text-gray-500">Fresh from the runway to your wardrobe</p>
-            </div>
-
-            {/* Gender Toggle */}
-            <div className="flex items-center gap-2 p-1 bg-white border border-gray-200 rounded-full shadow-sm">
-              <button
-                onClick={() => setGenderFilter('women')}
-                className={`px-6 py-2 rounded-full text-sm font-semibold transition-all ${genderFilter === 'women' ? 'bg-primary text-white shadow' : 'text-gray-500 hover:text-gray-900'}`}
-              >
-                Women
-              </button>
-              <button
-                onClick={() => setGenderFilter('men')}
-                className={`px-6 py-2 rounded-full text-sm font-semibold transition-all ${genderFilter === 'men' ? 'bg-primary text-white shadow' : 'text-gray-500 hover:text-gray-900'}`}
-              >
-                Men
-              </button>
-            </div>
+          <div className="text-center mb-10">
+            <h2 className="text-3xl md:text-4xl font-display text-primary mb-2">New Arrivals</h2>
+            <div className="w-16 h-0.5 bg-primary/20 mx-auto"></div>
           </div>
 
           {loading ? (
             <div className="flex justify-center py-20"><LoadingSpinner /></div>
           ) : items.length === 0 ? (
             <div className="text-center py-20 bg-white/50 rounded-3xl border border-dashed border-gray-300">
-              <p className="text-gray-500">No items found in this collection yet.</p>
+              <p className="text-gray-500">No items found.</p>
               <button onClick={() => { setSearchCategory(''); setSearchPrompt(''); }} className="mt-4 text-primary font-medium hover:underline">Clear Filters</button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-              {items.map((item) => (
-                <ItemCard key={item._id} item={item} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
+              {items.slice(0, 4).map((item) => (
+                <Link key={item._id} to={`/items/${item._id}`} className="group block">
+                  {/* Minimal Card Style */}
+                  <div className="relative aspect-[3/4] overflow-hidden bg-gray-100 mb-4">
+                    <img
+                      src={item.images?.[0] || `https://placehold.co/600x800/9d174d/fce7f3?text=${item.title}`}
+                      alt={item.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="text-center space-y-1">
+                    <h3 className="text-gray-900 font-display text-base tracking-wide truncate px-2">{item.title}</h3>
+                    <p className="text-gray-500 text-sm font-medium">
+                      {item.salePrice ? `₹${item.salePrice}` : `₹${item.rentPricePerDay}/day`}
+                    </p>
+                  </div>
+                  <button className="w-full mt-4 py-2.5 border border-primary/20 text-primary text-xs font-bold uppercase tracking-[0.15em] hover:bg-primary hover:text-white transition-all duration-300">
+                    Add to Cart
+                  </button>
+                </Link>
               ))}
             </div>
           )}
 
-          <div className="mt-16 text-center">
-            <Link to="/items" className="inline-flex items-center gap-2 px-8 py-3 border border-primary text-primary rounded-full hover:bg-primary hover:text-white transition-colors">
-              <span>View All Collections</span>
-              <ArrowRight className="w-4 h-4" />
+          <div className="mt-12 text-center">
+            <Link to="/items" className="inline-block text-sm font-semibold text-primary border-b border-primary hover:text-primary-dark transition-colors pb-0.5">
+              VIEW ALL PRODUCTS
+            </Link>
+          </div>
+        </section>
+
+        {/* Best Sellers Section */}
+        <section className="bg-gradient-to-br from-secondary/5 to-primary/5 -mx-4 sm:-mx-6 lg:-mx-8 py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              {/* Image Left */}
+              <div className="relative h-[500px] w-full flex items-center justify-center">
+                <div className="absolute w-[80%] h-full mask-arch bg-gray-200 shadow-2xl overflow-hidden">
+                  <img
+                    src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=2883&auto=format&fit=crop"
+                    alt="Best Seller"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                {/* Decorative Circle Badge */}
+                <div className="absolute top-10 right-[10%] w-24 h-24 rounded-full bg-primary text-white flex flex-col items-center justify-center p-2 text-center rotate-12 shadow-lg animate-float">
+                  <span className="text-[10px] font-bold tracking-widest uppercase">Best</span>
+                  <span className="text-xs font-display italic">Sellers</span>
+                </div>
+              </div>
+
+              {/* Text Right */}
+              <div className="text-center md:text-left space-y-6">
+                <p className="font-display italic text-3xl md:text-4xl text-secondary-dark">Let&apos;s shop our</p>
+                <h2 className="text-6xl md:text-8xl font-display text-primary leading-none tracking-tight">
+                  BEST<br />SELLERS
+                </h2>
+                <p className="text-gray-600 max-w-md mx-auto md:mx-0 font-light">
+                  Our most loved pieces, rented and adored by hundreds of happy customers. Experience luxury without the commitment.
+                </p>
+                <div className="pt-4">
+                  <Link to="/items?sort=rating" className="inline-block px-10 py-4 border border-primary text-primary font-serif uppercase tracking-widest hover:bg-primary hover:text-white transition-all duration-300">
+                    Shop Now
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Best Sellers Grid */}
+        <section>
+          <div className="text-center mb-10">
+            <h2 className="text-3xl md:text-4xl font-display text-primary mb-2">Best Sellers</h2>
+            <div className="w-16 h-0.5 bg-primary/20 mx-auto"></div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
+            {items.slice(0, 4).reverse().map((item) => (
+              <Link key={`bs-${item._id}`} to={`/items/${item._id}`} className="group block">
+                {/* Minimal Card Style */}
+                <div className="relative aspect-[3/4] overflow-hidden bg-gray-100 mb-4">
+                  <img
+                    src={item.images?.[0] || `https://placehold.co/600x800/9d174d/fce7f3?text=${item.title}`}
+                    alt={item.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <span className="absolute top-2 left-2 bg-primary text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1">
+                    Best Seller
+                  </span>
+                </div>
+                <div className="text-center space-y-1">
+                  <h3 className="text-gray-900 font-display text-base tracking-wide truncate px-2">{item.title}</h3>
+                  <p className="text-gray-500 text-sm font-medium">
+                    {item.salePrice ? `₹${item.salePrice}` : `₹${item.rentPricePerDay}/day`}
+                  </p>
+                </div>
+                <button className="w-full mt-4 py-2.5 border border-primary/20 text-primary text-xs font-bold uppercase tracking-[0.15em] hover:bg-primary hover:text-white transition-all duration-300">
+                  Add to Cart
+                </button>
+              </Link>
+            ))}
+          </div>
+
+          <div className="mt-12 text-center">
+            <Link to="/items?sort=best_selling" className="inline-block text-sm font-semibold text-primary border-b border-primary hover:text-primary-dark transition-colors pb-0.5">
+              SHOP BEST SELLERS
             </Link>
           </div>
         </section>
