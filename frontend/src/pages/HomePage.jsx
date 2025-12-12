@@ -260,7 +260,7 @@ const HomePage = () => {
         </section>
 
         {/* Best Sellers Section */}
-        <section className="bg-gradient-to-br bg-white/55 from-secondary/5 to-primary/5 -mx-4 sm:-mx-6 lg:-mx-8 py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <section className="bg-white -mx-4 sm:-mx-6 lg:-mx-8 py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
           <div className="max-w-7xl mx-auto">
             <div className="grid md:grid-cols-2 gap-12 items-center">
               {/* Image Left */}
@@ -273,7 +273,7 @@ const HomePage = () => {
                   />
                 </Link>
                 {/* Decorative Circle Badge */}
-                <div className="absolute top-10 right-[10%] w-24 h-24 rounded-xl bg-primary text-white flex flex-col items-center justify-center p-2 text-center rotate-12 shadow-lg animate-float pointer-events-none">
+                <div className="absolute top-10 right-[15%] w-24 h-24 rounded-full bg-primary text-white flex flex-col items-center justify-center p-2 text-center rotate-12 shadow-lg animate-float pointer-events-none">
                   <span className="text-[10px] font-bold tracking-widest uppercase">Best</span>
                   <span className="text-xs font-display italic">Sellers</span>
                 </div>

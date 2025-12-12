@@ -31,12 +31,7 @@
 body {
   font-family: var(--font-sans);
   color: var(--color-text);
-  background-color: var(--color-bg);
-  /* Sunset/Wine Glow Gradient */
-  background:
-    radial-gradient(circle at 15% 50%, rgba(128, 0, 0, 0.12), transparent 30%),
-    radial-gradient(circle at 85% 30%, rgba(245, 158, 11, 0.10), transparent 30%),
-    linear-gradient(to bottom, #FFF1F2, #FFF7ED);
+  background-color: #fcf8f9;
   min-height: 100vh;
   scroll-behavior: smooth;
   overflow-x: hidden;
