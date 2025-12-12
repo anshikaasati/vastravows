@@ -289,7 +289,7 @@ const HomePage = () => {
                   Our most loved pieces, rented and adored by hundreds of happy customers. Experience luxury without the commitment.
                 </p>
                 <div className="pt-4">
-                  <Link to="/items/69397da6c6e91df8e3feeedf" className="inline-block px-10 py-4 border border-primary text-primary font-serif uppercase tracking-widest rounded-xl hover:bg-primary hover:text-white transition-all duration-300">
+                  <Link to="/items/69397da6c6e91df8e3feeedf" className="inline-block px-10 py-4 border border-primary text-primary font-serif uppercase tracking-widest rounded-none hover:bg-primary hover:text-white transition-all duration-300">
                     Shop Now
                   </Link>
                 </div>

@@ -21,6 +21,7 @@
   /* Rose White */
   --color-text: #800000;
   /* Maroon Text */
+  --color-border: #800000;
   --color-surface: #FFFFFF;
 
   --font-serif: 'Playfair Display', serif;
@@ -56,6 +57,10 @@ h6,
   color: var(--color-primary);
 }
 
+.border-primary {
+  border-color: var(--color-primary);
+}
+
 .bg-primary {
   background-color: var(--color-primary);
 }
@@ -68,8 +73,8 @@ h6,
   background-color: var(--color-secondary);
 }
 
-.border-gold {
-  border-color: var(--color-secondary);
+.btn-primary-simple {
+  @apply border border-primary text-primary rounded-none font-bold uppercase tracking-widest text-xs px-4 py-2 transition-all duration-300;
 }
 
 /* Arch Shape Utility */
