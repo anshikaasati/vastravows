@@ -41,12 +41,12 @@ const WishlistPage = () => {
         </div>
 
         {items.length === 0 ? (
-          <div className="bg-white rounded-[2.5rem] p-16 text-center max-w-xl mx-auto border border-gray-100 shadow-xl relative overflow-hidden">
+          <div className="bg-white rounded-xl p-16 text-center max-w-xl mx-auto border border-gray-100 shadow-xl relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-2xl"></div>
             <div className="absolute bottom-0 left-0 w-32 h-32 bg-secondary/5 rounded-full -ml-16 -mb-16 blur-2xl"></div>
 
             <div className="relative z-10">
-              <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+              <div className="w-20 h-20 bg-gray-50 rounded-xl flex items-center justify-center mx-auto mb-6 shadow-sm">
                 <span className="text-3xl">✨</span>
               </div>
               <h3 className="text-2xl font-display font-medium text-gray-900 mb-3">Your wishlist is empty</h3>

@@ -9,7 +9,7 @@ const Footer = () => {
                     {/* Brand Column */}
                     <div className="space-y-4">
                         <Link to="/" className="flex items-center gap-2 group">
-                            <div className="w-8 h-8 rounded-lg overflow-hidden">
+                            <div className="w-8 h-8 rounded-xl overflow-hidden">
                                 <img src="/images/vv-logo.png" alt="VV Logo" className="w-full h-full object-cover" />
                             </div>
                             <span className="font-display text-xl font-bold uppercase tracking-widest text-primary">Vastra Vows</span>
@@ -18,13 +18,13 @@ const Footer = () => {
                             Redefining luxury fashion through sustainable rentals. Shine brighter, worry less.
                         </p>
                         <div className="flex gap-4 pt-2">
-                            <a href="#" className="w-8 h-8 rounded-full border border-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all duration-300">
+                            <a href="#" className="w-8 h-8 rounded-xl border border-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all duration-300">
                                 <Instagram className="w-4 h-4" />
                             </a>
-                            <a href="#" className="w-8 h-8 rounded-full border border-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all duration-300">
+                            <a href="#" className="w-8 h-8 rounded-xl border border-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all duration-300">
                                 <Facebook className="w-4 h-4" />
                             </a>
-                            <a href="#" className="w-8 h-8 rounded-full border border-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all duration-300">
+                            <a href="#" className="w-8 h-8 rounded-xl border border-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all duration-300">
                                 <Twitter className="w-4 h-4" />
                             </a>
                         </div>

@@ -37,7 +37,7 @@ const ItemCard = ({ item }) => {
         {/* Wishlist Button */}
         <button
           onClick={handleToggle}
-          className="absolute top-2 right-2 p-2 rounded-full bg-white/10 hover:bg-white backdrop-blur-sm transition-all duration-300 z-10"
+          className="absolute top-2 right-2 p-2 rounded-xl bg-white/10 hover:bg-white backdrop-blur-sm transition-all duration-300 z-10"
         >
           <Heart className={`w-4 h-4 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-white'}`} />
         </button>

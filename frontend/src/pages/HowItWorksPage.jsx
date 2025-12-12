@@ -64,7 +64,7 @@ const HowItWorksPage = () => {
                                 {/* Content Card */}
                                 <div className="flex-1 w-full">
                                     <div className="bg-white p-8 md:p-10 rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-500 text-center md:text-left group-hover:border-primary/20">
-                                        <div className="inline-block p-4 rounded-2xl bg-gray-50 mb-6 group-hover:bg-primary/5 transition-colors">
+                                        <div className="inline-block p-4 rounded-xl bg-gray-50 mb-6 group-hover:bg-primary/5 transition-colors">
                                             <step.icon className="w-8 h-8 text-primary" />
                                         </div>
                                         <h3 className="text-2xl font-display font-medium text-gray-900 mb-4">{step.title}</h3>
@@ -101,7 +101,7 @@ const HowItWorksPage = () => {
                                 { num: '02', title: 'Set Price', desc: 'Control your rates and availability' },
                                 { num: '03', title: 'Earn Money', desc: 'Get paid secure & fast' }
                             ].map((item, i) => (
-                                <div key={i} className="p-8 rounded-3xl bg-gray-50 border border-gray-100 hover:bg-white hover:shadow-lg transition-all duration-300">
+                                <div key={i} className="p-8 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:shadow-lg transition-all duration-300">
                                     <div className="text-5xl font-script text-primary/20 mb-4">{item.num}</div>
                                     <h4 className="font-display font-bold text-lg text-gray-900 mb-2">{item.title}</h4>
                                     <p className="text-sm text-gray-500">{item.desc}</p>
@@ -120,7 +120,7 @@ const HowItWorksPage = () => {
 
             {/* CTA */}
             <div className="container mx-auto px-4 py-24 text-center">
-                <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-[3rem] p-12 md:p-20 relative overflow-hidden">
+                <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-xl p-12 md:p-20 relative overflow-hidden">
                     <div className="relative z-10 space-y-8">
                         <h2 className="text-4xl md:text-6xl font-script text-primary mb-6">Ready to look stunning?</h2>
                         <p className="text-gray-900 text-lg max-w-xl mx-auto font-light">Join thousands of happy customers who are redefining their wardrobe with Vastra Vows.</p>

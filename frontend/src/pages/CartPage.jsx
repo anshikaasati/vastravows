@@ -12,8 +12,8 @@ const CartPage = () => {
                 <div className="absolute top-1/4 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -mr-20"></div>
                 <div className="absolute bottom-1/4 left-0 w-96 h-96 bg-secondary/5 rounded-full blur-3xl -ml-20"></div>
 
-                <div className="relative z-10 bg-white p-12 rounded-[2.5rem] shadow-xl border border-gray-100 max-w-lg w-full">
-                    <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="relative z-10 bg-white p-12 rounded-xl shadow-xl border border-gray-100 max-w-lg w-full">
+                    <div className="w-24 h-24 bg-gray-50 rounded-xl flex items-center justify-center mx-auto mb-6">
                         <ShoppingBag className="w-10 h-10 text-gray-400" />
                     </div>
                     <h2 className="text-3xl font-display font-medium text-gray-900 mb-2">Your Cart is Empty</h2>
@@ -40,8 +40,8 @@ const CartPage = () => {
                     {/* Cart Items */}
                     <div className="space-y-6">
                         {cart.map((item, index) => (
-                            <div key={`${item._id}-${item.selectedSize}-${index}`} className="bg-white p-6 md:p-8 rounded-[2rem] border border-gray-100 flex flex-col md:flex-row gap-6 hover:shadow-xl hover:translate-y-[-2px] transition-all duration-300">
-                                <div className="w-full md:w-48 aspect-[3/4] md:aspect-square rounded-2xl overflow-hidden bg-gray-100 relative group">
+                            <div key={`${item._id}-${item.selectedSize}-${index}`} className="bg-white p-6 md:p-8 rounded-xl border border-gray-100 flex flex-col md:flex-row gap-6 hover:shadow-xl hover:translate-y-[-2px] transition-all duration-300">
+                                <div className="w-full md:w-48 aspect-[3/4] md:aspect-square rounded-xl overflow-hidden bg-gray-100 relative group">
                                     <img
                                         src={item.images?.[0]}
                                         alt={item.title}
@@ -54,11 +54,11 @@ const CartPage = () => {
                                         <div className="space-y-2">
                                             <h3 className="text-2xl font-display font-medium text-gray-900">{item.title}</h3>
                                             <div className="flex flex-wrap gap-2">
-                                                <span className="px-3 py-1 bg-gray-50 border border-gray-100 rounded-lg text-xs font-bold text-gray-600 uppercase tracking-wider">
+                                                <span className="px-3 py-1 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold text-gray-600 uppercase tracking-wider">
                                                     Size: {item.selectedSize}
                                                 </span>
                                                 {item.rentalPeriod && (
-                                                    <span className="px-3 py-1 bg-gray-50 border border-gray-100 rounded-lg text-xs font-bold text-gray-600 uppercase tracking-wider">
+                                                    <span className="px-3 py-1 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold text-gray-600 uppercase tracking-wider">
                                                         {new Date(item.rentalPeriod.startDate).toLocaleDateString()} - {new Date(item.rentalPeriod.endDate).toLocaleDateString()}
                                                     </span>
                                                 )}
@@ -66,7 +66,7 @@ const CartPage = () => {
                                         </div>
                                         <button
                                             onClick={() => removeFromCart(item._id, item.selectedSize)}
-                                            className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:text-red-600 hover:border-red-200 hover:bg-red-50 transition-all"
+                                            className="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center text-gray-400 hover:text-red-600 hover:border-red-200 hover:bg-red-50 transition-all"
                                             title="Remove Item"
                                         >
                                             <Trash2 className="w-4 h-4" />
@@ -99,7 +99,7 @@ const CartPage = () => {
 
                     {/* Summary */}
                     <div className="h-fit space-y-6">
-                        <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-100 sticky top-24">
+                        <div className="bg-white p-8 rounded-xl shadow-xl border border-gray-100 sticky top-24">
                             <h3 className="text-2xl font-display font-medium text-gray-900 mb-8 pb-4 border-b border-gray-100">Order Summary</h3>
 
                             <div className="space-y-4 mb-8">

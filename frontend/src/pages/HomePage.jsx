@@ -141,7 +141,7 @@ const HomePage = () => {
       {/* Search Bar (Floating) */}
       <div className="container mx-auto px-4 -mt-10 relative z-20">
         <div className="max-w-3xl mx-auto bg-white rounded-full p-2 pr-2 shadow-2xl flex items-center">
-          <div className="flex-1 px-8 py-4">
+          <div className="flex-1 px-10 py-4">
             <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Looking For?</label>
             <input
               type="text"
@@ -154,7 +154,7 @@ const HomePage = () => {
           <div className="p-1">
             <button
               onClick={handleSearch}
-              className="w-14 h-14 rounded-xl bg-[#600000] text-white flex items-center justify-center hover:bg-[#800000] transition-all duration-300 shadow-lg hover:scale-105"
+              className="w-14 h-14 rounded-xl text-[#600000] flex items-center justify-center transition-all duration-300 hover:scale-105"
               title="Search"
             >
               <Search className="w-6 h-6" />
@@ -221,7 +221,7 @@ const HomePage = () => {
           {loading ? (
             <div className="flex justify-center py-20"><LoadingSpinner /></div>
           ) : items.length === 0 ? (
-            <div className="text-center py-20 bg-white/50 rounded-3xl border border-dashed border-gray-300">
+            <div className="text-center py-20 bg-white/50 rounded-xl border border-dashed border-gray-300">
               <p className="text-gray-500">No items found.</p>
               <button onClick={() => { setSearchCategory(''); setSearchPrompt(''); }} className="mt-4 text-primary font-medium hover:underline">Clear Filters</button>
             </div>
@@ -273,7 +273,7 @@ const HomePage = () => {
                   />
                 </Link>
                 {/* Decorative Circle Badge */}
-                <div className="absolute top-10 right-[10%] w-24 h-24 rounded-full bg-primary text-white flex flex-col items-center justify-center p-2 text-center rotate-12 shadow-lg animate-float pointer-events-none">
+                <div className="absolute top-10 right-[10%] w-24 h-24 rounded-xl bg-primary text-white flex flex-col items-center justify-center p-2 text-center rotate-12 shadow-lg animate-float pointer-events-none">
                   <span className="text-[10px] font-bold tracking-widest uppercase">Best</span>
                   <span className="text-xs font-display italic">Sellers</span>
                 </div>

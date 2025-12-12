@@ -116,13 +116,13 @@ const Navbar = () => {
             {/* Wishlist */}
             <Link to="/wishlist" className="relative p-2 text-gray-700 hover:text-primary transition-colors group">
               <Heart className="w-5 h-5" />
-              <span className="absolute top-0 right-0 w-2 h-2 bg-secondary rounded-full transform scale-0 group-hover:scale-100 transition-transform shadow-sm"></span>
+              <span className="absolute top-0 right-0 w-2 h-2 bg-secondary rounded-xl transform scale-0 group-hover:scale-100 transition-transform shadow-sm"></span>
             </Link>
 
             {/* Cart */}
             <Link to="/cart" className="relative p-2 text-gray-700 hover:text-primary transition-colors group">
               <ShoppingBag className="w-5 h-5" />
-              <span className="absolute top-0 right-0 w-2 h-2 bg-secondary rounded-full transform scale-0 group-hover:scale-100 transition-transform shadow-sm"></span>
+              <span className="absolute top-0 right-0 w-2 h-2 bg-secondary rounded-xl transform scale-0 group-hover:scale-100 transition-transform shadow-sm"></span>
             </Link>
 
             {/* Profile / Auth */}
@@ -173,7 +173,7 @@ const Navbar = () => {
               <Link
                 key={link.name}
                 to={link.path}
-                className="block px-4 py-3 rounded-lg hover:bg-gray-50 text-gray-700 font-medium hover:text-primary transition-colors flex justify-between items-center"
+                className="block px-4 py-3 rounded-xl hover:bg-gray-50 text-gray-700 font-medium hover:text-primary transition-colors flex justify-between items-center"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {link.name}
@@ -183,12 +183,12 @@ const Navbar = () => {
             {user ? (
               <>
                 <Link to="/profile" className="block px-4 py-3 text-gray-700 font-medium hover:text-primary">Profile</Link>
-                <button onClick={handleLogout} className="block w-full text-left px-4 py-3 text-red-600 font-medium hover:bg-red-50 rounded-lg">Logout</button>
+                <button onClick={handleLogout} className="block w-full text-left px-4 py-3 text-red-600 font-medium hover:bg-red-50 rounded-xl">Logout</button>
               </>
             ) : (
               <div className="grid grid-cols-2 gap-3 p-2">
-                <Link to="/login" className="flex items-center justify-center py-2.5 rounded-lg border border-gray-200 font-medium text-gray-700">Login</Link>
-                <Link to="/register" className="flex items-center justify-center py-2.5 rounded-lg bg-primary text-white font-medium shadow-md">Sign Up</Link>
+                <Link to="/login" className="flex items-center justify-center py-2.5 rounded-xl border border-gray-200 font-medium text-gray-700">Login</Link>
+                <Link to="/register" className="flex items-center justify-center py-2.5 rounded-xl bg-primary text-white font-medium shadow-md">Sign Up</Link>
               </div>
             )}
           </div>

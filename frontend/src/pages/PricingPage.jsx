@@ -71,7 +71,7 @@ const PricingPage = () => {
                 {/* Rental Pricing */}
                 <section className="max-w-4xl mx-auto">
                     <h2 className="text-4xl font-display font-bold text-primary text-center mb-12">For Renters</h2>
-                    <div className="glass-card p-8 md:p-12 rounded-3xl">
+                    <div className="glass-card p-8 md:p-12 rounded-xl">
                         <h3 className="text-2xl font-display font-semibold text-primary mb-6">How Rental Pricing Works</h3>
                         <p className="text-gray-600 mb-8 leading-relaxed">
                             Each item has its own daily rental rate set by the lender. You pay only for the days you rent,
@@ -101,11 +101,11 @@ const PricingPage = () => {
                         {lenderPlans.map((plan, index) => (
                             <div
                                 key={index}
-                                className={`glass-card rounded-3xl p-8 relative ${plan.popular ? 'ring-2 ring-primary shadow-2xl scale-105' : ''
+                                className={`glass-card rounded-xl p-8 relative ${plan.popular ? 'ring-2 ring-primary shadow-2xl scale-105' : ''
                                     }`}
                             >
                                 {plan.popular && (
-                                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-secondary text-white px-4 py-1 rounded-full text-sm font-semibold">
+                                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-secondary text-white px-4 py-1 rounded-xl text-sm font-semibold">
                                         Most Popular
                                     </div>
                                 )}
@@ -125,8 +125,8 @@ const PricingPage = () => {
                                     ))}
                                 </ul>
                                 <button className={`w-full py-3 rounded-xl font-semibold transition-all ${plan.popular
-                                        ? 'btn-primary text-white shadow-lg hover:shadow-xl'
-                                        : 'border-2 border-primary text-primary hover:bg-primary hover:text-white'
+                                    ? 'btn-primary text-white shadow-lg hover:shadow-xl'
+                                    : 'border-2 border-primary text-primary hover:bg-primary hover:text-white'
                                     }`}>
                                     Choose {plan.name}
                                 </button>

@@ -210,11 +210,11 @@ const ProfilePage = () => {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
 
         {/* Profile Header */}
-        <div className="bg-white rounded-[2.5rem] p-10 shadow-xl border border-gray-100 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
+        <div className="bg-white rounded-xl p-10 shadow-xl border border-gray-100 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-20 -mt-20 blur-3xl"></div>
 
-          <div className="w-32 h-32 rounded-full p-1 bg-gradient-to-br from-primary via-secondary to-primary relative z-10">
-            <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
+          <div className="w-32 h-32 rounded-xl p-1 bg-gradient-to-br from-primary via-secondary to-primary relative z-10">
+            <div className="w-full h-full rounded-xl bg-white flex items-center justify-center overflow-hidden">
               {form.profilePhotoPreview ? (
                 <img src={form.profilePhotoPreview} alt={user?.name} className="w-full h-full object-cover" />
               ) : (
@@ -229,7 +229,7 @@ const ProfilePage = () => {
           </div>
 
           {/* Lender Mode Toggle */}
-          <div className="p-6 bg-gray-50 rounded-2xl border border-gray-100 relative z-10 w-full md:w-auto min-w-[300px]">
+          <div className="p-6 bg-gray-50 rounded-xl border border-gray-100 relative z-10 w-full md:w-auto min-w-[300px]">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <h3 className={`font-display text-lg font-medium flex items-center gap-2 ${user?.isLenderEnabled ? 'text-primary' : 'text-gray-900'}`}>
@@ -250,14 +250,14 @@ const ProfilePage = () => {
                   onChange={(e) => handleToggleLender(e.target.checked)}
                   className="sr-only peer"
                 />
-                <div className="w-12 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                <div className="w-12 h-6 bg-gray-200 peer-focus:outline-none rounded-xl peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-xl after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
               </label>
             </div>
           </div>
         </div>
 
         {/* Profile Form */}
-        <form onSubmit={handleUpdate} className="bg-white rounded-[2.5rem] p-10 shadow-lg border border-gray-100 space-y-10">
+        <form onSubmit={handleUpdate} className="bg-white rounded-xl p-10 shadow-lg border border-gray-100 space-y-10">
           <div>
             <h2 className="text-2xl font-display font-medium text-gray-900 mb-6 border-b border-gray-100 pb-4">Personal Information</h2>
 
@@ -306,7 +306,7 @@ const ProfilePage = () => {
               {/* Payment Settings */}
               <div className="pt-2">
                 <h3 className="text-2xl font-display font-medium text-gray-900 mb-6 border-b border-gray-100 pb-4">Payment Settings</h3>
-                <div className="bg-blue-50/50 p-6 rounded-2xl border border-blue-100 mb-8 flex items-start gap-4">
+                <div className="bg-blue-50/50 p-6 rounded-xl border border-blue-100 mb-8 flex items-start gap-4">
                   <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
                     <Shield className="w-5 h-5" />
                   </div>
@@ -446,8 +446,8 @@ const ProfilePage = () => {
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Upload ID Document</label>
-                    <label className="w-full px-5 py-8 rounded-2xl border-2 border-dashed border-gray-200 hover:border-primary/50 hover:bg-gray-50 transition cursor-pointer flex flex-col items-center justify-center gap-2 group">
-                      <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+                    <label className="w-full px-5 py-8 rounded-xl border-2 border-dashed border-gray-200 hover:border-primary/50 hover:bg-gray-50 transition cursor-pointer flex flex-col items-center justify-center gap-2 group">
+                      <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
                         <Upload className="w-5 h-5 text-gray-500 group-hover:text-primary transition-colors" />
                       </div>
                       <span className="text-sm font-medium text-gray-700">{form.idProofDocument ? form.idProofDocument.name : 'Click to Upload Document'}</span>
@@ -487,7 +487,7 @@ const ProfilePage = () => {
         </form>
 
         {/* Danger Zone */}
-        <div className="p-10 rounded-[2.5rem] bg-gray-50 border border-gray-200/60">
+        <div className="p-10 rounded-xl bg-gray-50 border border-gray-200/60">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="space-y-2">
               <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
@@ -508,7 +508,7 @@ const ProfilePage = () => {
 
         {/* My Attires Section */}
         {user?.isLenderEnabled && (
-          <section className="bg-white rounded-[2.5rem] p-8 md:p-10 shadow-lg border border-gray-100">
+          <section className="bg-white rounded-xl p-8 md:p-10 shadow-lg border border-gray-100">
             <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
               <div>
                 <h2 className="text-3xl font-display font-medium text-gray-900">My Attires</h2>
@@ -520,8 +520,8 @@ const ProfilePage = () => {
             </div>
 
             {items.length === 0 ? (
-              <div className="text-center py-20 bg-gray-50/50 rounded-3xl border border-dashed border-gray-200">
-                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
+              <div className="text-center py-20 bg-gray-50/50 rounded-xl border border-dashed border-gray-200">
+                <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center mx-auto mb-4 shadow-sm">
                   <Upload className="w-6 h-6 text-gray-400" />
                 </div>
                 <h3 className="text-lg font-medium text-gray-900 mb-2">No listings yet</h3>
@@ -533,8 +533,8 @@ const ProfilePage = () => {
             ) : (
               <div className="grid gap-6">
                 {items.map((item) => (
-                  <div key={item._id} className="bg-white rounded-3xl p-4 flex flex-col md:flex-row gap-6 group border border-gray-100 hover:shadow-lg transition-all duration-300">
-                    <div className="w-full md:w-56 aspect-[3/4] md:aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100 relative">
+                  <div key={item._id} className="bg-white rounded-xl p-4 flex flex-col md:flex-row gap-6 group border border-gray-100 hover:shadow-lg transition-all duration-300">
+                    <div className="w-full md:w-56 aspect-[3/4] md:aspect-[4/3] rounded-xl overflow-hidden bg-gray-100 relative">
                       <img
                         src={item.images?.[0] || 'https://via.placeholder.com/300x400?text=No+Image'}
                         alt={item.title}
@@ -555,14 +555,14 @@ const ProfilePage = () => {
                         <div className="flex gap-2">
                           <Link
                             to={`/items/edit/${item._id}`}
-                            className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:text-primary hover:border-primary hover:bg-primary/5 transition-all"
+                            className="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center text-gray-500 hover:text-primary hover:border-primary hover:bg-primary/5 transition-all"
                             title="Edit"
                           >
                             <Edit className="w-4 h-4" />
                           </Link>
                           <button
                             onClick={() => handleDeleteItem(item._id)}
-                            className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:text-red-600 hover:border-red-200 hover:bg-red-50 transition-all"
+                            className="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center text-gray-500 hover:text-red-600 hover:border-red-200 hover:bg-red-50 transition-all"
                             title="Delete"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -587,7 +587,7 @@ const ProfilePage = () => {
 
                       <div className="mt-6 pt-4 border-t border-gray-50 flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                          <span className="w-2 h-2 rounded-xl bg-green-500"></span>
                           <span className="text-xs font-medium text-gray-600">Active Listing</span>
                         </div>
                         <Link to={`/items/${item._id}`} className="text-xs font-bold text-primary uppercase tracking-widest hover:underline">
@@ -606,7 +606,7 @@ const ProfilePage = () => {
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-6 max-w-md w-full animate-fade-in">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full animate-fade-in">
             <h3 className="text-xl font-bold text-gray-900 mb-4">Delete Account?</h3>
             <p className="text-gray-600 mb-6">
               Are you absolutely sure? This action cannot be undone. All your data including listings and bookings will be permanently deleted.

@@ -225,7 +225,7 @@ const BookingPage = () => {
           {/* Left Column: Form or Items */}
           <div className="space-y-8">
             {step === 1 ? (
-              <div className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-xl border border-gray-100 animate-fade-in relative overflow-hidden">
+              <div className="bg-white p-8 md:p-10 rounded-xl shadow-xl border border-gray-100 animate-fade-in relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-20 -mt-20 blur-3xl"></div>
 
                 <h2 className="text-2xl font-display font-medium text-gray-900 mb-8 relative z-10">Buyer Details</h2>
@@ -271,7 +271,7 @@ const BookingPage = () => {
                 </form>
               </div>
             ) : (
-              <div className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-xl border border-gray-100 animate-fade-in">
+              <div className="bg-white p-8 md:p-10 rounded-xl shadow-xl border border-gray-100 animate-fade-in">
                 <div className="flex items-center justify-between mb-8">
                   <h2 className="text-2xl font-display font-medium text-gray-900">Review Items</h2>
                   <button onClick={() => setStep(1)} className="text-xs font-bold text-gray-400 uppercase tracking-widest hover:text-primary transition-colors">
@@ -281,7 +281,7 @@ const BookingPage = () => {
 
                 <div className="space-y-6">
                   {cart.map((item, idx) => (
-                    <div key={idx} className="flex gap-6 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                    <div key={idx} className="flex gap-6 p-4 bg-gray-50 rounded-xl border border-gray-100">
                       <img src={item.images?.[0]} alt={item.title} className="w-24 h-24 rounded-xl object-cover bg-white" />
                       <div className="flex-1">
                         <h3 className="text-lg font-display font-medium text-gray-900 mb-1">{item.title}</h3>
@@ -308,7 +308,7 @@ const BookingPage = () => {
 
           {/* Right Column: Summary & Pay */}
           <div className="h-fit space-y-8">
-            <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-100 sticky top-24">
+            <div className="bg-white p-8 rounded-xl shadow-xl border border-gray-100 sticky top-24">
               <h3 className="text-2xl font-display font-medium text-gray-900 mb-8 pb-4 border-b border-gray-100">Order Summary</h3>
 
               <div className="space-y-4 text-sm mb-8 text-gray-600">
@@ -366,7 +366,7 @@ const BookingPage = () => {
                   </div>
 
                   {formData.paymentMethod === 'cod' && (
-                    <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-6 rounded-2xl border border-yellow-100">
+                    <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-6 rounded-xl border border-yellow-100">
                       <div className="flex justify-between mb-3 text-sm">
                         <span className="text-yellow-800 font-medium">Pay Now (Advance):</span>
                         <span className="font-bold text-yellow-900">₹{(breakdown.depositTotal + breakdown.platformFee + breakdown.deliveryCharges).toFixed(2)}</span>

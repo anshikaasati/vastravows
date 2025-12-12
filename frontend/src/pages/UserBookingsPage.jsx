@@ -49,8 +49,8 @@ const UserBookingsPage = () => {
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {bookings.length === 0 ? (
-          <div className="glass-panel p-16 text-center max-w-xl mx-auto rounded-[2rem] border border-white/60 shadow-xl">
-            <div className="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-6">
+          <div className="glass-panel p-16 text-center max-w-xl mx-auto rounded-xl border border-white/60 shadow-xl">
+            <div className="w-20 h-20 bg-primary/5 rounded-xl flex items-center justify-center mx-auto mb-6">
               <Calendar className="w-8 h-8 text-primary/60" />
             </div>
             <h3 className="text-2xl font-display font-medium text-gray-900 mb-3">No bookings yet</h3>
@@ -64,7 +64,7 @@ const UserBookingsPage = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {bookings.map((booking) => (
-              <div key={booking._id} className="group bg-white rounded-[1.5rem] overflow-hidden border border-gray-100 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] transition-all duration-500 flex flex-col h-full">
+              <div key={booking._id} className="group bg-white rounded-xl overflow-hidden border border-gray-100 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] transition-all duration-500 flex flex-col h-full">
                 {/* Image Header */}
                 <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
                   <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
@@ -76,7 +76,7 @@ const UserBookingsPage = () => {
 
                   {/* Status Badge */}
                   <div className="absolute top-4 left-4 z-20">
-                    <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest backdrop-blur-md shadow-sm border border-white/20 ${booking.status === 'confirmed' ? 'bg-green-500/90 text-white' :
+                    <span className={`px-4 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest backdrop-blur-md shadow-sm border border-white/20 ${booking.status === 'confirmed' ? 'bg-green-500/90 text-white' :
                       booking.status === 'cancelled' ? 'bg-red-500/90 text-white' :
                         'bg-amber-400/90 text-white'
                       }`}>

@@ -17,8 +17,8 @@ const AboutPage = () => {
 
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 -mt-20 relative z-20 pb-20 space-y-20">
                 {/* Mission Section */}
-                <section className="max-w-4xl mx-auto text-center space-y-8 bg-white p-10 rounded-[2.5rem] shadow-xl border border-gray-100">
-                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/5 text-primary mb-4">
+                <section className="max-w-4xl mx-auto text-center space-y-8 bg-white p-10 rounded-xl shadow-xl border border-gray-100">
+                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-xl bg-primary/5 text-primary mb-4">
                         <Sparkles className="w-8 h-8" />
                     </div>
                     <h2 className="text-4xl font-display font-medium text-gray-900">Our Mission</h2>
@@ -36,8 +36,8 @@ const AboutPage = () => {
                         { icon: Leaf, title: 'Sustainability', desc: 'Reduce fashion waste by renting instead of buying. One dress, many occasions, minimal environmental impact.' },
                         { icon: Users, title: 'Community', desc: 'Join a community of fashion lovers who share, care, and celebrate style together.' }
                     ].map((item, index) => (
-                        <div key={index} className="glass-card p-10 rounded-[2.5rem] text-center space-y-6 hover:shadow-2xl transition-all duration-300 group border border-white/60">
-                            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-primary/10 to-secondary/10 group-hover:scale-110 transition-transform duration-300">
+                        <div key={index} className="glass-card p-10 rounded-xl text-center space-y-6 hover:shadow-2xl transition-all duration-300 group border border-white/60">
+                            <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-gradient-to-br from-primary/10 to-secondary/10 group-hover:scale-110 transition-transform duration-300">
                                 <item.icon className="w-8 h-8 text-primary" />
                             </div>
                             <h3 className="text-2xl font-display font-medium text-gray-900">{item.title}</h3>
@@ -52,11 +52,11 @@ const AboutPage = () => {
                 <section className="max-w-4xl mx-auto space-y-12">
                     <div className="text-center">
                         <h2 className="text-4xl md:text-5xl font-display font-medium text-gray-900 mb-4">How We Started</h2>
-                        <div className="w-24 h-1 bg-primary/20 mx-auto rounded-full"></div>
+                        <div className="w-24 h-1 bg-primary/20 mx-auto rounded-xl"></div>
                     </div>
-                    <div className="relative p-10 md:p-14 rounded-[2.5rem] bg-white border border-gray-100 shadow-lg space-y-6">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/5 to-transparent rounded-tr-[2.5rem]"></div>
-                        <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-secondary/5 to-transparent rounded-bl-[2.5rem]"></div>
+                    <div className="relative p-10 md:p-14 rounded-xl bg-white border border-gray-100 shadow-lg space-y-6">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/5 to-transparent rounded-tr-xl"></div>
+                        <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-secondary/5 to-transparent rounded-bl-xl"></div>
 
                         <p className="text-lg text-gray-700 leading-relaxed font-light relative z-10">
                             Vastra Vows was born from a simple observation: wardrobes are full of clothes worn only once,

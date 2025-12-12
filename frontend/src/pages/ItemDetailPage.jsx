@@ -132,10 +132,10 @@ const ItemDetailPage = () => {
     <div className="grid gap-6 md:gap-8 lg:grid-cols-[1.5fr_1fr] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
       <div className="space-y-6 md:space-y-8">
         {/* Main Content Card */}
-        <div className="glass-panel rounded-3xl p-4 md:p-8 animate-fade-in">
+        <div className="glass-panel rounded-xl p-4 md:p-8 animate-fade-in">
           {/* Image Gallery */}
           <div className="space-y-4">
-            <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-lg">
+            <div className="aspect-[4/3] rounded-xl overflow-hidden shadow-lg">
               <img
                 src={item.images?.[selectedImageIndex] || item.images?.[0]}
                 alt={item.title}
@@ -233,7 +233,7 @@ const ItemDetailPage = () => {
             </div>
 
             <div className="flex items-center gap-4 p-4 bg-white/50 rounded-xl border border-white/60">
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-lg md:text-xl shadow-md">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-lg md:text-xl shadow-md">
                 {item.ownerId?.name?.charAt(0)}
               </div>
               <div>
@@ -245,7 +245,7 @@ const ItemDetailPage = () => {
         </div>
 
         {/* Reviews Section */}
-        <div className="glass-panel rounded-3xl p-4 md:p-8">
+        <div className="glass-panel rounded-xl p-4 md:p-8">
           <h3 className="text-2xl font-display font-medium mb-8">Client Reviews</h3>
           <ReviewList reviews={reviews} />
 
@@ -284,7 +284,7 @@ const ItemDetailPage = () => {
 
       {/* Sidebar */}
       <div className="lg:sticky lg:top-24 h-fit space-y-6">
-        <div className="glass-card rounded-3xl p-6 md:p-8 border border-white/60 shadow-xl">
+        <div className="glass-card rounded-xl p-6 md:p-8 border border-white/60 shadow-xl">
           <h3 className="text-xl font-display font-medium mb-6">Check Availability</h3>
 
           <div className="space-y-6">
@@ -301,7 +301,7 @@ const ItemDetailPage = () => {
                       startDate={startDate}
                       endDate={endDate}
                       minDate={new Date()}
-                      className="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-white/80 text-sm focus:ring-1 focus:ring-primary outline-none"
+                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white/80 text-sm focus:ring-1 focus:ring-primary outline-none"
                     />
                   </div>
                   <div>
@@ -313,7 +313,7 @@ const ItemDetailPage = () => {
                       startDate={startDate}
                       endDate={endDate}
                       minDate={startDate}
-                      className="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-white/80 text-sm focus:ring-1 focus:ring-primary outline-none"
+                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white/80 text-sm focus:ring-1 focus:ring-primary outline-none"
                     />
                   </div>
                 </div>
@@ -323,7 +323,7 @@ const ItemDetailPage = () => {
             {availability && !item.salePrice && (
               <div className={`p-4 rounded-xl flex items-center gap-3 ${availability.available ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'
                 }`}>
-                <div className={`w-2 h-2 rounded-full ${availability.available ? 'bg-green-500' : 'bg-red-500'}`} />
+                <div className={`w-2 h-2 rounded-xl ${availability.available ? 'bg-green-500' : 'bg-red-500'}`} />
                 <div>
                   <p className="font-semibold text-sm">{availability.available ? 'Dates Available' : 'Dates Unavailable'}</p>
                   {!availability.available && (

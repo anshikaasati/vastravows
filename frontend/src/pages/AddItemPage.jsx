@@ -252,7 +252,7 @@ const AddItemPage = () => {
   return (
     <div className="min-h-screen py-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-2xl">
-        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+        <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
           <div className="p-6">
             {/* Header */}
             <div className="flex justify-between items-center border-b pb-4 mb-4">
@@ -511,7 +511,7 @@ const AddItemPage = () => {
                   onDragLeave={handleDrag}
                   onDragOver={handleDrag}
                   onDrop={handleDrop}
-                  className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-colors ${dragActive
+                  className={`relative border-2 border-dashed rounded-xl p-6 text-center transition-colors ${dragActive
                     ? 'border-primary bg-primary/5'
                     : 'border-primary/30 bg-primary/5 hover:bg-primary/10'
                     }`}
@@ -562,12 +562,12 @@ const AddItemPage = () => {
                           <img
                             src={preview}
                             alt={`Preview ${idx + 1}`}
-                            className="w-full h-32 object-cover rounded-lg border-2 border-gray-200"
+                            className="w-full h-32 object-cover rounded-xl border-2 border-gray-200"
                           />
                           <button
                             type="button"
                             onClick={() => removeImage(idx)}
-                            className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                            className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
                             title="Remove image"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -613,8 +613,8 @@ const AddItemPage = () => {
       {/* Subscription Modal - NEVER show if editing (id exists) */}
       {showSubscriptionModal && !id && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-8 max-w-lg w-full animate-fade-in shadow-2xl text-center">
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+          <div className="bg-white rounded-xl p-8 max-w-lg w-full animate-fade-in shadow-2xl text-center">
+            <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-6">
               <ShieldCheck className="w-8 h-8 text-primary" />
             </div>
             <h3 className="text-2xl font-display font-bold text-gray-900 mb-2">Choose Your Lender Plan</h3>
@@ -636,7 +636,7 @@ const AddItemPage = () => {
 
               {/* Premium Tier */}
               <div className="border-2 border-primary bg-primary/5 rounded-xl p-4 relative cursor-pointer" onClick={handleSubscribe}>
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-secondary text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-secondary text-white text-[10px] font-bold px-2 py-0.5 rounded-xl">
                   RECOMMENDED
                 </div>
                 <h4 className="font-bold text-primary mb-1">Premium</h4>
