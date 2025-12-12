@@ -44,7 +44,7 @@ const Navbar = () => {
   return (
     <header className={`sticky z-50 transition-all duration-500 w-full ${scrolled
       ? 'top-3 bg-white/60 backdrop-blur-xl border-b border-gold/20 shadow-md'
-      : 'top-0 bg-white/30 backdrop-blur-sm border-b border-transparent py-5'
+      : 'top-3 bg-white/60 backdrop-blur-xl border-b border-gold/20 shadow-md py-3'
       }`}>
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className={`flex justify-between items-center ${scrolled ? 'py-3' : ''}`}>

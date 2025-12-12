@@ -102,7 +102,7 @@ const HomePage = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <div className="relative h-[90vh] flex items-center justify-center overflow-hidden">
+      <div className="relative h-[110vh] -mt-32 flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <img
             src="/images/hero-main.jpg"
@@ -112,7 +112,7 @@ const HomePage = () => {
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
         </div>
 
-        <div className="relative z-10 container mx-auto px-4 text-center text-white space-y-8 animate-fade-in-up">
+        <div className="relative z-10 container mt-20 mx-auto px-4 text-center text-white space-y-8 animate-fade-in-up">
           <p className="text-sm md:text-base font-medium tracking-[0.3em] uppercase text-secondary">
             Curated Luxury Rentals
           </p>
