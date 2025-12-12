@@ -278,20 +278,20 @@ const HomePage = () => {
         </section>
 
         {/* Best Sellers Section */}
-        <section className="bg-gradient-to-br from-secondary/5 to-primary/5 -mx-4 sm:-mx-6 lg:-mx-8 py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <section className="bg-gradient-to-br bg-white/55 from-secondary/5 to-primary/5 -mx-4 sm:-mx-6 lg:-mx-8 py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
           <div className="max-w-7xl mx-auto">
             <div className="grid md:grid-cols-2 gap-12 items-center">
               {/* Image Left */}
               <div className="relative h-[500px] w-full flex items-center justify-center">
-                <div className="absolute w-[80%] h-full mask-arch bg-gray-200 shadow-2xl overflow-hidden">
+                <Link to="/items/69397da6c6e91df8e3feeedf" className="absolute w-[80%] h-full mask-arch bg-gray-200 shadow-2xl overflow-hidden group cursor-pointer">
                   <img
-                    src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=2883&auto=format&fit=crop"
+                    src="/images/bestseller.jpeg"
                     alt="Best Seller"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                </div>
+                </Link>
                 {/* Decorative Circle Badge */}
-                <div className="absolute top-10 right-[10%] w-24 h-24 rounded-full bg-primary text-white flex flex-col items-center justify-center p-2 text-center rotate-12 shadow-lg animate-float">
+                <div className="absolute top-10 right-[10%] w-24 h-24 rounded-full bg-primary text-white flex flex-col items-center justify-center p-2 text-center rotate-12 shadow-lg animate-float pointer-events-none">
                   <span className="text-[10px] font-bold tracking-widest uppercase">Best</span>
                   <span className="text-xs font-display italic">Sellers</span>
                 </div>
@@ -307,7 +307,7 @@ const HomePage = () => {
                   Our most loved pieces, rented and adored by hundreds of happy customers. Experience luxury without the commitment.
                 </p>
                 <div className="pt-4">
-                  <Link to="/items?sort=rating" className="inline-block px-10 py-4 border border-primary text-primary font-serif uppercase tracking-widest hover:bg-primary hover:text-white transition-all duration-300">
+                  <Link to="/items/69397da6c6e91df8e3feeedf" className="inline-block px-10 py-4 border border-primary text-primary font-serif uppercase tracking-widest hover:bg-primary hover:text-white transition-all duration-300">
                     Shop Now
                   </Link>
                 </div>
