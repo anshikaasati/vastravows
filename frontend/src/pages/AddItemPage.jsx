@@ -277,7 +277,7 @@ const AddItemPage = () => {
                   placeholder="e.g., Sabyasachi Velvet Sherwani"
                   value={form.title}
                   onChange={(e) => setForm({ ...form, title: e.target.value })}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition"
+                  className="w-full p-3 border border-gray-300 rounded-xl focus:ring-primary focus:border-primary transition"
                   required
                 />
               </div>
@@ -292,7 +292,7 @@ const AddItemPage = () => {
                   placeholder="Describe the fabric, embroidery, size, and rental terms."
                   value={form.description}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition"
+                  className="w-full p-3 border border-gray-300 rounded-xl focus:ring-primary focus:border-primary transition"
                   required
                 />
               </div>
@@ -306,7 +306,7 @@ const AddItemPage = () => {
                   <select
                     value={form.gender}
                     onChange={(e) => setForm({ ...form, gender: e.target.value, subcategory: '' })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition"
+                    className="w-full p-3 border border-gray-300 rounded-xl focus:ring-primary focus:border-primary transition"
                     required
                   >
                     <option value="">Select</option>
@@ -321,7 +321,7 @@ const AddItemPage = () => {
                   <select
                     value={form.subcategory}
                     onChange={(e) => setForm({ ...form, subcategory: e.target.value })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition"
+                    className="w-full p-3 border border-gray-300 rounded-xl focus:ring-primary focus:border-primary transition"
                     required
                     disabled={!form.gender}
                   >
@@ -365,7 +365,7 @@ const AddItemPage = () => {
                     id="item-type"
                     value={form.category}
                     onChange={(e) => setForm({ ...form, category: e.target.value })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition"
+                    className="w-full p-3 border border-gray-300 rounded-xl focus:ring-primary focus:border-primary transition"
                   >
                     <option value="clothes">Clothes</option>
                     <option value="jewellery">Jewellery</option>
@@ -382,7 +382,7 @@ const AddItemPage = () => {
                     id="listing-type"
                     value={form.listingType}
                     onChange={(e) => setForm({ ...form, listingType: e.target.value })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition"
+                    className="w-full p-3 border border-gray-300 rounded-xl focus:ring-primary focus:border-primary transition"
                   >
                     <option value="Rental">Rental (Per Day/Week)</option>
                     <option value="Sale">For Sale</option>
@@ -435,7 +435,7 @@ const AddItemPage = () => {
                         ? setForm({ ...form, salePrice: e.target.value })
                         : setForm({ ...form, rentPricePerDay: e.target.value })
                     }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition"
+                    className="w-full p-3 border border-gray-300 rounded-xl focus:ring-primary focus:border-primary transition"
                     required
                   />
                 </div>
@@ -450,7 +450,7 @@ const AddItemPage = () => {
                       placeholder="e.g., 5000"
                       value={form.depositAmount}
                       onChange={(e) => setForm({ ...form, depositAmount: e.target.value })}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition"
+                      className="w-full p-3 border border-gray-300 rounded-xl focus:ring-primary focus:border-primary transition"
                     />
                   </div>
                 )}
@@ -466,7 +466,7 @@ const AddItemPage = () => {
                     id="city"
                     value={form.city}
                     onChange={(e) => setForm({ ...form, city: e.target.value })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition"
+                    className="w-full p-3 border border-gray-300 rounded-xl focus:ring-primary focus:border-primary transition"
                     required
                   />
                 </div>
@@ -479,7 +479,7 @@ const AddItemPage = () => {
                     id="pincode"
                     value={form.pincode}
                     onChange={(e) => setForm({ ...form, pincode: e.target.value })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition"
+                    className="w-full p-3 border border-gray-300 rounded-xl focus:ring-primary focus:border-primary transition"
                     required
                   />
                 </div>
@@ -495,7 +495,7 @@ const AddItemPage = () => {
                   placeholder="House / Flat, Street, Area, Landmark"
                   value={form.addressLine}
                   onChange={(e) => setForm({ ...form, addressLine: e.target.value })}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition"
+                  className="w-full p-3 border border-gray-300 rounded-xl focus:ring-primary focus:border-primary transition"
                   required
                 />
               </div>
@@ -539,7 +539,7 @@ const AddItemPage = () => {
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="px-6 py-2 bg-secondary text-white font-semibold rounded-lg hover:bg-secondary-dark transition"
+                      className="px-6 py-2 bg-secondary text-white font-semibold rounded-xl hover:bg-secondary-dark transition"
                     >
                       <Image className="w-4 h-4 inline mr-2" />
                       Browse Files

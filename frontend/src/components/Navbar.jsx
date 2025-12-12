@@ -92,7 +92,7 @@ const Navbar = () => {
                 <input
                   type="text"
                   placeholder="Search..."
-                  className="w-full bg-gray-50/50 border border-gray-200 rounded-full py-1.5 px-4 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all"
+                  className="w-full bg-gray-50/50 border border-gray-200 rounded-xl py-1.5 px-4 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
@@ -128,7 +128,7 @@ const Navbar = () => {
             {/* Profile / Auth */}
             {user ? (
               <div className="hidden md:block relative group">
-                <button className="w-9 h-9 rounded-full bg-primary/5 border border-primary/20 flex items-center justify-center text-primary overflow-hidden hover:bg-primary/10 transition-colors">
+                <button className="w-9 h-9 rounded-xl bg-primary/5 border border-primary/20 flex items-center justify-center text-primary overflow-hidden hover:bg-primary/10 transition-colors">
                   <User className="w-5 h-5" />
                 </button>
                 <div className="absolute right-0 top-full mt-2 w-48 py-2 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 flex flex-col z-50">
@@ -149,7 +149,7 @@ const Navbar = () => {
                 <Link to="/login" className="px-4 py-2 text-sm font-medium text-primary hover:text-secondary transition-colors">
                   Login
                 </Link>
-                <Link to="/register" className="px-5 py-2 rounded-full bg-primary text-white text-sm font-medium shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5 transition-all duration-300">
+                <Link to="/register" className="px-5 py-2 rounded-xl bg-primary text-white text-sm font-medium shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5 transition-all duration-300">
                   Get Started
                 </Link>
               </div>

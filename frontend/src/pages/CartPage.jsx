@@ -8,71 +8,86 @@ const CartPage = () => {
 
     if (cart.length === 0) {
         return (
-            <div className="min-h-[70vh] flex flex-col items-center justify-center text-center px-4">
-                <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mb-6">
-                    <ShoppingBag className="w-12 h-12 text-primary" />
+            <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/5 flex flex-col items-center justify-center text-center px-4 relative overflow-hidden">
+                <div className="absolute top-1/4 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -mr-20"></div>
+                <div className="absolute bottom-1/4 left-0 w-96 h-96 bg-secondary/5 rounded-full blur-3xl -ml-20"></div>
+
+                <div className="relative z-10 bg-white p-12 rounded-[2.5rem] shadow-xl border border-gray-100 max-w-lg w-full">
+                    <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <ShoppingBag className="w-10 h-10 text-gray-400" />
+                    </div>
+                    <h2 className="text-3xl font-display font-medium text-gray-900 mb-2">Your Cart is Empty</h2>
+                    <p className="text-gray-500 mb-8 font-light leading-relaxed">
+                        Looks like you havent added any items yet. <br />Start exploring our premium collection.
+                    </p>
+                    <Link
+                        to="/items"
+                        className="inline-block px-8 py-4 bg-gradient-to-r from-[#d48496] to-[#760a1e] text-white font-bold uppercase tracking-widest text-xs rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
+                    >
+                        Start Shopping
+                    </Link>
                 </div>
-                <h2 className="text-3xl font-display font-bold text-primary mb-3">Your Cart is Empty</h2>
-                <p className="text-gray-600 mb-8 max-w-md">Looks like you haven't added any items yet. Start exploring our collection!</p>
-                <Link
-                    to="/items"
-                    className="px-8 py-4 btn-primary text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
-                >
-                    Start Shopping
-                </Link>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/5 py-12">
+        <div className="min-h-screen bg-[#fcf8f9] py-16">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h1 className="text-4xl md:text-5xl font-display font-bold text-primary mb-8">Shopping Cart</h1>
+                <h1 className="text-5xl md:text-7xl font-script text-primary/90 mb-12 text-center md:text-left">Shopping Cart</h1>
 
                 <div className="grid lg:grid-cols-[1fr_400px] gap-8">
                     {/* Cart Items */}
-                    <div className="space-y-4">
+                    <div className="space-y-6">
                         {cart.map((item, index) => (
-                            <div key={`${item._id}-${item.selectedSize}-${index}`} className="glass-card p-6 rounded-3xl flex gap-6 hover:shadow-xl transition-shadow">
-                                <div className="w-28 h-28 md:w-36 md:h-36 rounded-2xl overflow-hidden flex-shrink-0 ring-2 ring-primary/10">
+                            <div key={`${item._id}-${item.selectedSize}-${index}`} className="bg-white p-6 md:p-8 rounded-[2rem] border border-gray-100 flex flex-col md:flex-row gap-6 hover:shadow-xl hover:translate-y-[-2px] transition-all duration-300">
+                                <div className="w-full md:w-48 aspect-[3/4] md:aspect-square rounded-2xl overflow-hidden bg-gray-100 relative group">
                                     <img
                                         src={item.images?.[0]}
                                         alt={item.title}
-                                        className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                     />
+                                    <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
                                 </div>
                                 <div className="flex-1 flex flex-col">
                                     <div className="flex justify-between items-start mb-4">
-                                        <div>
-                                            <h3 className="text-xl font-display font-semibold text-primary mb-2">{item.title}</h3>
-                                            <p className="text-sm text-gray-600 mb-2">
-                                                Size: <span className="font-semibold text-primary">{item.selectedSize}</span>
-                                            </p>
-                                            {item.rentalPeriod && (
-                                                <p className="text-xs text-gray-500 bg-primary/5 px-3 py-1.5 rounded-lg inline-block border border-primary/10">
-                                                    {new Date(item.rentalPeriod.startDate).toLocaleDateString()} - {new Date(item.rentalPeriod.endDate).toLocaleDateString()}
-                                                </p>
-                                            )}
+                                        <div className="space-y-2">
+                                            <h3 className="text-2xl font-display font-medium text-gray-900">{item.title}</h3>
+                                            <div className="flex flex-wrap gap-2">
+                                                <span className="px-3 py-1 bg-gray-50 border border-gray-100 rounded-lg text-xs font-bold text-gray-600 uppercase tracking-wider">
+                                                    Size: {item.selectedSize}
+                                                </span>
+                                                {item.rentalPeriod && (
+                                                    <span className="px-3 py-1 bg-gray-50 border border-gray-100 rounded-lg text-xs font-bold text-gray-600 uppercase tracking-wider">
+                                                        {new Date(item.rentalPeriod.startDate).toLocaleDateString()} - {new Date(item.rentalPeriod.endDate).toLocaleDateString()}
+                                                    </span>
+                                                )}
+                                            </div>
                                         </div>
                                         <button
                                             onClick={() => removeFromCart(item._id, item.selectedSize)}
-                                            className="p-2.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
-                                            title="Remove"
+                                            className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:text-red-600 hover:border-red-200 hover:bg-red-50 transition-all"
+                                            title="Remove Item"
                                         >
-                                            <Trash2 className="w-5 h-5" />
+                                            <Trash2 className="w-4 h-4" />
                                         </button>
                                     </div>
 
-                                    <div className="mt-auto flex justify-between items-end">
+                                    <div className="mt-auto pt-6 border-t border-gray-50 flex justify-between items-end">
+                                        <div className="text-sm text-gray-500">
+                                            {!item.salePrice && (
+                                                <p>+ ₹{item.depositAmount} security deposit</p>
+                                            )}
+                                        </div>
                                         <div>
                                             {item.salePrice ? (
-                                                <p className="font-display font-bold text-2xl text-primary">₹{item.salePrice}</p>
+                                                <p className="text-3xl font-display font-medium text-primary">₹{item.salePrice}</p>
                                             ) : (
-                                                <div>
-                                                    <p className="font-display font-bold text-2xl text-primary">
+                                                <div className="text-right">
+                                                    <p className="text-3xl font-display font-medium text-primary">
                                                         ₹{item.rentPricePerDay * Math.ceil((new Date(item.rentalPeriod.endDate) - new Date(item.rentalPeriod.startDate)) / (1000 * 60 * 60 * 24))}
                                                     </p>
-                                                    <p className="text-sm text-gray-500 mt-1">+ ₹{item.depositAmount} Deposit</p>
+                                                    <p className="text-xs uppercase tracking-wider font-bold text-gray-400">Total Rent</p>
                                                 </div>
                                             )}
                                         </div>
@@ -84,35 +99,35 @@ const CartPage = () => {
 
                     {/* Summary */}
                     <div className="h-fit space-y-6">
-                        <div className="glass-card p-8 rounded-3xl sticky top-24">
-                            <h3 className="text-2xl font-display font-bold text-primary mb-6">Order Summary</h3>
+                        <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-100 sticky top-24">
+                            <h3 className="text-2xl font-display font-medium text-gray-900 mb-8 pb-4 border-b border-gray-100">Order Summary</h3>
 
-                            <div className="space-y-4 mb-6">
-                                <div className="flex justify-between text-gray-700">
-                                    <span className="font-medium">Subtotal</span>
-                                    <span className="font-semibold">₹{getCartTotal()}</span>
+                            <div className="space-y-4 mb-8">
+                                <div className="flex justify-between text-gray-600">
+                                    <span className="text-sm font-medium">Subtotal</span>
+                                    <span className="text-sm font-bold">₹{getCartTotal()}</span>
                                 </div>
-                                <div className="flex justify-between text-gray-700">
-                                    <span className="font-medium">Platform Fee</span>
-                                    <span className="font-semibold text-green-600">₹0</span>
+                                <div className="flex justify-between text-gray-600">
+                                    <span className="text-sm font-medium">Platform Fee</span>
+                                    <span className="text-sm font-bold text-green-600">Free</span>
                                 </div>
-                                <div className="border-t-2 border-primary/10 my-4" />
-                                <div className="flex justify-between text-xl font-display font-bold text-primary">
-                                    <span>Total</span>
-                                    <span>₹{getCartTotal()}</span>
+                                <div className="border-t border-dashed border-gray-200 my-4" />
+                                <div className="flex justify-between items-baseline">
+                                    <span className="text-lg font-display font-medium text-gray-900">Total</span>
+                                    <span className="text-3xl font-display font-bold text-primary">₹{getCartTotal()}</span>
                                 </div>
                             </div>
 
                             <button
                                 onClick={() => navigate('/booking')}
-                                className="w-full py-4 btn-primary font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 text-white"
+                                className="w-full py-4 bg-gradient-to-r from-[#d48496] to-[#760a1e] text-white font-bold uppercase tracking-widest text-xs rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-3"
                             >
                                 Proceed to Checkout
-                                <ArrowRight className="w-5 h-5" />
+                                <ArrowRight className="w-4 h-4" />
                             </button>
 
-                            <p className="text-xs text-gray-500 text-center mt-4">
-                                Secure transaction • 100% Money-back guarantee
+                            <p className="text-[10px] text-gray-400 text-center mt-6 uppercase tracking-widest font-bold">
+                                Secure transaction • Money-back guarantee
                             </p>
                         </div>
                     </div>

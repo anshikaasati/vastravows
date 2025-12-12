@@ -88,21 +88,23 @@ const ItemsPage = () => {
 
   return (
     <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex flex-col items-center justify-center text-center my-12 space-y-4">
-        <h2 className="text-5xl md:text-6xl font-display font-medium text-primary italic">The Collection</h2>
-        <div className="w-24 h-1 bg-secondary mx-auto"></div>
-        <p className="text-gray-500 max-w-lg mx-auto font-light">Explore our handpicked curation of luxury wear, where every piece tells a story of elegance and grace.</p>
+      <div className="flex flex-col items-center justify-center text-center my-16 space-y-6">
+        <h2 className="text-6xl md:text-8xl font-script text-primary/90">The Collection</h2>
+        <div className="w-16 h-0.5 bg-primary/20 mx-auto"></div>
+        <p className="text-gray-500 max-w-lg mx-auto font-medium tracking-wide text-sm leading-relaxed">
+          Explore our handpicked curation of luxury wear, where every piece tells a story of elegance and grace.
+        </p>
       </div>
 
       {/* Filters & Categories */}
       {/* Minimalist Filters */}
       <div className="mb-16 flex flex-col items-center space-y-6">
-        <div className="flex bg-white rounded-full p-1 border border-secondary/30 shadow-sm">
+        <div className="flex bg-white rounded-xl p-1 border border-secondary/30 shadow-sm">
           {['women', 'men'].map((gender) => (
             <button
               key={gender}
               onClick={() => handleGenderToggle(gender)}
-              className={`px-8 py-3 rounded-full text-sm uppercase tracking-widest font-medium transition-all duration-300 ${genderFilter === gender
+              className={`px-8 py-3 rounded-xl text-sm uppercase tracking-widest font-medium transition-all duration-300 ${genderFilter === gender
                 ? 'bg-primary text-white shadow-md'
                 : 'text-gray-500 hover:text-primary'
                 }`}
@@ -115,7 +117,7 @@ const ItemsPage = () => {
         <div className="flex flex-wrap justify-center gap-4">
           <button
             onClick={() => handleCategoryFilter('')}
-            className={`px-6 py-2 rounded-full border text-xs uppercase tracking-wider transition-colors ${!activeCategoryValue ? 'border-primary bg-primary text-white' : 'border-secondary/30 text-gray-500 hover:border-primary'}`}
+            className={`px-6 py-2 rounded-xl border text-xs uppercase tracking-wider transition-colors ${!activeCategoryValue ? 'border-primary bg-primary text-white' : 'border-secondary/30 text-gray-500 hover:border-primary'}`}
           >
             All
           </button>
@@ -123,7 +125,7 @@ const ItemsPage = () => {
             <button
               key={value}
               onClick={() => handleCategoryFilter(value)}
-              className={`px-6 py-2 rounded-full border text-xs uppercase tracking-wider transition-colors ${activeCategoryValue === value
+              className={`px-6 py-2 rounded-xl border text-xs uppercase tracking-wider transition-colors ${activeCategoryValue === value
                 ? 'border-primary bg-primary text-white'
                 : 'border-secondary/30 text-gray-500 hover:border-primary hover:text-primary'
                 }`}

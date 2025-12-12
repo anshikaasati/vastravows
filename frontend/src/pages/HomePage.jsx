@@ -127,7 +127,7 @@ const HomePage = () => {
           <div className="pt-8 flex flex-col sm:flex-row gap-6 justify-center">
             <Link
               to="/items"
-              className="px-10 py-4 text-white uppercase tracking-widest text-xs font-bold rounded-full shadow-2xl hover:shadow-primary/50 hover:-translate-y-1 transition-all duration-300"
+              className="px-10 py-4 text-white uppercase tracking-widest text-xs font-bold rounded-xl shadow-2xl hover:shadow-primary/50 hover:-translate-y-1 transition-all duration-300"
               style={{
                 background: 'linear-gradient(90deg, #d48496 0%, #760a1e 100%)'
               }}
@@ -154,7 +154,7 @@ const HomePage = () => {
           <div className="p-1">
             <button
               onClick={handleSearch}
-              className="w-14 h-14 rounded-full bg-[#600000] text-white flex items-center justify-center hover:bg-[#800000] transition-all duration-300 shadow-lg hover:scale-105"
+              className="w-14 h-14 rounded-xl bg-[#600000] text-white flex items-center justify-center hover:bg-[#800000] transition-all duration-300 shadow-lg hover:scale-105"
               title="Search"
             >
               <Search className="w-6 h-6" />
@@ -289,7 +289,7 @@ const HomePage = () => {
                   Our most loved pieces, rented and adored by hundreds of happy customers. Experience luxury without the commitment.
                 </p>
                 <div className="pt-4">
-                  <Link to="/items/69397da6c6e91df8e3feeedf" className="inline-block px-10 py-4 border border-primary text-primary font-serif uppercase tracking-widest hover:bg-primary hover:text-white transition-all duration-300">
+                  <Link to="/items/69397da6c6e91df8e3feeedf" className="inline-block px-10 py-4 border border-primary text-primary font-serif uppercase tracking-widest rounded-xl hover:bg-primary hover:text-white transition-all duration-300">
                     Shop Now
                   </Link>
                 </div>
@@ -306,31 +306,41 @@ const HomePage = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
-            {/* Best Sellers: Sort by rating (descending) */}
-            {[...items].sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0)).slice(0, 4).map((item) => (
-              <Link key={`bs-${item._id}`} to={`/items/${item._id}`} className="group block">
-                {/* Minimal Card Style */}
-                <div className="relative aspect-[3/4] overflow-hidden bg-gray-100 mb-4">
-                  <img
-                    src={item.images?.[0] || `https://placehold.co/600x800/9d174d/fce7f3?text=${item.title}`}
-                    alt={item.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <span className="absolute top-2 left-2 bg-primary text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1">
-                    Best Seller
-                  </span>
-                </div>
-                <div className="text-center space-y-1">
-                  <h3 className="text-gray-900 font-display text-base tracking-wide truncate px-2">{item.title}</h3>
-                  <p className="text-gray-500 text-sm font-medium">
-                    {item.salePrice ? `₹${item.salePrice}` : `₹${item.rentPricePerDay}/day`}
-                  </p>
-                </div>
-                <button className="w-full mt-4 py-2.5 border border-primary/20 text-primary text-xs font-bold uppercase tracking-[0.15em] hover:bg-primary hover:text-white transition-all duration-300">
-                  Add to Cart
-                </button>
-              </Link>
-            ))}
+            {/* Best Sellers: Sort by rating (descending), then Price (descending) as tie-breaker */}
+            {[...items]
+              .sort((a, b) => {
+                const ratingDiff = (b.averageRating || 0) - (a.averageRating || 0);
+                if (ratingDiff !== 0) return ratingDiff;
+                // If ratings are equal (e.g., all 0), sort by price to differentiate from New Arrivals
+                const priceA = a.salePrice || a.rentPricePerDay || 0;
+                const priceB = b.salePrice || b.rentPricePerDay || 0;
+                return priceB - priceA;
+              })
+              .slice(0, 4)
+              .map((item) => (
+                <Link key={`bs-${item._id}`} to={`/items/${item._id}`} className="group block">
+                  {/* Minimal Card Style */}
+                  <div className="relative aspect-[3/4] overflow-hidden bg-gray-100 mb-4">
+                    <img
+                      src={item.images?.[0] || `https://placehold.co/600x800/9d174d/fce7f3?text=${item.title}`}
+                      alt={item.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <span className="absolute top-2 left-2 bg-primary text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1">
+                      Best Seller
+                    </span>
+                  </div>
+                  <div className="text-center space-y-1">
+                    <h3 className="text-gray-900 font-display text-base tracking-wide truncate px-2">{item.title}</h3>
+                    <p className="text-gray-500 text-sm font-medium">
+                      {item.salePrice ? `₹${item.salePrice}` : `₹${item.rentPricePerDay}/day`}
+                    </p>
+                  </div>
+                  <button className="w-full mt-4 py-2.5 border border-primary/20 text-primary text-xs font-bold uppercase tracking-[0.15em] hover:bg-primary hover:text-white transition-all duration-300">
+                    Add to Cart
+                  </button>
+                </Link>
+              ))}
           </div>
 
           <div className="mt-12 text-center">

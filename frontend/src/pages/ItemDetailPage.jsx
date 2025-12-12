@@ -160,26 +160,26 @@ const ItemDetailPage = () => {
 
           <div className="mt-6 md:mt-8 space-y-4">
             <div>
-              <h2 className="text-2xl md:text-4xl font-display font-bold text-gray-900 mb-2">{item.title}</h2>
-              <p className="text-xs md:text-sm uppercase tracking-widest text-gray-500 font-semibold">
+              <h2 className="text-3xl md:text-5xl font-display font-medium text-gray-900 mb-2">{item.title}</h2>
+              <p className="text-xs md:text-sm uppercase tracking-[0.2em] text-gray-500 font-bold">
                 {item.gender} • {item.subcategory?.replace(/-/g, ' ')}
               </p>
             </div>
 
             <div className="flex items-baseline gap-4 border-b border-gray-200 pb-6">
               {item.salePrice ? (
-                <span className="text-2xl md:text-3xl font-bold text-gray-900">₹{item.salePrice}</span>
+                <span className="text-3xl md:text-4xl font-display font-medium text-gray-900">₹{item.salePrice}</span>
               ) : (
                 <div className="flex items-baseline gap-2">
-                  <span className="text-2xl md:text-3xl font-bold text-primary">₹{item.rentPricePerDay}</span>
-                  <span className="text-gray-500 font-medium">/ day</span>
+                  <span className="text-3xl md:text-4xl font-display font-medium text-primary">₹{item.rentPricePerDay}</span>
+                  <span className="text-gray-500 font-medium font-sans">/ day</span>
                 </div>
               )}
             </div>
 
             {/* Size Selection */}
             <div className="py-4">
-              <h3 className="text-sm font-medium text-gray-900 mb-3">Select Size</h3>
+              <h3 className="text-xs uppercase tracking-widest font-bold text-gray-900 mb-4">Select Size</h3>
               <div className="flex flex-wrap gap-3">
                 {(() => {
                   // Parse size: handle array or string
@@ -198,11 +198,11 @@ const ItemDetailPage = () => {
                           key={size}
                           onClick={() => !isInCart && setSelectedSize(size)}
                           disabled={isInCart}
-                          className={`w-12 h-12 rounded-lg border-2 flex items-center justify-center font-semibold transition-all ${selectedSize === size
-                            ? 'border-primary bg-primary text-white shadow-lg scale-110'
+                          className={`w-12 h-12 rounded-xl border flex items-center justify-center text-sm font-semibold transition-all duration-300 ${selectedSize === size
+                            ? 'border-primary bg-primary text-white shadow-lg'
                             : isInCart
                               ? 'border-gray-100 bg-gray-100 text-gray-400 cursor-not-allowed'
-                              : 'border-gray-200 text-gray-700 hover:border-primary/50'
+                              : 'border-gray-200 text-gray-600 hover:border-primary hover:text-primary'
                             }`}
                           title={isInCart ? 'Already in cart' : size}
                         >
@@ -217,28 +217,28 @@ const ItemDetailPage = () => {
               </div>
             </div>
             <div className="prose prose-pink max-w-none text-gray-600 leading-relaxed text-sm md:text-base">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Description</h3>
+              <h3 className="text-lg font-display font-semibold text-gray-900 mb-2">Description</h3>
               <p>{item.description}</p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-6 border-t border-gray-200">
               <div>
-                <p className="text-sm text-gray-500 mb-1">Location</p>
+                <p className="text-xs uppercase tracking-wider text-gray-400 mb-1">Location</p>
                 <p className="font-medium text-gray-900">{item.location?.city}, {item.location?.pincode}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">Security Deposit</p>
+                <p className="text-xs uppercase tracking-wider text-gray-400 mb-1">Security Deposit</p>
                 <p className="font-medium text-gray-900">₹{item.depositAmount}</p>
               </div>
             </div>
 
             <div className="flex items-center gap-4 p-4 bg-white/50 rounded-xl border border-white/60">
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-lg md:text-xl">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-lg md:text-xl shadow-md">
                 {item.ownerId?.name?.charAt(0)}
               </div>
               <div>
-                <p className="text-xs md:text-sm text-gray-500">Listed by</p>
-                <p className="font-semibold text-gray-900 text-sm md:text-base">{item.ownerId?.name}</p>
+                <p className="text-xs uppercase tracking-wider text-gray-500 mb-0.5">Listed by</p>
+                <p className="font-display font-semibold text-gray-900 text-sm md:text-lg">{item.ownerId?.name}</p>
               </div>
             </div>
           </div>
@@ -246,11 +246,11 @@ const ItemDetailPage = () => {
 
         {/* Reviews Section */}
         <div className="glass-panel rounded-3xl p-4 md:p-8">
-          <h3 className="text-xl md:text-2xl font-display font-bold mb-6">Client Reviews</h3>
+          <h3 className="text-2xl font-display font-medium mb-8">Client Reviews</h3>
           <ReviewList reviews={reviews} />
 
           <div className="mt-8 pt-8 border-t border-gray-200/60">
-            <h4 className="text-lg font-semibold mb-4">Write a Review</h4>
+            <h4 className="text-lg font-display font-medium mb-4">Write a Review</h4>
             <form onSubmit={handleReviewSubmit} className="space-y-4">
               <div className="flex items-center gap-2 mb-2">
                 {[1, 2, 3, 4, 5].map((star) => (
@@ -261,7 +261,7 @@ const ItemDetailPage = () => {
                     className="focus:outline-none transition-transform hover:scale-110"
                   >
                     <StarIcon
-                      className={`w-6 h-6 md:w-8 md:h-8 ${star <= rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
+                      className={`w-6 h-6 md:w-8 md:h-8 ${star <= rating ? 'text-primary fill-primary' : 'text-gray-200'
                         }`}
                     />
                   </button>
@@ -271,10 +271,10 @@ const ItemDetailPage = () => {
                 <input
                   name="comment"
                   placeholder="Share your experience with this attire..."
-                  className="flex-1 px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary/20 text-sm md:text-base"
+                  className="flex-1 px-4 py-3 rounded-xl border border-gray-200 bg-white/50 focus:ring-1 focus:ring-primary focus:border-primary text-sm md:text-base outline-none"
                 />
-                <button type="submit" className="px-6 py-3 rounded-xl btn-primary shadow-lg w-full sm:w-auto">
-                  Post
+                <button type="submit" className="px-8 py-3 rounded-xl bg-primary text-white text-xs font-bold uppercase tracking-widest hover:bg-primary-dark transition-all duration-300 shadow-lg w-full sm:w-auto">
+                  POST
                 </button>
               </div>
             </form>
@@ -285,15 +285,15 @@ const ItemDetailPage = () => {
       {/* Sidebar */}
       <div className="lg:sticky lg:top-24 h-fit space-y-6">
         <div className="glass-card rounded-3xl p-6 md:p-8 border border-white/60 shadow-xl">
-          <h3 className="text-xl font-display font-bold mb-6">Check Availability</h3>
+          <h3 className="text-xl font-display font-medium mb-6">Check Availability</h3>
 
-          <div className="space-y-4">
+          <div className="space-y-6">
             {!item.salePrice && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Rental Period</label>
+                <label className="block text-xs uppercase tracking-wider font-bold text-gray-500 mb-3">Rental Period</label>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <span className="text-xs text-gray-500 mb-1 block">Start Date</span>
+                    <span className="text-[10px] uppercase text-gray-400 mb-1 block">Start Date</span>
                     <DatePicker
                       selected={startDate}
                       onChange={(date) => setStartDate(date)}
@@ -301,11 +301,11 @@ const ItemDetailPage = () => {
                       startDate={startDate}
                       endDate={endDate}
                       minDate={new Date()}
-                      className="w-full px-3 py-2 rounded-lg glass-input text-sm"
+                      className="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-white/80 text-sm focus:ring-1 focus:ring-primary outline-none"
                     />
                   </div>
                   <div>
-                    <span className="text-xs text-gray-500 mb-1 block">End Date</span>
+                    <span className="text-[10px] uppercase text-gray-400 mb-1 block">End Date</span>
                     <DatePicker
                       selected={endDate}
                       onChange={(date) => setEndDate(date)}
@@ -313,7 +313,7 @@ const ItemDetailPage = () => {
                       startDate={startDate}
                       endDate={endDate}
                       minDate={startDate}
-                      className="w-full px-3 py-2 rounded-lg glass-input text-sm"
+                      className="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-white/80 text-sm focus:ring-1 focus:ring-primary outline-none"
                     />
                   </div>
                 </div>
@@ -337,40 +337,41 @@ const ItemDetailPage = () => {
               <button
                 onClick={handleAvailability}
                 disabled={checking}
-                className="w-full py-3 rounded-xl border border-gray-300 font-semibold text-gray-700 hover:bg-gray-50 transition"
+                className="w-full py-3 rounded-xl border border-gray-300 font-bold text-xs uppercase tracking-widest text-gray-600 hover:bg-gray-50 transition"
               >
                 {checking ? 'Checking...' : 'Check Availability'}
               </button>
             )}
 
-            <div className="h-px bg-gray-200 my-4" />
+            <div className="h-px bg-gray-100 my-2" />
 
             <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={handleAddToCart}
-                className="w-full py-3 rounded-xl btn-outline font-bold hover:text-white transition flex items-center justify-center gap-2"
+                className="w-full py-3.5 rounded-xl border border-primary text-primary font-bold text-xs uppercase tracking-widest hover:bg-primary hover:text-white transition-all duration-300 flex items-center justify-center gap-2"
               >
-                <ShoppingBag className="w-5 h-5" />
-                Add to Cart
+                <ShoppingBag className="w-4 h-4" />
+                Add Cart
               </button>
 
               {item.salePrice ? (
                 <button
-                  className="w-full py-3 rounded-xl btn-primary font-semibold shadow-lg"
+                  onClick={handleBuyNow}
+                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#d48496] to-[#760a1e] text-white font-bold text-xs uppercase tracking-widest shadow-lg hover:shadow-xl transition-all duration-300"
                 >
                   Buy Now
                 </button>
               ) : (
                 <button
                   onClick={handleRentNow}
-                  className="w-full py-3 rounded-xl btn-primary font-bold text-white shadow-lg"
+                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#d48496] to-[#760a1e] text-white font-bold text-xs uppercase tracking-widest shadow-lg hover:shadow-xl transition-all duration-300"
                 >
                   Rent Now
                 </button>
               )}
             </div>
 
-            <p className="text-xs text-center text-gray-400 mt-4">
+            <p className="text-[10px] text-center text-gray-400 mt-2 uppercase tracking-wide">
               Secure transaction • 100% Money back guarantee
             </p>
           </div>

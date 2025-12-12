@@ -37,87 +37,95 @@ const UserBookingsPage = () => {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex flex-col items-center justify-center text-center my-12 space-y-4">
-        <h2 className="text-4xl md:text-5xl font-display font-medium text-primary italic">My Bookings</h2>
-        <div className="w-16 h-1 bg-secondary mx-auto"></div>
-        <p className="text-gray-500 max-w-lg mx-auto font-light">Track your upcoming elegance. Manage your rentals with ease.</p>
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/5">
+      <div className="bg-gradient-to-br from-primary/5 to-secondary/5 pb-12 pt-16 md:pt-24 border-b border-gray-100">
+        <div className="container mx-auto px-4 text-center space-y-4">
+          <h2 className="text-5xl md:text-7xl font-script text-primary/90">My Bookings</h2>
+          <p className="text-xs md:text-sm text-gray-400 font-bold uppercase tracking-[0.2em]">
+            Manage your rentals & timeline
+          </p>
+        </div>
       </div>
 
-      {bookings.length === 0 ? (
-        <div className="glass-panel rounded-3xl p-12 text-center max-w-2xl mx-auto">
-          <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
-            <Calendar className="w-10 h-10 text-gray-400" />
-          </div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">No bookings yet</h3>
-          <p className="text-gray-500 mb-6">Browse our collection and book your first look!</p>
-          <a href="/items" className="inline-block px-8 py-3 bg-primary text-white font-semibold rounded-full hover:bg-primary-dark transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-            Explore Collection
-          </a>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {bookings.map((booking) => (
-            <div key={booking._id} className="glass-card rounded-2xl overflow-hidden flex flex-col h-full group bg-white hover:shadow-2xl transition-all duration-300 border border-gray-100">
-              {/* Image Header */}
-              <div className="relative aspect-[4/5] overflow-hidden bg-gray-100">
-                <img
-                  src={booking.itemId?.images?.[0] || 'https://via.placeholder.com/300x400?text=No+Image'}
-                  alt={booking.itemId?.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
-                />
-
-                {/* Status Badge */}
-                <div className="absolute top-3 right-3">
-                  <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm backdrop-blur-md ${booking.status === 'confirmed' ? 'bg-green-100/90 text-green-700' :
-                      booking.status === 'cancelled' ? 'bg-red-100/90 text-red-700' :
-                        'bg-yellow-100/90 text-yellow-700'
-                    }`}>
-                    {booking.status}
-                  </span>
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="p-4 flex-1 flex flex-col">
-                <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-1" title={booking.itemId?.title}>
-                  {booking.itemId?.title}
-                </h3>
-
-                <div className="mt-4 space-y-3 flex-1">
-                  {/* Dates */}
-                  <div className="bg-gray-50 p-3 rounded-lg border border-gray-200/50">
-                    <div className="flex justify-between items-center text-xs mb-1">
-                      <span className="text-gray-500 uppercase tracking-wide">Start Date</span>
-                      <span className="font-medium text-gray-900">{new Date(booking.startDate).toLocaleDateString()}</span>
-                    </div>
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="text-gray-500 uppercase tracking-wide">End Date</span>
-                      <span className="font-medium text-gray-900">{new Date(booking.endDate).toLocaleDateString()}</span>
-                    </div>
-                  </div>
-
-                  {/* Price */}
-                  <div className="flex justify-between items-center border-t border-gray-100 pt-3">
-                    <span className="text-sm text-gray-500">Total</span>
-                    <span className="text-lg font-bold text-primary">₹{booking.totalAmount}</span>
-                  </div>
-                </div>
-
-                {/* Actions */}
-                {booking.status !== 'cancelled' && (
-                  <button
-                    onClick={() => handleCancel(booking._id)}
-                    className="mt-4 w-full py-2.5 text-xs font-bold uppercase tracking-widest text-red-500 hover:text-white border border-red-200 hover:bg-red-500 rounded-lg transition-all duration-300"
-                  >
-                    Cancel Booking
-                  </button>
-                )}
-              </div>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {bookings.length === 0 ? (
+          <div className="glass-panel p-16 text-center max-w-xl mx-auto rounded-[2rem] border border-white/60 shadow-xl">
+            <div className="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Calendar className="w-8 h-8 text-primary/60" />
             </div>
-          ))}
-        </div>
-      )}
+            <h3 className="text-2xl font-display font-medium text-gray-900 mb-3">No bookings yet</h3>
+            <p className="text-gray-500 font-light mb-8 max-w-xs mx-auto leading-relaxed">
+              Your calendar is clear. Why not fill it with something beautiful?
+            </p>
+            <a href="/items" className="inline-block px-10 py-4 bg-gradient-to-r from-[#d48496] to-[#760a1e] text-white text-xs font-bold uppercase tracking-widest rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+              Explore Collection
+            </a>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {bookings.map((booking) => (
+              <div key={booking._id} className="group bg-white rounded-[1.5rem] overflow-hidden border border-gray-100 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] transition-all duration-500 flex flex-col h-full">
+                {/* Image Header */}
+                <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
+                  <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
+                  <img
+                    src={booking.itemId?.images?.[0] || 'https://via.placeholder.com/300x400?text=No+Image'}
+                    alt={booking.itemId?.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition duration-700 ease-in-out"
+                  />
+
+                  {/* Status Badge */}
+                  <div className="absolute top-4 left-4 z-20">
+                    <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest backdrop-blur-md shadow-sm border border-white/20 ${booking.status === 'confirmed' ? 'bg-green-500/90 text-white' :
+                      booking.status === 'cancelled' ? 'bg-red-500/90 text-white' :
+                        'bg-amber-400/90 text-white'
+                      }`}>
+                      {booking.status}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="p-6 flex-1 flex flex-col">
+                  <h3 className="text-xl font-display font-medium text-gray-900 mb-1 line-clamp-1 group-hover:text-primary transition-colors" title={booking.itemId?.title}>
+                    {booking.itemId?.title}
+                  </h3>
+
+                  <div className="mt-6 space-y-4 flex-1">
+                    {/* Dates */}
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-baseline border-b border-gray-50 pb-2">
+                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Start</span>
+                        <span className="font-display text-gray-700">{new Date(booking.startDate).toLocaleDateString()}</span>
+                      </div>
+                      <div className="flex justify-between items-baseline border-b border-gray-50 pb-2">
+                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">End</span>
+                        <span className="font-display text-gray-700">{new Date(booking.endDate).toLocaleDateString()}</span>
+                      </div>
+                    </div>
+
+                    {/* Price */}
+                    <div className="flex justify-between items-center pt-2">
+                      <span className="text-xs text-gray-500 font-medium">Total Amount</span>
+                      <span className="text-xl font-display font-medium text-primary">₹{booking.totalAmount}</span>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  {booking.status !== 'cancelled' && (
+                    <button
+                      onClick={() => handleCancel(booking._id)}
+                      className="mt-6 w-full py-3 text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 hover:text-red-500 border border-gray-200 hover:border-red-200 rounded-xl transition-all duration-300 hover:bg-red-50"
+                    >
+                      Cancel Booking
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
