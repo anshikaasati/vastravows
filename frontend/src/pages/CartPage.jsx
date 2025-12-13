@@ -8,7 +8,15 @@ const CartPage = () => {
 
     if (cart.length === 0) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/5 flex flex-col items-center justify-center text-center px-4 relative overflow-hidden">
+            <div className="min-h-screen flex flex-col items-center justify-center text-center px-4 relative overflow-hidden"
+            style={{
+                backgroundImage:
+                "url('/images/Pink Illustrative Watercolor Flowers Desktop Wallpaper.png')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+            }}
+            >
                 <div className="absolute top-1/4 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -mr-20"></div>
                 <div className="absolute bottom-1/4 left-0 w-96 h-96 bg-secondary/5 rounded-full blur-3xl -ml-20"></div>
 

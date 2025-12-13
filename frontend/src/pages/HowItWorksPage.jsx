@@ -36,7 +36,16 @@ const HowItWorksPage = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-[#fcf8f9]">
+        <div className="min-h-screen"
+        style={{
+            backgroundImage:
+            "url('/images/Pink Illustrative Watercolor Flowers Desktop Wallpaper.png')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+        }}
+        >
+
             {/* Hero */}
             <div className="relative overflow-hidden py-24">
                 <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl -mr-32 -mt-32"></div>

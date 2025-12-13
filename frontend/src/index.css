@@ -29,14 +29,27 @@
   --font-script: 'Pinyon Script', cursive;
 }
 
+/* index.css */
+
 body {
+  margin: 0;
+  min-height: 100vh;
+
+  background-image: url("/images/Pink Illustrative Watercolor Flowers Desktop Wallpaper.png");
+  background-size: cover;        /* full screen */
+  background-position: center;   /* centered */
+  background-repeat: no-repeat;  /* no tiling */
+  background-attachment: fixed;  /* stays while scrolling */
+}
+
+/* body {
   font-family: var(--font-sans);
   color: var(--color-text);
   background-color: #fcf8f9;
   min-height: 100vh;
   scroll-behavior: smooth;
   overflow-x: hidden;
-}
+} */
 
 h1,
 h2,
