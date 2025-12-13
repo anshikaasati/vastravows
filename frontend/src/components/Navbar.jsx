@@ -52,7 +52,7 @@ const Navbar = () => {
           {/* Logo - Left */}
           <Link to="/" className="flex items-center gap-3 group flex-shrink-0">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-white shadow-lg group-hover:scale-105 transition-transform duration-300 overflow-hidden">
-              <img src="/images/vv-logo.png" alt="VV Logo" className="w-full h-full object-cover" />
+              <img src="/images/logo.png" alt="VV Logo" className="w-full h-full object-cover -translate-x-1" />
             </div>
             <div>
               <h1 className="font-display text-2xl font-bold text-primary tracking-tight leading-none group-hover:text-secondary transition-colors">

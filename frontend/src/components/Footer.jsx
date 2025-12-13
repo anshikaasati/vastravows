@@ -10,7 +10,7 @@ const Footer = () => {
                     <div className="space-y-4">
                         <Link to="/" className="flex items-center gap-2 group">
                             <div className="w-8 h-8 rounded-xl overflow-hidden">
-                                <img src="/images/vv-logo.png" alt="VV Logo" className="w-full h-full object-cover" />
+                                <img src="/images/logo.png" alt="VV Logo" className="w-full h-full object-cover" />
                             </div>
                             <span className="font-display text-xl font-bold uppercase tracking-widest text-primary">Vastra Vows</span>
                         </Link>
