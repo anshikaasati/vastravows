@@ -265,7 +265,7 @@ const HomePage = () => {
             <div className="grid md:grid-cols-2 gap-12 items-center">
               {/* Image Left */}
               <div className="relative h-[500px] w-full flex items-center justify-center">
-                <Link to="/items/69397da6c6e91df8e3feeedf" className="absolute w-[80%] h-full mask-arch bg-gray-200 shadow-2xl overflow-hidden group cursor-pointer">
+                <Link to="/items/693d21c77c2a5bc856eda393" className="absolute w-[80%] h-full mask-arch bg-gray-200 shadow-2xl overflow-hidden group cursor-pointer">
                   <img
                     src="/images/bestseller.jpeg"
                     alt="Best Seller"
