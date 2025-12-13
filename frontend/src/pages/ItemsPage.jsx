@@ -87,9 +87,9 @@ const ItemsPage = () => {
   };
 
   return (
-    <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex flex-col items-center justify-center text-center my-16 space-y-6">
-        <h2 className="text-6xl md:text-8xl font-script text-primary/90">The Collection</h2>
+    <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div className="flex flex-col items-center justify-center text-center my-12 sm:my-16 space-y-4 sm:space-y-6 px-4">
+        <h2 className="text-4xl sm:text-6xl md:text-8xl font-script text-primary/90">The Collection</h2>
         <div className="w-16 h-0.5 bg-primary/20 mx-auto"></div>
         <p className="text-gray-500 max-w-lg mx-auto font-medium tracking-wide text-sm leading-relaxed">
           Explore our handpicked curation of luxury wear, where every piece tells a story of elegance and grace.
@@ -98,15 +98,15 @@ const ItemsPage = () => {
 
       {/* Filters & Categories */}
       {/* Minimalist Filters */}
-      <div className="mb-16 flex flex-col items-center space-y-6">
+      <div className="mb-12 sm:mb-16 flex flex-col items-center space-y-4 sm:space-y-6">
         <div className="flex bg-white rounded-xl p-1 border border-secondary/30 shadow-sm">
           {['women', 'men'].map((gender) => (
             <button
               key={gender}
               onClick={() => handleGenderToggle(gender)}
-              className={`px-8 py-3 rounded-xl text-sm uppercase tracking-widest font-medium transition-all duration-300 ${genderFilter === gender
-                ? 'bg-primary text-white shadow-md'
-                : 'text-gray-500 hover:text-primary'
+              className={`px-6 sm:px-8 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm uppercase tracking-widest font-medium transition-all duration-300 ${genderFilter === gender
+                  ? 'bg-primary text-white shadow-md'
+                  : 'text-gray-500 hover:text-primary'
                 }`}
             >
               {gender === 'women' ? 'Women' : 'Men'}
@@ -114,25 +114,28 @@ const ItemsPage = () => {
           ))}
         </div>
 
-        <div className="flex flex-wrap justify-center gap-4">
-          <button
-            onClick={() => handleCategoryFilter('')}
-            className={`px-6 py-2 rounded-xl border text-xs uppercase tracking-wider transition-colors ${!activeCategoryValue ? 'border-primary bg-primary text-white' : 'border-secondary/30 text-gray-500 hover:border-primary'}`}
-          >
-            All
-          </button>
-          {categoryOptions[genderFilter].map(({ label, value }) => (
+        <div className="w-full overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div className="flex sm:flex-wrap justify-start sm:justify-center gap-3 sm:gap-4 min-w-max sm:min-w-0">
             <button
-              key={value}
-              onClick={() => handleCategoryFilter(value)}
-              className={`px-6 py-2 rounded-xl border text-xs uppercase tracking-wider transition-colors ${activeCategoryValue === value
-                ? 'border-primary bg-primary text-white'
-                : 'border-secondary/30 text-gray-500 hover:border-primary hover:text-primary'
+              onClick={() => handleCategoryFilter('')}
+              className={`px-4 sm:px-6 py-2 rounded-xl border text-xs uppercase tracking-wider transition-colors whitespace-nowrap ${!activeCategoryValue ? 'border-primary bg-primary text-white' : 'border-secondary/30 text-gray-500 hover:border-primary'
                 }`}
             >
-              {label.split('–')[1].trim()}
+              All
             </button>
-          ))}
+            {categoryOptions[genderFilter].map(({ label, value }) => (
+              <button
+                key={value}
+                onClick={() => handleCategoryFilter(value)}
+                className={`px-4 sm:px-6 py-2 rounded-xl border text-xs uppercase tracking-wider transition-colors whitespace-nowrap ${activeCategoryValue === value
+                    ? 'border-primary bg-primary text-white'
+                    : 'border-secondary/30 text-gray-500 hover:border-primary hover:text-primary'
+                  }`}
+              >
+                {label.split('–')[1].trim()}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -147,7 +150,7 @@ const ItemsPage = () => {
           <p className="text-gray-500">Try adjusting your filters or search criteria.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
           {items.map((item, index) => (
             <div key={item._id} className="h-full">
               <ItemCard item={item} />

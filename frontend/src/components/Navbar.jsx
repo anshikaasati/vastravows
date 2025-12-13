@@ -84,21 +84,25 @@ const Navbar = () => {
             })}
           </nav>
 
+
           {/* Actions - Right */}
           <div className="flex items-center gap-3">
             {/* Search Toggle */}
-            <div className="relative flex items-center">
-              <div className={`flex items-center transition-all duration-300 ${searchOpen ? 'w-48 opacity-100 mr-2' : 'w-0 opacity-0 overflow-hidden'}`}>
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  className="w-full bg-gray-50/50 border border-gray-200 rounded-xl py-1.5 px-4 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                  autoFocus
-                />
-              </div>
+            <div className="relative">
+              {/* Search Input - Absolutely positioned to overlay */}
+              {searchOpen && (
+                <div className="absolute right-12 top-1/2 -translate-y-1/2 z-50 animate-fade-in">
+                  <input
+                    type="text"
+                    placeholder="Search..."
+                    className="w-48 bg-white border border-gray-200 rounded-xl py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary shadow-lg"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                    autoFocus
+                  />
+                </div>
+              )}
               <button
                 onClick={() => {
                   if (searchOpen && searchQuery) {
@@ -107,7 +111,7 @@ const Navbar = () => {
                     setSearchOpen(!searchOpen);
                   }
                 }}
-                className={`p-2 transition-colors ${searchOpen ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
+                className={`p-2 transition-colors relative z-50 ${searchOpen ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
               >
                 <Search className="w-5 h-5" />
               </button>

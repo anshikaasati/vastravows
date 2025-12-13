@@ -26,8 +26,8 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[80vh] py-12">
-      <div className="glass-panel max-w-md w-full p-8 rounded-3xl relative overflow-hidden animate-fade-in">
+    <div className="flex items-center justify-center min-h-[80vh] py-12 px-4">
+      <div className="glass-panel max-w-md w-full p-6 sm:p-8 rounded-3xl relative overflow-hidden animate-fade-in">
         <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-primary to-secondary" />
         <h2 className="text-3xl font-display font-bold mb-2 text-center text-primary">Join the Community</h2>
         <p className="text-center text-gray-500 mb-8">Start your journey with Vastra Vows</p>

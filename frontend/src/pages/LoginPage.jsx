@@ -26,8 +26,8 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[80vh]">
-      <div className="glass-panel max-w-md w-full p-8 rounded-3xl relative overflow-hidden">
+    <div className="flex items-center justify-center min-h-[80vh] px-4">
+      <div className="glass-panel max-w-md w-full p-6 sm:p-8 rounded-3xl relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-secondary to-primary" />
         <h2 className="text-3xl font-display font-bold mb-2 text-center text-primary">Welcome Back</h2>
         <p className="text-center text-gray-500 mb-8">Sign in to continue your journey</p>

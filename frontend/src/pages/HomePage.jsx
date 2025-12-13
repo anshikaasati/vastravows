@@ -102,7 +102,7 @@ const HomePage = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <div className="relative h-[110vh] -mt-32 flex items-center justify-center overflow-hidden">
+      <div className="relative h-screen sm:h-[90vh] md:h-[110vh] -mt-32 flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <img
             src="/images/hero-main.jpg"
@@ -112,22 +112,22 @@ const HomePage = () => {
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
         </div>
 
-        <div className="relative z-10 container mt-20 mx-auto px-4 text-center text-white space-y-8 animate-fade-in-up">
-          <p className="text-sm md:text-sm font-bold tracking-[0.4em] uppercase text-white/90">
+        <div className="relative z-10 container mt-12 sm:mt-20 mx-auto px-4 text-center text-white space-y-6 sm:space-y-8 animate-fade-in-up">
+          <p className="text-xs sm:text-sm font-bold tracking-[0.3em] sm:tracking-[0.4em] uppercase text-white/90">
             Curated Luxury Rentals
           </p>
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-normal leading-tight hero-text-shadow text-white">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-display font-normal leading-tight hero-text-shadow text-white">
             Vastra Vows<br />
             <span className="italic font-normal text-white">Collection</span>
           </h1>
-          <p className="text-lg md:text-xl text-gray-100 max-w-2xl mx-auto font-light leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-gray-100 max-w-2xl mx-auto font-light leading-relaxed px-4">
             Step into our chic sanctuary, where style meets sustainability. Explore our curated collection of jewellery and women's apparel.
           </p>
 
-          <div className="pt-8 flex flex-col sm:flex-row gap-6 justify-center">
+          <div className="pt-6 sm:pt-8 flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center px-4">
             <Link
               to="/items"
-              className="px-10 py-4 text-white uppercase tracking-widest text-xs font-bold rounded-xl shadow-2xl hover:shadow-primary/50 hover:-translate-y-1 transition-all duration-300"
+              className="px-8 sm:px-10 py-3 sm:py-4 text-white uppercase tracking-widest text-xs font-bold rounded-xl shadow-2xl hover:shadow-primary/50 hover:-translate-y-1 transition-all duration-300"
               style={{
                 background: 'linear-gradient(90deg, #d48496 0%, #760a1e 100%)'
               }}
@@ -139,14 +139,14 @@ const HomePage = () => {
       </div>
 
       {/* Search Bar (Floating) */}
-      <div className="container mx-auto px-4 -mt-10 relative z-20">
-        <div className="max-w-3xl mx-auto bg-white rounded-full p-2 pr-2 shadow-2xl flex items-center">
-          <div className="flex-1 px-10 py-4">
+      <div className="container mx-auto px-4 -mt-8 sm:-mt-10 relative z-20">
+        <div className="max-w-3xl mx-auto bg-white rounded-2xl sm:rounded-full p-3 sm:p-2 shadow-2xl flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-0">
+          <div className="flex-1 px-4 sm:px-10 py-3 sm:py-4">
             <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Looking For?</label>
             <input
               type="text"
               placeholder="Lehenga, Gown, Sherwani..."
-              className="w-full bg-transparent border-none outline-none ring-0 focus:ring-0 text-xl text-gray-800 placeholder-gray-300 font-display italic"
+              className="w-full bg-transparent border-none outline-none ring-0 focus:ring-0 text-lg sm:text-xl text-gray-800 placeholder-gray-300 font-display italic"
               value={searchPrompt}
               onChange={(e) => setSearchPrompt(e.target.value)}
             />
@@ -154,10 +154,11 @@ const HomePage = () => {
           <div className="p-1">
             <button
               onClick={handleSearch}
-              className="w-14 h-14 rounded-xl text-[#600000] flex items-center justify-center transition-all duration-300 hover:scale-105"
+              className="w-full sm:w-14 h-12 sm:h-14 rounded-xl text-[#600000] flex items-center justify-center transition-all duration-300 hover:scale-105 font-bold uppercase tracking-widest text-xs sm:text-base"
               title="Search"
             >
-              <Search className="w-6 h-6" />
+              <Search className="w-5 h-5 sm:w-6 sm:h-6 sm:inline hidden" />
+              <span className="sm:hidden">Search</span>
             </button>
           </div>
         </div>
@@ -168,14 +169,14 @@ const HomePage = () => {
 
         {/* Featured Categories */}
         <section>
-          <div className="text-center mb-16 space-y-2">
-            <h2 className="text-5xl md:text-7xl font-script text-primary/80 mb-4">Welcome to Vastra Vows</h2>
+          <div className="text-center mb-12 sm:mb-16 space-y-2 px-4">
+            <h2 className="text-3xl sm:text-5xl md:text-7xl font-script text-primary/80 mb-3 sm:mb-4">Welcome to Vastra Vows</h2>
             <p className="text-gray-500 max-w-xl mx-auto text-sm leading-relaxed tracking-wide font-medium">
               Welcome to our chic sanctuary, where style meets sustainability. Step into a world of organic elegance and modern domination as you explore our curated collection of jewellery and women&apos;s apparel.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
             {categories.map((cat) => (
               <div
                 key={cat.title}
@@ -213,8 +214,8 @@ const HomePage = () => {
 
         {/* New Arrivals Section (Replaces Trending From UI) */}
         <section id="items-grid" className="scroll-mt-24">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl md:text-3xl font-display text-primary mb-2 uppercase tracking-tight">New Arrivals</h2>
+          <div className="text-center mb-8 sm:mb-10 px-4">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-display text-primary mb-2 uppercase tracking-tight">New Arrivals</h2>
             <div className="hidden w-16 h-0.5 bg-primary/20 mx-auto"></div>
           </div>
 
@@ -226,7 +227,7 @@ const HomePage = () => {
               <button onClick={() => { setSearchCategory(''); setSearchPrompt(''); }} className="mt-4 text-primary font-medium hover:underline">Clear Filters</button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-8 sm:gap-y-10">
               {/* New Arrivals: Sort by createdAt (descending) */}
               {[...items].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)).slice(0, 4).map((item) => (
                 <Link key={item._id} to={`/items/${item._id}`} className="group block">
@@ -260,7 +261,7 @@ const HomePage = () => {
         </section>
 
         {/* Best Sellers Section */}
-        <section className="bg-white -mx-4 sm:-mx-6 lg:-mx-8 py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <section className="bg-white -mx-4 sm:-mx-6 lg:-mx-8 py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
           <div className="max-w-7xl mx-auto">
             <div className="grid md:grid-cols-2 gap-12 items-center">
               {/* Image Left */}
@@ -280,16 +281,16 @@ const HomePage = () => {
               </div>
 
               {/* Text Right */}
-              <div className="text-center md:text-left space-y-6">
-                <p className="font-script text-4xl md:text-6xl text-secondary-dark transform -rotate-6 origin-bottom-left inline-block mb-4">Let&apos;s shop our</p>
-                <h2 className="text-6xl md:text-8xl font-display text-primary leading-none tracking-tight">
+              <div className="text-center md:text-left space-y-4 sm:space-y-6 px-4">
+                <p className="font-script text-2xl sm:text-4xl md:text-6xl text-secondary-dark transform -rotate-6 origin-bottom-left inline-block mb-2 sm:mb-4">Let&apos;s shop our</p>
+                <h2 className="text-4xl sm:text-6xl md:text-8xl font-display text-primary leading-none tracking-tight">
                   BEST<br />SELLERS
                 </h2>
-                <p className="text-gray-600 max-w-md mx-auto md:mx-0 font-light">
+                <p className="text-sm sm:text-base text-gray-600 max-w-md mx-auto md:mx-0 font-light">
                   Our most loved pieces, rented and adored by hundreds of happy customers. Experience luxury without the commitment.
                 </p>
-                <div className="pt-4">
-                  <Link to="/items/693d21c77c2a5bc856eda393" className="inline-block px-10 py-4 border border-primary text-primary font-serif uppercase tracking-widest rounded-none hover:bg-primary hover:text-white transition-all duration-300">
+                <div className="pt-2 sm:pt-4">
+                  <Link to="/items/693d21c77c2a5bc856eda393" className="inline-block px-8 sm:px-10 py-3 sm:py-4 border border-primary text-primary font-serif uppercase tracking-widest text-xs sm:text-sm rounded-none hover:bg-primary hover:text-white transition-all duration-300">
                     Shop Now
                   </Link>
                 </div>
@@ -300,12 +301,12 @@ const HomePage = () => {
 
         {/* Best Sellers Grid */}
         <section>
-          <div className="text-center mb-10">
-            <h2 className="text-2xl md:text-3xl font-display text-primary mb-2 uppercase tracking-tight">Best Sellers</h2>
+          <div className="text-center mb-8 sm:mb-10 px-4">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-display text-primary mb-2 uppercase tracking-tight">Best Sellers</h2>
             <div className="hidden w-16 h-0.5 bg-primary/20 mx-auto"></div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-8 sm:gap-y-10">
             {/* Best Sellers: Sort by rating (descending), then Price (descending) as tie-breaker */}
             {[...items]
               .sort((a, b) => {

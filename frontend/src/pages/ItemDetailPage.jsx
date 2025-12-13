@@ -129,8 +129,8 @@ const ItemDetailPage = () => {
   if (!item) return <p>Item not found.</p>;
 
   return (
-    <div className="grid gap-6 md:gap-8 lg:grid-cols-[1.5fr_1fr] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
-      <div className="space-y-6 md:space-y-8">
+    <div className="flex flex-col lg:grid lg:gap-6 lg:grid-cols-[1.5fr_1fr] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8 gap-6">
+      <div className="space-y-6 md:space-y-8 order-1">
         {/* Main Content Card */}
         <div className="glass-panel rounded-xl p-4 md:p-8 animate-fade-in">
           {/* Image Gallery */}
@@ -244,8 +244,8 @@ const ItemDetailPage = () => {
           </div>
         </div>
 
-        {/* Reviews Section */}
-        <div className="glass-panel rounded-xl p-4 md:p-8">
+        {/* Reviews Section - Order 3 on mobile (appears after sidebar) */}
+        <div className="glass-panel rounded-xl p-4 md:p-8 order-3 lg:order-2">
           <h3 className="text-2xl font-display font-medium mb-8">Client Reviews</h3>
           <ReviewList reviews={reviews} />
 
@@ -282,8 +282,8 @@ const ItemDetailPage = () => {
         </div>
       </div>
 
-      {/* Sidebar */}
-      <div className="lg:sticky lg:top-24 h-fit space-y-6">
+      {/* Sidebar - Order 2 on mobile (appears before reviews) */}
+      <div className="lg:sticky lg:top-24 h-fit space-y-6 order-2 lg:order-3">
         <div className="glass-card rounded-xl p-6 md:p-8 border border-white/60 shadow-xl">
           <h3 className="text-xl font-display font-medium mb-6">Check Availability</h3>
 

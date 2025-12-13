@@ -206,31 +206,33 @@ const BookingPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}
-        <div className="flex flex-col items-center justify-center text-center mb-16 space-y-4">
+        <div className="flex flex-col items-center justify-center text-center mb-12 sm:mb-16 space-y-3 sm:space-y-4 px-4">
           <span className="text-primary font-bold tracking-widest uppercase text-xs">Final Step</span>
-          <h1 className="text-5xl md:text-7xl font-script text-primary/90 mb-6">Complete Your Booking</h1>
+          <h1 className="text-3xl sm:text-5xl md:text-7xl font-script text-primary/90 mb-4 sm:mb-6">Complete Your Booking</h1>
           {/* Stepper */}
-          <div className="flex items-center gap-4 text-sm font-bold tracking-widest uppercase">
-            <span className={`px-4 py-2 rounded-lg border transition-colors ${step === 1 ? 'bg-primary text-white border-primary' : 'bg-white text-gray-400 border-gray-200'}`}>
+          <div className="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm font-bold tracking-widest uppercase">
+            <span className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg border transition-colors ${step === 1 ? 'bg-primary text-white border-primary' : 'bg-white text-gray-400 border-gray-200'
+              }`}>
               01. Details
             </span>
-            <div className="w-12 h-px bg-gray-200"></div>
-            <span className={`px-4 py-2 rounded-lg border transition-colors ${step === 2 ? 'bg-primary text-white border-primary' : 'bg-white text-gray-400 border-gray-200'}`}>
+            <div className="w-8 sm:w-12 h-px bg-gray-200"></div>
+            <span className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg border transition-colors ${step === 2 ? 'bg-primary text-white border-primary' : 'bg-white text-gray-400 border-gray-200'
+              }`}>
               02. Payment
             </span>
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-[1.5fr_1fr] gap-8">
+        <div className="grid lg:grid-cols-[1.5fr_1fr] gap-6 sm:gap-8">
           {/* Left Column: Form or Items */}
           <div className="space-y-8">
             {step === 1 ? (
-              <div className="bg-white p-8 md:p-10 rounded-xl shadow-xl border border-gray-100 animate-fade-in relative overflow-hidden">
+              <div className="bg-white p-6 sm:p-8 md:p-10 rounded-xl shadow-xl border border-gray-100 animate-fade-in relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-20 -mt-20 blur-3xl"></div>
 
-                <h2 className="text-2xl font-display font-medium text-gray-900 mb-8 relative z-10">Buyer Details</h2>
-                <form id="booking-form" onSubmit={handleNextStep} className="space-y-6 relative z-10">
-                  <div className="grid md:grid-cols-2 gap-6">
+                <h2 className="text-xl sm:text-2xl font-display font-medium text-gray-900 mb-6 sm:mb-8 relative z-10">Buyer Details</h2>
+                <form id="booking-form" onSubmit={handleNextStep} className="space-y-5 sm:space-y-6 relative z-10">
+                  <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
                     <div>
                       <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Full Name</label>
                       <input required name="renterName" value={formData.renterName} onChange={handleInputChange} className="w-full px-5 py-4 rounded-xl border border-gray-200 bg-gray-50/50 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-gray-400" placeholder="John Doe" />
@@ -245,7 +247,7 @@ const BookingPage = () => {
                     </div>
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-6 pt-2">
+                  <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 pt-2">
                     <div>
                       <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Preferred Delivery Date</label>
                       <input type="date" name="deliveryDate" value={formData.deliveryDate} onChange={handleInputChange} className="w-full px-5 py-4 rounded-xl border border-gray-200 bg-gray-50/50 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all text-gray-600" />
@@ -256,33 +258,33 @@ const BookingPage = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-6 pt-6 border-t border-gray-100">
-                    <h3 className="text-xl font-display font-medium text-gray-900">Delivery Address</h3>
-                    <textarea required name="deliveryAddress" value={formData.deliveryAddress} onChange={handleInputChange} rows="3" className="w-full px-5 py-4 rounded-xl border border-gray-200 bg-gray-50/50 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-gray-400 resize-none" placeholder="Full address" />
-                    <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-5 sm:space-y-6 pt-4 sm:pt-6 border-t border-gray-100">
+                    <h3 className="text-lg sm:text-xl font-display font-medium text-gray-900">Delivery Address</h3>
+                    <textarea required name="deliveryAddress" value={formData.deliveryAddress} onChange={handleInputChange} rows="3" className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-xl border border-gray-200 bg-gray-50/50 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-gray-400 resize-none text-sm sm:text-base" placeholder="Full address" />
+                    <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
                       <input required name="city" value={formData.city} onChange={handleInputChange} className="w-full px-5 py-4 rounded-xl border border-gray-200 bg-gray-50/50 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-gray-400" placeholder="City" />
                       <input required name="pincode" value={formData.pincode} onChange={handleInputChange} className="w-full px-5 py-4 rounded-xl border border-gray-200 bg-gray-50/50 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-gray-400" placeholder="Pincode" />
                     </div>
                   </div>
 
-                  <button type="submit" className="w-full py-4 bg-gradient-to-r from-[#d48496] to-[#760a1e] text-white font-bold uppercase tracking-widest text-xs rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 mt-4">
+                  <button type="submit" className="w-full py-3.5 sm:py-4 bg-gradient-to-r from-[#d48496] to-[#760a1e] text-white font-bold uppercase tracking-widest text-xs rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 mt-4">
                     Continue to Payment
                   </button>
                 </form>
               </div>
             ) : (
-              <div className="bg-white p-8 md:p-10 rounded-xl shadow-xl border border-gray-100 animate-fade-in">
-                <div className="flex items-center justify-between mb-8">
-                  <h2 className="text-2xl font-display font-medium text-gray-900">Review Items</h2>
+              <div className="bg-white p-6 sm:p-8 md:p-10 rounded-xl shadow-xl border border-gray-100 animate-fade-in">
+                <div className="flex items-center justify-between mb-6 sm:mb-8">
+                  <h2 className="text-xl sm:text-2xl font-display font-medium text-gray-900">Review Items</h2>
                   <button onClick={() => setStep(1)} className="text-xs font-bold text-gray-400 uppercase tracking-widest hover:text-primary transition-colors">
                     ← Edit Details
                   </button>
                 </div>
 
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
                   {cart.map((item, idx) => (
-                    <div key={idx} className="flex gap-6 p-4 bg-gray-50 rounded-xl border border-gray-100">
-                      <img src={item.images?.[0]} alt={item.title} className="w-24 h-24 rounded-xl object-cover bg-white" />
+                    <div key={idx} className="flex flex-col sm:flex-row gap-4 sm:gap-6 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                      <img src={item.images?.[0]} alt={item.title} className="w-full sm:w-24 h-48 sm:h-24 rounded-xl object-cover bg-white" />
                       <div className="flex-1">
                         <h3 className="text-lg font-display font-medium text-gray-900 mb-1">{item.title}</h3>
                         <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Size: {item.selectedSize}</p>
@@ -307,9 +309,9 @@ const BookingPage = () => {
           </div>
 
           {/* Right Column: Summary & Pay */}
-          <div className="h-fit space-y-8">
-            <div className="bg-white p-8 rounded-xl shadow-xl border border-gray-100 sticky top-24">
-              <h3 className="text-2xl font-display font-medium text-gray-900 mb-8 pb-4 border-b border-gray-100">Order Summary</h3>
+          <div className="h-fit space-y-6 sm:space-y-8">
+            <div className="bg-white p-6 sm:p-8 rounded-xl shadow-xl border border-gray-100 lg:sticky lg:top-24">
+              <h3 className="text-xl sm:text-2xl font-display font-medium text-gray-900 mb-6 sm:mb-8 pb-4 border-b border-gray-100">Order Summary</h3>
 
               <div className="space-y-4 text-sm mb-8 text-gray-600">
                 <div className="flex justify-between">
@@ -351,7 +353,7 @@ const BookingPage = () => {
                 <div className="space-y-6 animate-fade-in">
                   <div>
                     <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Select Payment Method</h4>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                       <label className={`cursor-pointer p-4 rounded-xl border-2 text-center transition-all duration-300 ${formData.paymentMethod === 'online' ? 'border-primary bg-primary/5 shadow-md' : 'border-gray-100 bg-gray-50 hover:border-gray-300'}`}>
                         <input type="radio" name="paymentMethod" value="online" checked={formData.paymentMethod === 'online'} onChange={handleInputChange} className="hidden" />
                         <CreditCard className={`w-6 h-6 mx-auto mb-2 ${formData.paymentMethod === 'online' ? 'text-primary' : 'text-gray-400'}`} />
@@ -384,7 +386,7 @@ const BookingPage = () => {
                   <button
                     onClick={handleConfirmBooking}
                     disabled={loading}
-                    className="w-full py-4 bg-gradient-to-r from-[#d48496] to-[#760a1e] text-white font-bold uppercase tracking-widest text-xs rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="w-full py-3.5 sm:py-4 bg-gradient-to-r from-[#d48496] to-[#760a1e] text-white font-bold uppercase tracking-widest text-xs rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     {loading ? (
                       <>Processing...</>

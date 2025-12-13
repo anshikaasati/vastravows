@@ -33,23 +33,23 @@ const ContactPage = () => {
     return (
         <div className="min-h-screen">
             {/* Hero */}
-            <div className="bg-gradient-to-br from-primary/5 to-secondary/5 py-24 md:py-32 relative overflow-hidden">
+            <div className="bg-gradient-to-br from-primary/5 to-secondary/5 py-16 sm:py-24 md:py-32 relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-full bg-[url('/images/pattern-bg.png')] opacity-5"></div>
-                <div className="container mx-auto px-4 text-center space-y-6 relative z-10">
-                    <h1 className="text-6xl md:text-8xl font-script text-primary/90 mb-4">Get In Touch</h1>
-                    <p className="text-sm md:text-base text-gray-500 font-medium tracking-wide uppercase max-w-2xl mx-auto">
+                <div className="container mx-auto px-4 text-center space-y-4 sm:space-y-6 relative z-10">
+                    <h1 className="text-4xl sm:text-6xl md:text-8xl font-script text-primary/90 mb-3 sm:mb-4">Get In Touch</h1>
+                    <p className="text-sm md:text-base text-gray-500 font-medium tracking-wide uppercase max-w-2xl mx-auto px-4">
                         Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
                     </p>
                 </div>
             </div>
 
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 -mt-20 relative z-20 pb-20">
-                <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 -mt-12 sm:-mt-20 relative z-20 pb-12 sm:pb-20">
+                <div className="grid md:grid-cols-2 gap-8 sm:gap-12 max-w-6xl mx-auto">
                     {/* Contact Form */}
-                    <div className="glass-card p-8 md:p-12 rounded-[2.5rem] shadow-2xl bg-white/80 backdrop-blur-xl border border-white/60">
-                        <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-8">Send Us a Message</h2>
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            <div className="grid md:grid-cols-2 gap-6">
+                    <div className="glass-card p-6 sm:p-8 md:p-12 rounded-[2.5rem] shadow-2xl bg-white/80 backdrop-blur-xl border border-white/60">
+                        <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-6 sm:mb-8">Send Us a Message</h2>
+                        <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
+                            <div className="grid sm:grid-cols-2 gap-5 sm:gap-6">
                                 <div>
                                     <label className="block text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2">Your Name</label>
                                     <input
@@ -111,8 +111,8 @@ const ContactPage = () => {
                     </div>
 
                     {/* Contact Information */}
-                    <div className="space-y-8 pt-10 md:pt-20">
-                        <div className="p-8 md:p-10 rounded-[2.5rem] bg-white border border-gray-100 shadow-xl">
+                    <div className="space-y-6 sm:space-y-8 pt-6 sm:pt-10 md:pt-20">
+                        <div className="p-6 sm:p-8 md:p-10 rounded-[2.5rem] bg-white border border-gray-100 shadow-xl">
                             <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-8">Contact Information</h2>
                             <div className="space-y-8">
                                 <div className="flex items-start gap-6 group cursor-pointer">

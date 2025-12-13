@@ -13,7 +13,48 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <WishlistProvider>
         <CartProvider>
           <App />
-          <Toaster position="top-right" />
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              // Default options
+              duration: 4000,
+              style: {
+                background: '#fff',
+                color: '#800000',
+                border: '1px solid #800000',
+                padding: '16px',
+                borderRadius: '12px',
+                boxShadow: '0 4px 12px rgba(128, 0, 0, 0.15)',
+                fontFamily: 'Inter, sans-serif',
+                fontSize: '14px',
+                fontWeight: '500',
+              },
+              // Success toast
+              success: {
+                iconTheme: {
+                  primary: '#800000',
+                  secondary: '#fff',
+                },
+                style: {
+                  background: '#fff',
+                  color: '#800000',
+                  border: '1px solid #800000',
+                },
+              },
+              // Error toast
+              error: {
+                iconTheme: {
+                  primary: '#800000',
+                  secondary: '#fff',
+                },
+                style: {
+                  background: '#fff',
+                  color: '#800000',
+                  border: '1px solid #800000',
+                },
+              },
+            }}
+          />
         </CartProvider>
       </WishlistProvider>
     </AuthProvider>
