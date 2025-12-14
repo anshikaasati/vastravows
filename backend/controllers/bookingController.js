@@ -1,6 +1,8 @@
 import { validationResult } from 'express-validator';
 import Booking from '../models/Booking.js';
 import Item from '../models/Item.js';
+import User from '../models/User.js';
+import { sendBookingNotification } from '../utils/notificationService.js';
 
 const findOverlappingBookings = async ({ itemId, startDate, endDate }) => {
   return Booking.find({
@@ -124,6 +126,26 @@ export const createBooking = async (req, res, next) => {
     });
 
     const populated = await booking.populate('itemId renterId ownerId', 'title name email phone images');
+
+    // Send notifications to lender and admin (non-blocking)
+    try {
+      const buyer = await User.findById(req.user._id).select('name email phone');
+      const lender = await User.findById(item.ownerId).select('name email phone');
+      
+      if (buyer && lender && populated.itemId) {
+        sendBookingNotification(
+          populated.toObject(),
+          populated.itemId.toObject(),
+          buyer.toObject(),
+          lender.toObject()
+        ).catch(err => 
+          console.error('Failed to send booking notification:', err)
+        );
+      }
+    } catch (notifError) {
+      console.error('Error preparing booking notification:', notifError);
+      // Don't fail the booking if notification fails
+    }
 
     res.status(201).json(populated);
   } catch (error) {

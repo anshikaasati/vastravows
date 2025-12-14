@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import { validationResult } from 'express-validator';
 import User from '../models/User.js';
 import { generateToken } from '../utils/generateToken.js';
+import { sendUserRegistrationNotification, sendUserDeletionNotification } from '../utils/notificationService.js';
 
 export const registerUser = async (req, res, next) => {
   try {
@@ -22,6 +23,11 @@ export const registerUser = async (req, res, next) => {
 
     const passwordHash = await bcrypt.hash(password, 10);
     const user = await User.create({ name, email, passwordHash, phone, avatarUrl });
+
+    // Send notification to admin (non-blocking)
+    sendUserRegistrationNotification(user).catch(err => 
+      console.error('Failed to send registration notification:', err)
+    );
 
     const token = generateToken(user._id);
     res.status(201).json({
@@ -166,6 +172,11 @@ export const deleteAccount = async (req, res, next) => {
 
     // Delete wishlist entries
     await Wishlist.deleteMany({ userId: userId });
+
+    // Send notification to admin before deleting (non-blocking)
+    sendUserDeletionNotification(user).catch(err => 
+      console.error('Failed to send deletion notification:', err)
+    );
 
     // Finally, delete the user account
     await User.findByIdAndDelete(userId);
