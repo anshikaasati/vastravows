@@ -6,7 +6,11 @@ export const authApi = {
   me: () => api.get('/auth/me'),
   update: (payload) => api.patch('/auth/me', payload),
   toggleLenderRole: (enable) => api.patch('/auth/toggle-lender', { enable }),
-  deleteAccount: () => api.delete('/auth/delete-account')
+  deleteAccount: () => api.delete('/auth/delete-account'),
+  // Password reset
+  forgotPassword: (payload) => api.post('/auth/forgot-password', payload),
+  verifyOTP: (payload) => api.post('/auth/verify-otp', payload),
+  resetPassword: (payload) => api.post('/auth/reset-password', payload)
 };
 
 export const itemApi = {

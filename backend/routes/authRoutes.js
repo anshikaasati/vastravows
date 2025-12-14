@@ -1,10 +1,12 @@
 import express from 'express';
 import { body } from 'express-validator';
 import { registerUser, loginUser, getMe, updateMe, toggleLenderRole, deleteAccount } from '../controllers/authController.js';
+import { forgotPassword, verifyOTP, resetPassword } from '../controllers/passwordResetController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
+// Existing auth routes
 router.post(
   '/register',
   [
@@ -25,8 +27,13 @@ router.post(
 );
 
 router.get('/me', protect, getMe);
-router.patch('/me', protect, updateMe);
-router.patch('/toggle-lender', protect, toggleLenderRole);
+router.put('/me', protect, updateMe);
+router.post('/toggle-lender', protect, toggleLenderRole);
 router.delete('/delete-account', protect, deleteAccount);
+
+// Password reset routes
+router.post('/forgot-password', forgotPassword);
+router.post('/verify-otp', verifyOTP);
+router.post('/reset-password', resetPassword);
 
 export default router;

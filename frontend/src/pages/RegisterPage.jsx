@@ -3,9 +3,11 @@ import { useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { authApi } from '../api/services';
 import { useAuth } from '../context/AuthContext';
+import { Eye, EyeOff } from 'lucide-react';
 
 const RegisterPage = () => {
   const [form, setForm] = useState({ name: '', email: '', password: '', phone: '' });
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -67,14 +69,23 @@ const RegisterPage = () => {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <input
-              type="password"
-              required
-              value={form.password}
-              onChange={(e) => setForm((prev) => ({ ...prev, password: e.target.value }))}
-              className="w-full px-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary/20 transition-all"
-              placeholder="••••••••"
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                required
+                value={form.password}
+                onChange={(e) => setForm((prev) => ({ ...prev, password: e.target.value }))}
+                className="w-full px-4 pr-12 py-3 rounded-xl glass-input focus:ring-2 focus:ring-primary/20 transition-all"
+                placeholder="••••••••"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
+            </div>
           </div>
           <button
             type="submit"
