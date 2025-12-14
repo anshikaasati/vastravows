@@ -1,6 +1,9 @@
 import api from './http';
 
 export const authApi = {
+  // Registration with 2FA
+  sendRegistrationOTP: (payload) => api.post('/auth/register/send-otp', payload),
+  verifyRegistrationOTP: (payload) => api.post('/auth/register/verify-otp', payload),
   register: (payload) => api.post('/auth/register', payload),
   login: (payload) => api.post('/auth/login', payload),
   me: () => api.get('/auth/me'),
