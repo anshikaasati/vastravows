@@ -1,12 +1,19 @@
 import api from './http';
 
 export const authApi = {
+  // Registration with 2FA
+  sendRegistrationOTP: (payload) => api.post('/auth/register/send-otp', payload),
+  verifyRegistrationOTP: (payload) => api.post('/auth/register/verify-otp', payload),
   register: (payload) => api.post('/auth/register', payload),
   login: (payload) => api.post('/auth/login', payload),
   me: () => api.get('/auth/me'),
   update: (payload) => api.patch('/auth/me', payload),
   toggleLenderRole: (enable) => api.patch('/auth/toggle-lender', { enable }),
-  deleteAccount: () => api.delete('/auth/delete-account')
+  deleteAccount: () => api.delete('/auth/delete-account'),
+  // Password reset
+  forgotPassword: (payload) => api.post('/auth/forgot-password', payload),
+  verifyOTP: (payload) => api.post('/auth/verify-otp', payload),
+  resetPassword: (payload) => api.post('/auth/reset-password', payload)
 };
 
 export const itemApi = {
