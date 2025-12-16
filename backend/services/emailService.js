@@ -17,19 +17,19 @@ if (!emailUser || !emailPass) {
 
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
-    port: 587,
-    secure: false, // true for 465, false for other ports (587)
+    port: 465, // Using 465 with SSL for better Render compatibility
+    secure: true, // true for 465 (SSL), false for 587 (STARTTLS)
     auth: {
         user: emailUser,
         pass: emailPass
     },
-    // Enhance reliability in production
-    tls: {
-        rejectUnauthorized: false // Helps with some self-signed cert issues (optional, handle with care)
-    },
     // Fix for Render/Cloud timeouts (forces IPv4)
     family: 4,
-    connectionTimeout: 10000
+    connectionTimeout: 10000,
+    // Additional options for production reliability
+    pool: true,
+    maxConnections: 5,
+    maxMessages: 100
 });
 
 /**
