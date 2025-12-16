@@ -1,5 +1,4 @@
-import pkg from 'nodemailer';
-const { createTransport } = pkg;
+import { createEmailTransporter } from './emailTransporter.js';
 
 // Generate 6-digit OTP
 export const generateOTP = () => {
@@ -9,17 +8,11 @@ export const generateOTP = () => {
 // Send OTP via Email
 export const sendOTPEmail = async (email, otp, purpose = 'registration') => {
     try {
-        const transporter = createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.EMAIL_USER || 'vastravows@gmail.com',
-                pass: process.env.EMAIL_PASSWORD
-            }
-        });
+        const transporter = createEmailTransporter();
 
         const purposeText = purpose === 'registration' ? 'Account Registration' : 'Verification';
-        const purposeDescription = purpose === 'registration' 
-            ? 'Complete your account registration' 
+        const purposeDescription = purpose === 'registration'
+            ? 'Complete your account registration'
             : 'Verify your email address';
 
         const mailOptions = {

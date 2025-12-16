@@ -1,8 +1,7 @@
 import User from '../models/User.js';
 import PasswordReset from '../models/PasswordReset.js';
 import bcrypt from 'bcryptjs';
-import pkg from 'nodemailer';
-const { createTransport } = pkg;
+import { createEmailTransporter } from '../utils/emailTransporter.js';
 
 // Generate 6-digit OTP
 const generateOTP = () => {
@@ -11,13 +10,7 @@ const generateOTP = () => {
 
 // Send OTP email to user
 const sendOTPEmail = async (email, otp) => {
-    const transporter = createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.EMAIL_USER || 'vastravows@gmail.com',
-            pass: process.env.EMAIL_PASSWORD
-        }
-    });
+    const transporter = createEmailTransporter();
 
     const mailOptions = {
         from: process.env.EMAIL_USER || 'vastravows@gmail.com',

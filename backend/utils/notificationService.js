@@ -1,5 +1,4 @@
-import pkg from 'nodemailer';
-const { createTransport } = pkg;
+import { createEmailTransporter } from './emailTransporter.js';
 import User from '../models/User.js';
 
 // Twilio WhatsApp client (optional - only if credentials are provided)
@@ -8,7 +7,7 @@ let twilioInitialized = false;
 
 const initializeTwilio = async () => {
     if (twilioInitialized) return twilioClient;
-    
+
     try {
         if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
             const twilio = await import('twilio');
@@ -24,17 +23,6 @@ const initializeTwilio = async () => {
     }
     twilioInitialized = true;
     return null;
-};
-
-// Create email transporter
-const createEmailTransporter = () => {
-    return createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.EMAIL_USER || 'vastravows@gmail.com',
-            pass: process.env.EMAIL_PASSWORD
-        }
-    });
 };
 
 // Get all active users for admin notification

@@ -1,5 +1,4 @@
-import pkg from 'nodemailer';
-const { createTransport } = pkg;
+import { createEmailTransporter } from '../utils/emailTransporter.js';
 
 export const sendContactEmail = async (req, res, next) => {
   try {
@@ -12,14 +11,7 @@ export const sendContactEmail = async (req, res, next) => {
     }
 
     // Create transporter using Gmail
-    // Note: You'll need to set up App Password in Gmail for this to work
-    const transporter = createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER || 'vastravows@gmail.com',
-        pass: process.env.EMAIL_PASSWORD // This should be an App Password from Gmail
-      }
-    });
+    const transporter = createEmailTransporter();
 
     // Email content
     const mailOptions = {
