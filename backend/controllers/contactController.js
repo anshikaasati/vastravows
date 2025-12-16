@@ -1,4 +1,6 @@
-import { createEmailTransporter } from '../utils/emailTransporter.js';
+// import { createEmailTransporter } from '../utils/emailTransporter.js'; // Removed old import
+import { sendEmail } from '../services/emailService.js';
+import { contactFormTemplate } from '../templates/emailTemplates.js';
 
 export const sendContactEmail = async (req, res, next) => {
   try {
@@ -10,38 +12,18 @@ export const sendContactEmail = async (req, res, next) => {
       return next(new Error('All fields are required'));
     }
 
-    // Create transporter using Gmail
-    const transporter = createEmailTransporter();
+    // Generate HTML using template
+    const htmlContent = contactFormTemplate({ name, email, subject, message });
 
-    // Email content
-    const mailOptions = {
-      from: process.env.EMAIL_USER || 'vastravows@gmail.com',
-      to: 'vastravows@gmail.com',
+    // Send email to Admin (or Site Owner)
+    // AND/OR send to a dedicated support email. 
+    // The original code sent TO vastravows@gmail.com FROM vastravows@gmail.com, with replyTo as user's email.
+    await sendEmail({
+      to: process.env.EMAIL_USER || 'vastravows@gmail.com',
       subject: `Contact Form: ${subject}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #800000;">New Contact Form Submission</h2>
-          <div style="background: #f9f9f9; padding: 20px; border-radius: 10px; margin: 20px 0;">
-            <p><strong>Name:</strong> ${name}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            <p><strong>Subject:</strong> ${subject}</p>
-          </div>
-          <div style="background: white; padding: 20px; border-left: 4px solid #800000;">
-            <h3 style="color: #800000;">Message:</h3>
-            <p style="line-height: 1.6;">${message}</p>
-          </div>
-          <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
-          <p style="color: #666; font-size: 12px;">
-            This email was sent from the Vastra Vows contact form.<br>
-            Reply directly to this email to respond to ${name} at ${email}
-          </p>
-        </div>
-      `,
+      html: htmlContent,
       replyTo: email
-    };
-
-    // Send email
-    await transporter.sendMail(mailOptions);
+    });
 
     res.status(200).json({ message: 'Email sent successfully' });
   } catch (error) {

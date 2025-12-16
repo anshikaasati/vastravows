@@ -1,7 +1,8 @@
 import User from '../models/User.js';
 import PasswordReset from '../models/PasswordReset.js';
 import bcrypt from 'bcryptjs';
-import { createEmailTransporter } from '../utils/emailTransporter.js';
+import { sendEmail } from '../services/emailService.js';
+import { otpTemplate } from '../templates/emailTemplates.js';
 
 // Generate 6-digit OTP
 const generateOTP = () => {
@@ -10,47 +11,13 @@ const generateOTP = () => {
 
 // Send OTP email to user
 const sendOTPEmail = async (email, otp) => {
-    const transporter = createEmailTransporter();
+    const htmlContent = otpTemplate({ otp, purpose: 'reset' });
 
-    const mailOptions = {
-        from: process.env.EMAIL_USER || 'vastravows@gmail.com',
-        to: email, // Send to user's email
+    await sendEmail({
+        to: email,
         subject: 'Password Reset OTP - Vastra Vows',
-        html: `
-      <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #800000; font-family: 'Playfair Display', serif; margin: 0;">Vastra Vows</h1>
-          <p style="color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; margin-top: 5px;">Luxe Rentals</p>
-        </div>
-        
-        <div style="background: linear-gradient(135deg, #fff 0%, #fff1f2 100%); border: 1px solid #800000; border-radius: 12px; padding: 30px; margin: 20px 0;">
-          <h2 style="color: #800000; margin-top: 0;">Password Reset Request</h2>
-          <p style="color: #333; line-height: 1.6;">We received a request to reset your password. Use the OTP below to proceed:</p>
-          
-          <div style="background: white; border: 2px dashed #800000; border-radius: 8px; padding: 20px; text-align: center; margin: 25px 0;">
-            <p style="color: #666; font-size: 12px; margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: 1px;">Your OTP</p>
-            <p style="font-size: 32px; font-weight: bold; color: #800000; letter-spacing: 8px; margin: 0; font-family: 'Courier New', monospace;">${otp}</p>
-          </div>
-          
-          <p style="color: #666; font-size: 14px; line-height: 1.6;">
-            <strong>This OTP will expire in 10 minutes.</strong><br>
-            If you didn't request this password reset, please ignore this email or contact us if you have concerns.
-          </p>
-        </div>
-        
-        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
-          <p style="color: #999; font-size: 12px; margin: 5px 0;">
-            © ${new Date().getFullYear()} Vastra Vows. All rights reserved.
-          </p>
-          <p style="color: #999; font-size: 11px; margin: 5px 0;">
-            This is an automated email. Please do not reply.
-          </p>
-        </div>
-      </div>
-    `
-    };
-
-    await transporter.sendMail(mailOptions);
+        html: htmlContent
+    });
 };
 
 // Request password reset (send OTP)

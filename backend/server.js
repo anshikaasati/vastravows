@@ -1,5 +1,5 @@
+import 'dotenv/config'; // Load env vars before anything else
 import express from 'express';
-import dotenv from 'dotenv';
 import cors from 'cors';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
@@ -13,7 +13,7 @@ import paymentRoutes from './routes/paymentRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
-dotenv.config();
+// dotenv.config(); // Removed - loaded at top
 
 const app = express();
 
@@ -27,6 +27,13 @@ app.use(morgan('dev'));
 // Initialize services
 connectDB();
 configureCloudinary();
+
+// Verify Email Connection (Non-blocking)
+import { verifyConnection } from './services/emailService.js';
+verifyConnection().then(success => {
+  if (success) console.log('[Server] Email service verified successfully');
+  else console.warn('[Server] Email service verification failed - check credentials');
+});
 
 // API routes
 app.use('/api/auth', authRoutes);
