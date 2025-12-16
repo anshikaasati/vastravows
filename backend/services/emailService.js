@@ -26,7 +26,10 @@ const transporter = nodemailer.createTransport({
     // Enhance reliability in production
     tls: {
         rejectUnauthorized: false // Helps with some self-signed cert issues (optional, handle with care)
-    }
+    },
+    // Fix for Render/Cloud timeouts (forces IPv4)
+    family: 4,
+    connectionTimeout: 10000
 });
 
 /**
