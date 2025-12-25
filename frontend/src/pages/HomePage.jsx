@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Sparkles, Crown, Shirt, Gem, Filter, Watch, ShoppingBag, Footprints, Search, ArrowRight } from 'lucide-react';
 import ItemCard from '../components/ItemCard';
+import ItemCarousel from '../components/ItemCarousel';
 import { itemApi } from '../api/services';
 import LoadingSpinner from '../components/LoadingSpinner';
 import toast from 'react-hot-toast';
@@ -227,29 +228,11 @@ const HomePage = () => {
               <button onClick={() => { setSearchCategory(''); setSearchPrompt(''); }} className="mt-4 text-primary font-medium hover:underline">Clear Filters</button>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-8 sm:gap-y-10">
+            <div>
               {/* New Arrivals: Sort by createdAt (descending) */}
-              {[...items].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)).slice(0, 4).map((item) => (
-                <Link key={item._id} to={`/items/${item._id}`} className="group block">
-                  {/* Minimal Card Style */}
-                  <div className="relative aspect-[3/4] overflow-hidden bg-gray-100 mb-4">
-                    <img
-                      src={item.images?.[0] || `https://placehold.co/600x800/9d174d/fce7f3?text=${item.title}`}
-                      alt={item.title}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="text-center space-y-1">
-                    <h3 className="text-gray-900 font-display text-base tracking-wide truncate px-2">{item.title}</h3>
-                    <p className="text-gray-500 text-sm font-medium">
-                      {item.salePrice ? `₹${item.salePrice}` : `₹${item.rentPricePerDay}/day`}
-                    </p>
-                  </div>
-                  <button className="w-full mt-4 py-2.5 border border-primary/20 text-primary text-xs font-bold uppercase tracking-[0.15em] hover:bg-primary hover:text-white transition-all duration-300">
-                    Add to Cart
-                  </button>
-                </Link>
-              ))}
+              <ItemCarousel
+                items={[...items].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)).slice(0, 8)}
+              />
             </div>
           )}
 
@@ -306,42 +289,20 @@ const HomePage = () => {
             <div className="hidden w-16 h-0.5 bg-primary/20 mx-auto"></div>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-8 sm:gap-y-10">
+          <div>
             {/* Best Sellers: Sort by rating (descending), then Price (descending) as tie-breaker */}
-            {[...items]
-              .sort((a, b) => {
-                const ratingDiff = (b.averageRating || 0) - (a.averageRating || 0);
-                if (ratingDiff !== 0) return ratingDiff;
-                // If ratings are equal (e.g., all 0), sort by price to differentiate from New Arrivals
-                const priceA = a.salePrice || a.rentPricePerDay || 0;
-                const priceB = b.salePrice || b.rentPricePerDay || 0;
-                return priceB - priceA;
-              })
-              .slice(0, 4)
-              .map((item) => (
-                <Link key={`bs-${item._id}`} to={`/items/${item._id}`} className="group block">
-                  {/* Minimal Card Style */}
-                  <div className="relative aspect-[3/4] overflow-hidden bg-gray-100 mb-4">
-                    <img
-                      src={item.images?.[0] || `https://placehold.co/600x800/9d174d/fce7f3?text=${item.title}`}
-                      alt={item.title}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    <span className="absolute top-2 left-2 bg-primary text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1">
-                      Best Seller
-                    </span>
-                  </div>
-                  <div className="text-center space-y-1">
-                    <h3 className="text-gray-900 font-display text-base tracking-wide truncate px-2">{item.title}</h3>
-                    <p className="text-gray-500 text-sm font-medium">
-                      {item.salePrice ? `₹${item.salePrice}` : `₹${item.rentPricePerDay}/day`}
-                    </p>
-                  </div>
-                  <button className="w-full mt-4 py-2.5 border border-primary/20 text-primary text-xs font-bold uppercase tracking-[0.15em] hover:bg-primary hover:text-white transition-all duration-300">
-                    Add to Cart
-                  </button>
-                </Link>
-              ))}
+            <ItemCarousel
+              items={[...items]
+                .sort((a, b) => {
+                  const ratingDiff = (b.averageRating || 0) - (a.averageRating || 0);
+                  if (ratingDiff !== 0) return ratingDiff;
+                  // If ratings are equal (e.g., all 0), sort by price to differentiate from New Arrivals
+                  const priceA = a.salePrice || a.rentPricePerDay || 0;
+                  const priceB = b.salePrice || b.rentPricePerDay || 0;
+                  return priceB - priceA;
+                })
+                .slice(0, 8)}
+            />
           </div>
 
           <div className="mt-12 text-center">
