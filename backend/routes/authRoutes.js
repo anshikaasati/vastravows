@@ -64,8 +64,8 @@ router.post(
 );
 
 router.get('/me', protect, getMe);
-router.put('/me', protect, updateMe);
-router.post('/toggle-lender', protect, toggleLenderRole);
+router.patch('/me', protect, updateMe);
+router.patch('/toggle-lender', protect, toggleLenderRole);
 router.delete('/delete-account', protect, deleteAccount);
 
 // Password reset routes
