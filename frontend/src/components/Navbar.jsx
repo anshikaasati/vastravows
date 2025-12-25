@@ -65,7 +65,7 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Nav - Center */}
-          <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+          <nav className={`hidden lg:flex items-center gap-8 absolute transition-all duration-300 ${searchOpen ? 'left-[42%] -translate-x-1/2' : 'left-1/2 -translate-x-1/2'}`}>
             {navLinks.map((link) => {
               const isActive = location.pathname === link.path;
 

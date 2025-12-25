@@ -176,12 +176,12 @@ const ItemDetailPage = () => {
   return (
     <div className="flex flex-col lg:grid lg:gap-6 lg:grid-cols-[1.5fr_1fr] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8 gap-6">
       {/* Main Content Card - Mobile Order 1, Desktop Col 1 */}
-      <div className="glass-panel rounded-xl p-4 md:p-8 animate-fade-in order-1 lg:col-start-1">
+      <div className="p-4 md:p-8 animate-fade-in order-1 lg:col-start-1 bg-white">
         {/* Image Gallery */}
         {/* Image Gallery - Carousel */}
         <div className="space-y-4">
           <div
-            className="aspect-[4/3] rounded-xl overflow-hidden shadow-lg relative group bg-gray-100"
+            className="aspect-[4/3] overflow-hidden relative group bg-gray-100"
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEndHandler}
@@ -235,7 +235,7 @@ const ItemDetailPage = () => {
             </p>
           </div>
 
-          <div className="flex items-baseline gap-4 border-b border-gray-200 pb-6">
+          <div className="flex items-baseline gap-4 pb-6">
             {item.salePrice ? (
               <span className="text-3xl md:text-4xl font-display font-medium text-gray-900">₹{item.salePrice}</span>
             ) : (
@@ -255,11 +255,11 @@ const ItemDetailPage = () => {
 
 
       {/* Reviews Section - Mobile Order 3, Desktop Col 1 (below Main Content) */}
-      <div className="glass-panel rounded-xl p-4 md:p-8 order-3 lg:col-start-1">
+      <div className="p-4 md:p-8 order-3 lg:col-start-1 bg-white">
         <h3 className="text-2xl font-display font-medium mb-8">Client Reviews</h3>
         <ReviewList reviews={reviews} />
 
-        <div className="mt-8 pt-8 border-t border-gray-200/60">
+        <div className="mt-8 pt-8">
           <h4 className="text-lg font-display font-medium mb-4">Write a Review</h4>
           <form onSubmit={handleReviewSubmit} className="space-y-4">
             <div className="flex items-center gap-2 mb-2">
@@ -281,9 +281,9 @@ const ItemDetailPage = () => {
               <input
                 name="comment"
                 placeholder="Share your experience with this attire..."
-                className="flex-1 px-4 py-3 rounded-xl border border-gray-200 bg-white/50 focus:ring-1 focus:ring-primary focus:border-primary text-sm md:text-base outline-none"
+                className="flex-1 px-4 py-3 rounded-none border-b border-gray-200 bg-transparent focus:border-primary text-sm md:text-base outline-none"
               />
-              <button type="submit" className="px-8 py-3 rounded-xl bg-primary text-white text-xs font-bold uppercase tracking-widest hover:bg-primary-dark transition-all duration-300 shadow-lg w-full sm:w-auto">
+              <button type="submit" className="px-8 py-3 rounded-none bg-primary text-white text-xs font-bold uppercase tracking-widest hover:bg-primary-dark transition-all duration-300 w-full sm:w-auto">
                 POST
               </button>
             </div>
@@ -293,7 +293,7 @@ const ItemDetailPage = () => {
 
       {/* Sidebar - Mobile Order 2, Desktop Col 2 (Span 2 rows) */}
       <div className="lg:sticky lg:top-24 h-fit space-y-6 order-2 lg:col-start-2 lg:row-start-1 lg:row-span-2">
-        <div className="glass-card rounded-xl p-6 md:p-8 border border-white/60 shadow-xl relative">
+        <div className="p-6 md:p-8 relative bg-white">
           <button
             onClick={() => {
               setIsWishlist(!isWishlist);
@@ -304,12 +304,12 @@ const ItemDetailPage = () => {
             <Heart className={`w-6 h-6 ${isWishlist ? 'fill-primary text-primary' : 'text-gray-400'}`} />
           </button>
 
-          {!item.salePrice && <h3 className="text-xl font-display font-medium mb-6">Order Details</h3>}
+          { <h3 className="text-xl font-display font-medium mb-6">Order Details</h3>}
 
           <div className="space-y-6">
 
             {/* Metadata Section */}
-            <div className="space-y-3 pb-6 border-b border-gray-100">
+            <div className="space-y-3 pb-6">
               <div className="flex items-center gap-3 text-sm text-gray-600">
                 <MapPin className="w-4 h-4 text-gray-400" />
                 <span>{item.location?.city}, {item.location?.pincode}</span>
@@ -367,14 +367,14 @@ const ItemDetailPage = () => {
                 <div className="flex items-center gap-3 w-fit p-1 rounded-lg border border-gray-200">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="p-1 hover:bg-gray-100 rounded-md transition"
+                    className="p-1 hover:bg-gray-100 rounded-none transition"
                   >
                     <Minus className="w-4 h-4 text-gray-600" />
                   </button>
                   <span className="w-8 text-center font-medium text-sm">{quantity}</span>
                   <button
                     onClick={() => setQuantity(quantity + 1)}
-                    className="p-1 hover:bg-gray-100 rounded-md transition"
+                    className="p-1 hover:bg-gray-100 rounded-none transition"
                   >
                     <Plus className="w-4 h-4 text-gray-600" />
                   </button>
@@ -394,7 +394,7 @@ const ItemDetailPage = () => {
                       startDate={startDate}
                       endDate={endDate}
                       minDate={new Date()}
-                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white/80 text-sm focus:ring-1 focus:ring-primary outline-none"
+                      className="w-full px-4 py-2.5 rounded-none border-b border-gray-200 bg-transparent text-sm focus:border-primary outline-none"
                     />
                   </div>
                   <div>
@@ -406,7 +406,7 @@ const ItemDetailPage = () => {
                       startDate={startDate}
                       endDate={endDate}
                       minDate={startDate}
-                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white/80 text-sm focus:ring-1 focus:ring-primary outline-none"
+                      className="w-full px-4 py-2.5 rounded-none border-b border-gray-200 bg-transparent text-sm focus:border-primary outline-none"
                     />
                   </div>
                 </div>
@@ -430,7 +430,7 @@ const ItemDetailPage = () => {
               <button
                 onClick={handleAvailability}
                 disabled={checking}
-                className="w-full py-3 rounded-xl border border-gray-300 font-bold text-xs uppercase tracking-widest text-gray-600 hover:bg-gray-50 transition"
+                className="w-full py-3 rounded-none bg-gray-100 font-bold text-xs uppercase tracking-widest text-gray-600 hover:bg-gray-200 transition"
               >
                 {checking ? 'Checking...' : 'Check Availability'}
               </button>
