@@ -5,6 +5,8 @@ import { addDays } from 'date-fns';
 import toast from 'react-hot-toast';
 import { itemApi, bookingApi, reviewApi } from '../api/services';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
+import { useAuth } from '../context/AuthContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ReviewList from '../components/ReviewList';
 import RecommendedCarousel from '../components/RecommendedCarousel';
@@ -25,7 +27,9 @@ const ItemDetailPage = () => {
   const [rating, setRating] = useState(5);
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [isWishlist, setIsWishlist] = useState(false);
+  const { token } = useAuth();
+  const { isInWishlist, toggleWishlist } = useWishlist();
+  const isWishlist = item ? isInWishlist(item._id) : false;
   const [quantity, setQuantity] = useState(1);
 
   // Lightbox & Carousel State
@@ -310,13 +314,16 @@ const ItemDetailPage = () => {
         <div className="lg:sticky lg:top-24 h-fit space-y-6 order-2 lg:col-start-2 lg:row-start-1 lg:row-span-2">
           <div className="p-6 md:p-8 relative bg-white">
             <button
-              onClick={() => {
-                setIsWishlist(!isWishlist);
-                toast.success(isWishlist ? 'Removed from wishlist' : 'Added to wishlist');
+              onClick={async () => {
+                if (!token) {
+                  toast.error('Please login to add to wishlist');
+                  return;
+                }
+                await toggleWishlist(item._id);
               }}
               className="absolute top-6 right-6 p-2 rounded-full hover:bg-pink-50 transition-colors"
             >
-              <Heart className={`w-6 h-6 ${isWishlist ? 'fill-primary text-primary' : 'text-gray-400'}`} />
+              <Heart className={`w-6 h-6 ${isWishlist ? 'fill-red-500 text-red-500' : 'text-gray-400'}`} />
             </button>
 
             {<h3 className="text-xl font-display font-medium mb-6">Order Details</h3>}

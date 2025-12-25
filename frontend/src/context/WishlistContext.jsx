@@ -21,8 +21,11 @@ export const WishlistProvider = ({ children }) => {
     const loadWishlist = async () => {
         try {
             const { data } = await wishlistApi.list();
-            // Assuming API returns array of items or objects with _id
-            const ids = new Set(data.map(item => item._id || item.itemId));
+            // data is array of Wishlist documents with populated itemId
+            const ids = new Set(data.map(doc => {
+                // Handle populated itemId object or raw ID string
+                return doc.itemId?._id || doc.itemId;
+            }));
             setWishlist(ids);
         } catch (error) {
             console.error('Failed to load wishlist', error);
