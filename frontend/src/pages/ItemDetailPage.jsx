@@ -447,9 +447,12 @@ const ItemDetailPage = () => {
       </div>
       {/* Lightbox Overlay */}
       {lightboxOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm p-4 animate-fade-in">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm p-4 animate-fade-in cursor-pointer"
+          onClick={() => { setLightboxOpen(false); setZoomLevel(1); }}
+        >
           <button
-            onClick={() => { setLightboxOpen(false); setZoomLevel(1); }}
+            onClick={(e) => { e.stopPropagation(); setLightboxOpen(false); setZoomLevel(1); }}
             className="absolute top-4 right-4 p-2 text-white/70 hover:text-white transition-colors z-50"
           >
             <X className="w-8 h-8" />
@@ -467,12 +470,12 @@ const ItemDetailPage = () => {
 
             <div
               className="relative flex-1 h-[80vh] flex items-center justify-center overflow-hidden"
-              onClick={toggleZoom}
             >
               <img
                 src={item.images?.[selectedImageIndex]}
                 alt={item.title}
                 style={{ transform: `scale(${zoomLevel})` }}
+                onClick={toggleZoom}
                 className={`max-w-full max-h-full object-contain transition-transform duration-300 ${zoomLevel > 1 ? 'cursor-zoom-out' : 'cursor-zoom-in'
                   }`}
               />
