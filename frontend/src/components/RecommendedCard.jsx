@@ -3,6 +3,8 @@ import React from 'react';
 import { Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+import { getOptimizedImageUrl } from '../utils/imageUtils';
+
 const RecommendedCard = ({ item }) => {
     const navigate = useNavigate();
 
@@ -16,8 +18,9 @@ const RecommendedCard = ({ item }) => {
         >
             <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
                 <img
-                    src={item.images?.[0]}
+                    src={getOptimizedImageUrl(item.images?.[0], 300)}
                     alt={item.title}
+                    loading="lazy"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 {/* Rating Badge */}

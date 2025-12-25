@@ -6,6 +6,8 @@ import { useAuth } from '../context/AuthContext';
 import { useWishlist } from '../context/WishlistContext';
 import toast from 'react-hot-toast';
 
+import { getOptimizedImageUrl } from '../utils/imageUtils';
+
 const ItemCard = ({ item }) => {
   const { token } = useAuth();
   const { isInWishlist, toggleWishlist } = useWishlist();
@@ -43,8 +45,9 @@ const ItemCard = ({ item }) => {
         </button>
 
         <img
-          src={item.images?.[0] || `https://placehold.co/600x800/9d174d/fce7f3?text=${encodeURIComponent(item.title)}`}
+          src={getOptimizedImageUrl(item.images?.[0], 400) || `https://placehold.co/600x800/9d174d/fce7f3?text=${encodeURIComponent(item.title)}`}
           alt={item.title}
+          loading="lazy"
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
 
