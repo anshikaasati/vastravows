@@ -7,7 +7,7 @@ import { itemApi, bookingApi, reviewApi } from '../api/services';
 import { useCart } from '../context/CartContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ReviewList from '../components/ReviewList';
-import { Star as StarIcon, ShoppingBag, ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut } from 'lucide-react';
+import { Star as StarIcon, ShoppingBag, ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut, Heart, MapPin, Shield, User, Minus, Plus } from 'lucide-react';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const ItemDetailPage = () => {
@@ -23,6 +23,8 @@ const ItemDetailPage = () => {
   const [rating, setRating] = useState(5);
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [isWishlist, setIsWishlist] = useState(false);
+  const [quantity, setQuantity] = useState(1);
 
   // Lightbox & Carousel State
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -173,189 +175,212 @@ const ItemDetailPage = () => {
 
   return (
     <div className="flex flex-col lg:grid lg:gap-6 lg:grid-cols-[1.5fr_1fr] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8 gap-6">
-      <div className="space-y-6 md:space-y-8 order-1">
-        {/* Main Content Card */}
-        <div className="glass-panel rounded-xl p-4 md:p-8 animate-fade-in">
-          {/* Image Gallery */}
-          {/* Image Gallery - Carousel */}
-          <div className="space-y-4">
-            <div
-              className="aspect-[4/3] rounded-xl overflow-hidden shadow-lg relative group bg-gray-100"
-              onTouchStart={onTouchStart}
-              onTouchMove={onTouchMove}
-              onTouchEnd={onTouchEndHandler}
-            >
-              <img
-                src={item.images?.[selectedImageIndex] || item.images?.[0]}
-                alt={item.title}
-                className="w-full h-full object-cover transition-transform duration-500 cursor-zoom-in"
-                onClick={() => setLightboxOpen(true)}
-              />
+      {/* Main Content Card - Mobile Order 1, Desktop Col 1 */}
+      <div className="glass-panel rounded-xl p-4 md:p-8 animate-fade-in order-1 lg:col-start-1">
+        {/* Image Gallery */}
+        {/* Image Gallery - Carousel */}
+        <div className="space-y-4">
+          <div
+            className="aspect-[4/3] rounded-xl overflow-hidden shadow-lg relative group bg-gray-100"
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEndHandler}
+          >
+            <img
+              src={item.images?.[selectedImageIndex] || item.images?.[0]}
+              alt={item.title}
+              className="w-full h-full object-cover transition-transform duration-500 cursor-zoom-in"
+              onClick={() => setLightboxOpen(true)}
+            />
 
-              {/* Navigation Arrows */}
-              {item.images?.length > 1 && (
-                <>
+            {/* Navigation Arrows */}
+            {item.images?.length > 1 && (
+              <>
+                <button
+                  onClick={prevImage}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-white text-gray-800 shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={nextImage}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-white text-gray-800 shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </>
+            )}
+
+            {/* Dots Indicator */}
+            {item.images?.length > 1 && (
+              <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+                {item.images.map((_, idx) => (
                   <button
-                    onClick={prevImage}
-                    className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-white text-gray-800 shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300"
-                  >
-                    <ChevronLeft className="w-5 h-5" />
-                  </button>
-                  <button
-                    onClick={nextImage}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-white text-gray-800 shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300"
-                  >
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
-                </>
-              )}
-
-              {/* Dots Indicator */}
-              {item.images?.length > 1 && (
-                <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
-                  {item.images.map((_, idx) => (
-                    <button
-                      key={idx}
-                      onClick={(e) => { e.stopPropagation(); setSelectedImageIndex(idx); }}
-                      className={`h-2 rounded-full transition-all duration-300 ${selectedImageIndex === idx ? 'w-6 bg-white' : 'w-2 bg-white/50 hover:bg-white/80'
-                        }`}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="mt-6 md:mt-8 space-y-4">
-            <div>
-              <h2 className="text-3xl md:text-5xl font-display font-medium text-gray-900 mb-2">{item.title}</h2>
-              <p className="text-xs md:text-sm uppercase tracking-[0.2em] text-gray-500 font-bold">
-                {item.gender} • {item.subcategory?.replace(/-/g, ' ')}
-              </p>
-            </div>
-
-            <div className="flex items-baseline gap-4 border-b border-gray-200 pb-6">
-              {item.salePrice ? (
-                <span className="text-3xl md:text-4xl font-display font-medium text-gray-900">₹{item.salePrice}</span>
-              ) : (
-                <div className="flex items-baseline gap-2">
-                  <span className="text-3xl md:text-4xl font-display font-medium text-primary">₹{item.rentPricePerDay}</span>
-                  <span className="text-gray-500 font-medium font-sans">/ day</span>
-                </div>
-              )}
-            </div>
-
-            {/* Size Selection */}
-            <div className="py-4">
-              <h3 className="text-xs uppercase tracking-widest font-bold text-gray-900 mb-4">Select Size</h3>
-              <div className="flex flex-wrap gap-3">
-                {(() => {
-                  // Parse size: handle array or string
-                  let sizes = [];
-                  if (Array.isArray(item.size)) {
-                    sizes = item.size;
-                  } else if (typeof item.size === 'string') {
-                    sizes = item.size.split(',').map(s => s.trim()).filter(s => s);
-                  }
-
-                  if (sizes.length > 0) {
-                    return sizes.map((size) => {
-                      const isInCart = cart.some(cartItem => cartItem._id === item._id && cartItem.selectedSize === size);
-                      return (
-                        <button
-                          key={size}
-                          onClick={() => !isInCart && setSelectedSize(size)}
-                          disabled={isInCart}
-                          className={`w-12 h-12 rounded-xl border flex items-center justify-center text-sm font-semibold transition-all duration-300 ${selectedSize === size
-                            ? 'border-primary bg-primary text-white shadow-lg'
-                            : isInCart
-                              ? 'border-gray-100 bg-gray-100 text-gray-400 cursor-not-allowed'
-                              : 'border-gray-200 text-gray-600 hover:border-primary hover:text-primary'
-                            }`}
-                          title={isInCart ? 'Already in cart' : size}
-                        >
-                          {size}
-                        </button>
-                      );
-                    });
-                  } else {
-                    return <p className="text-sm text-gray-500">No sizes available</p>;
-                  }
-                })()}
+                    key={idx}
+                    onClick={(e) => { e.stopPropagation(); setSelectedImageIndex(idx); }}
+                    className={`h-2 rounded-full transition-all duration-300 ${selectedImageIndex === idx ? 'w-6 bg-white' : 'w-2 bg-white/50 hover:bg-white/80'
+                      }`}
+                  />
+                ))}
               </div>
-            </div>
-            <div className="prose prose-pink max-w-none text-gray-600 leading-relaxed text-sm md:text-base">
-              <h3 className="text-lg font-display font-semibold text-gray-900 mb-2">Description</h3>
-              <p>{item.description}</p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-6 border-t border-gray-200">
-              <div>
-                <p className="text-xs uppercase tracking-wider text-gray-400 mb-1">Location</p>
-                <p className="font-medium text-gray-900">{item.location?.city}, {item.location?.pincode}</p>
-              </div>
-              <div>
-                <p className="text-xs uppercase tracking-wider text-gray-400 mb-1">Security Deposit</p>
-                <p className="font-medium text-gray-900">₹{item.depositAmount}</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4 p-4 bg-white/50 rounded-xl border border-white/60">
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-lg md:text-xl shadow-md">
-                {item.ownerId?.name?.charAt(0)}
-              </div>
-              <div>
-                <p className="text-xs uppercase tracking-wider text-gray-500 mb-0.5">Listed by</p>
-                <p className="font-display font-semibold text-gray-900 text-sm md:text-lg">{item.ownerId?.name}</p>
-              </div>
-            </div>
+            )}
           </div>
         </div>
 
-        {/* Reviews Section - Order 3 on mobile (appears after sidebar) */}
-        <div className="glass-panel rounded-xl p-4 md:p-8 order-3 lg:order-2">
-          <h3 className="text-2xl font-display font-medium mb-8">Client Reviews</h3>
-          <ReviewList reviews={reviews} />
+        <div className="mt-6 md:mt-8 space-y-4">
+          <div>
+            <h2 className="text-3xl md:text-5xl font-display font-medium text-gray-900 mb-2">{item.title}</h2>
+            <p className="text-xs md:text-sm uppercase tracking-[0.2em] text-gray-500 font-bold">
+              {item.gender} • {item.subcategory?.replace(/-/g, ' ')}
+            </p>
+          </div>
 
-          <div className="mt-8 pt-8 border-t border-gray-200/60">
-            <h4 className="text-lg font-display font-medium mb-4">Write a Review</h4>
-            <form onSubmit={handleReviewSubmit} className="space-y-4">
-              <div className="flex items-center gap-2 mb-2">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <button
-                    key={star}
-                    type="button"
-                    onClick={() => setRating(star)}
-                    className="focus:outline-none transition-transform hover:scale-110"
-                  >
-                    <StarIcon
-                      className={`w-6 h-6 md:w-8 md:h-8 ${star <= rating ? 'text-primary fill-primary' : 'text-gray-200'
-                        }`}
-                    />
-                  </button>
-                ))}
+          <div className="flex items-baseline gap-4 border-b border-gray-200 pb-6">
+            {item.salePrice ? (
+              <span className="text-3xl md:text-4xl font-display font-medium text-gray-900">₹{item.salePrice}</span>
+            ) : (
+              <div className="flex items-baseline gap-2">
+                <span className="text-3xl md:text-4xl font-display font-medium text-primary">₹{item.rentPricePerDay}</span>
+                <span className="text-gray-500 font-medium font-sans">/ day</span>
               </div>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <input
-                  name="comment"
-                  placeholder="Share your experience with this attire..."
-                  className="flex-1 px-4 py-3 rounded-xl border border-gray-200 bg-white/50 focus:ring-1 focus:ring-primary focus:border-primary text-sm md:text-base outline-none"
-                />
-                <button type="submit" className="px-8 py-3 rounded-xl bg-primary text-white text-xs font-bold uppercase tracking-widest hover:bg-primary-dark transition-all duration-300 shadow-lg w-full sm:w-auto">
-                  POST
-                </button>
-              </div>
-            </form>
+            )}
+          </div>
+
+          <div className="prose prose-pink max-w-none text-gray-600 leading-relaxed text-sm md:text-base">
+            <h3 className="text-lg font-display font-semibold text-gray-900 mb-2">Description</h3>
+            <p>{item.description}</p>
           </div>
         </div>
       </div>
 
-      {/* Sidebar - Order 2 on mobile (appears before reviews) */}
-      <div className="lg:sticky lg:top-24 h-fit space-y-6 order-2 lg:order-3">
-        <div className="glass-card rounded-xl p-6 md:p-8 border border-white/60 shadow-xl">
-          {!item.salePrice && <h3 className="text-xl font-display font-medium mb-6">Check Availability</h3>}
+
+      {/* Reviews Section - Mobile Order 3, Desktop Col 1 (below Main Content) */}
+      <div className="glass-panel rounded-xl p-4 md:p-8 order-3 lg:col-start-1">
+        <h3 className="text-2xl font-display font-medium mb-8">Client Reviews</h3>
+        <ReviewList reviews={reviews} />
+
+        <div className="mt-8 pt-8 border-t border-gray-200/60">
+          <h4 className="text-lg font-display font-medium mb-4">Write a Review</h4>
+          <form onSubmit={handleReviewSubmit} className="space-y-4">
+            <div className="flex items-center gap-2 mb-2">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  type="button"
+                  onClick={() => setRating(star)}
+                  className="focus:outline-none transition-transform hover:scale-110"
+                >
+                  <StarIcon
+                    className={`w-6 h-6 md:w-8 md:h-8 ${star <= rating ? 'text-primary fill-primary' : 'text-gray-200'
+                      }`}
+                  />
+                </button>
+              ))}
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <input
+                name="comment"
+                placeholder="Share your experience with this attire..."
+                className="flex-1 px-4 py-3 rounded-xl border border-gray-200 bg-white/50 focus:ring-1 focus:ring-primary focus:border-primary text-sm md:text-base outline-none"
+              />
+              <button type="submit" className="px-8 py-3 rounded-xl bg-primary text-white text-xs font-bold uppercase tracking-widest hover:bg-primary-dark transition-all duration-300 shadow-lg w-full sm:w-auto">
+                POST
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      {/* Sidebar - Mobile Order 2, Desktop Col 2 (Span 2 rows) */}
+      <div className="lg:sticky lg:top-24 h-fit space-y-6 order-2 lg:col-start-2 lg:row-start-1 lg:row-span-2">
+        <div className="glass-card rounded-xl p-6 md:p-8 border border-white/60 shadow-xl relative">
+          <button
+            onClick={() => {
+              setIsWishlist(!isWishlist);
+              toast.success(isWishlist ? 'Removed from wishlist' : 'Added to wishlist');
+            }}
+            className="absolute top-6 right-6 p-2 rounded-full hover:bg-pink-50 transition-colors"
+          >
+            <Heart className={`w-6 h-6 ${isWishlist ? 'fill-primary text-primary' : 'text-gray-400'}`} />
+          </button>
+
+          {!item.salePrice && <h3 className="text-xl font-display font-medium mb-6">Order Details</h3>}
 
           <div className="space-y-6">
+
+            {/* Metadata Section */}
+            <div className="space-y-3 pb-6 border-b border-gray-100">
+              <div className="flex items-center gap-3 text-sm text-gray-600">
+                <MapPin className="w-4 h-4 text-gray-400" />
+                <span>{item.location?.city}, {item.location?.pincode}</span>
+              </div>
+              <div className="flex items-center gap-3 text-sm text-gray-600">
+                <Shield className="w-4 h-4 text-gray-400" />
+                <span>Security Deposit: <span className="font-semibold text-gray-900">₹{item.depositAmount}</span></span>
+              </div>
+              <div className="flex items-center gap-3 text-sm text-gray-600">
+                <User className="w-4 h-4 text-gray-400" />
+                <span>Listed by {item.ownerId?.name}</span>
+              </div>
+            </div>
+
+            {/* Size & Quantity Selection */}
+            <div className="space-y-4">
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <label className="text-xs uppercase tracking-wider font-bold text-gray-500">Size</label>
+                  <span className="text-xs text-primary font-medium cursor-pointer hover:underline">Size Chart</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {(() => {
+                    let sizes = [];
+                    if (Array.isArray(item.size)) sizes = item.size;
+                    else if (typeof item.size === 'string') sizes = item.size.split(',').map(s => s.trim()).filter(s => s);
+
+                    if (sizes.length > 0) {
+                      return sizes.map((size) => {
+                        const isInCart = cart.some(cartItem => cartItem._id === item._id && cartItem.selectedSize === size);
+                        return (
+                          <button
+                            key={size}
+                            onClick={() => !isInCart && setSelectedSize(size)}
+                            disabled={isInCart}
+                            className={`min-w-[3rem] h-10 px-2 rounded-lg border text-sm font-semibold transition-all ${selectedSize === size
+                              ? 'border-primary bg-primary text-white shadow-md'
+                              : isInCart
+                                ? 'border-gray-100 bg-gray-50 text-gray-300 cursor-not-allowed'
+                                : 'border-gray-200 text-gray-600 hover:border-primary hover:text-primary'
+                              }`}
+                          >
+                            {size}
+                          </button>
+                        );
+                      });
+                    }
+                    return <p className="text-sm text-gray-400">One Size</p>;
+                  })()}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs uppercase tracking-wider font-bold text-gray-500 mb-2">Quantity</label>
+                <div className="flex items-center gap-3 w-fit p-1 rounded-lg border border-gray-200">
+                  <button
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    className="p-1 hover:bg-gray-100 rounded-md transition"
+                  >
+                    <Minus className="w-4 h-4 text-gray-600" />
+                  </button>
+                  <span className="w-8 text-center font-medium text-sm">{quantity}</span>
+                  <button
+                    onClick={() => setQuantity(quantity + 1)}
+                    className="p-1 hover:bg-gray-100 rounded-md transition"
+                  >
+                    <Plus className="w-4 h-4 text-gray-600" />
+                  </button>
+                </div>
+              </div>
+            </div>
             {!item.salePrice && (
               <div>
                 <label className="block text-xs uppercase tracking-wider font-bold text-gray-500 mb-3">Rental Period</label>
@@ -446,68 +471,70 @@ const ItemDetailPage = () => {
         </div>
       </div>
       {/* Lightbox Overlay */}
-      {lightboxOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm p-4 animate-fade-in cursor-pointer"
-          onClick={() => { setLightboxOpen(false); setZoomLevel(1); }}
-        >
-          <button
-            onClick={(e) => { e.stopPropagation(); setLightboxOpen(false); setZoomLevel(1); }}
-            className="absolute top-4 right-4 p-2 text-white/70 hover:text-white transition-colors z-50"
+      {
+        lightboxOpen && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm p-4 animate-fade-in cursor-pointer"
+            onClick={() => { setLightboxOpen(false); setZoomLevel(1); }}
           >
-            <X className="w-8 h-8" />
-          </button>
-
-          <div className="relative w-full max-w-6xl flex items-center justify-between gap-4">
-            {item.images?.length > 1 && (
-              <button
-                onClick={prevImage}
-                className="p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all hidden md:block"
-              >
-                <ChevronLeft className="w-8 h-8" />
-              </button>
-            )}
-
-            <div
-              className="relative flex-1 h-[80vh] flex items-center justify-center overflow-hidden"
+            <button
+              onClick={(e) => { e.stopPropagation(); setLightboxOpen(false); setZoomLevel(1); }}
+              className="absolute top-4 right-4 p-2 text-white/70 hover:text-white transition-colors z-50"
             >
-              <img
-                src={item.images?.[selectedImageIndex]}
-                alt={item.title}
-                style={{ transform: `scale(${zoomLevel})` }}
-                onClick={toggleZoom}
-                className={`max-w-full max-h-full object-contain transition-transform duration-300 ${zoomLevel > 1 ? 'cursor-zoom-out' : 'cursor-zoom-in'
-                  }`}
-              />
+              <X className="w-8 h-8" />
+            </button>
+
+            <div className="relative w-full max-w-6xl flex items-center justify-between gap-4">
+              {item.images?.length > 1 && (
+                <button
+                  onClick={prevImage}
+                  className="p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all hidden md:block"
+                >
+                  <ChevronLeft className="w-8 h-8" />
+                </button>
+              )}
+
+              <div
+                className="relative flex-1 h-[80vh] flex items-center justify-center overflow-hidden"
+              >
+                <img
+                  src={item.images?.[selectedImageIndex]}
+                  alt={item.title}
+                  style={{ transform: `scale(${zoomLevel})` }}
+                  onClick={toggleZoom}
+                  className={`max-w-full max-h-full object-contain transition-transform duration-300 ${zoomLevel > 1 ? 'cursor-zoom-out' : 'cursor-zoom-in'
+                    }`}
+                />
+              </div>
+
+              {item.images?.length > 1 && (
+                <button
+                  onClick={nextImage}
+                  className="p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all hidden md:block"
+                >
+                  <ChevronRight className="w-8 h-8" />
+                </button>
+              )}
             </div>
 
-            {item.images?.length > 1 && (
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-4 text-white">
               <button
-                onClick={nextImage}
-                className="p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all hidden md:block"
+                onClick={(e) => { e.stopPropagation(); setZoomLevel(prev => Math.max(1, prev - 0.5)); }}
+                className="p-2 hover:bg-white/10 rounded-full transition"
               >
-                <ChevronRight className="w-8 h-8" />
+                <ZoomOut className="w-6 h-6" />
               </button>
-            )}
+              <span className="text-sm font-medium">{Math.round(zoomLevel * 100)}%</span>
+              <button
+                onClick={(e) => { e.stopPropagation(); setZoomLevel(prev => Math.min(3, prev + 0.5)); }}
+                className="p-2 hover:bg-white/10 rounded-full transition"
+              >
+                <ZoomIn className="w-6 h-6" />
+              </button>
+            </div>
           </div>
-
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-4 text-white">
-            <button
-              onClick={(e) => { e.stopPropagation(); setZoomLevel(prev => Math.max(1, prev - 0.5)); }}
-              className="p-2 hover:bg-white/10 rounded-full transition"
-            >
-              <ZoomOut className="w-6 h-6" />
-            </button>
-            <span className="text-sm font-medium">{Math.round(zoomLevel * 100)}%</span>
-            <button
-              onClick={(e) => { e.stopPropagation(); setZoomLevel(prev => Math.min(3, prev + 0.5)); }}
-              className="p-2 hover:bg-white/10 rounded-full transition"
-            >
-              <ZoomIn className="w-6 h-6" />
-            </button>
-          </div>
-        </div>
-      )}
+        )
+      }
     </div>
   );
 };
