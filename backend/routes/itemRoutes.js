@@ -2,7 +2,7 @@ import express from 'express';
 import { body } from 'express-validator';
 import { protect } from '../middleware/authMiddleware.js';
 import { upload } from '../middleware/uploadMiddleware.js';
-import { createItem, getItems, getItemById, updateItem, deleteItem } from '../controllers/itemController.js';
+import { createItem, getItems, getItemById, updateItem, deleteItem, getRecommendations } from '../controllers/itemController.js';
 
 const router = express.Router();
 
@@ -26,10 +26,14 @@ router.route('/')
   .post(protect, upload.array('images', 5), itemValidation, createItem)
   .get(getItems);
 
+
 router.route('/:id')
   .get(getItemById)
   .put(protect, upload.array('images', 5), updateItem)
   .delete(protect, deleteItem);
+
+router.route('/:id/recommendations').get(getRecommendations);
+
 
 export default router;
 

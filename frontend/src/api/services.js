@@ -21,7 +21,8 @@ export const itemApi = {
   getById: (id) => api.get(`/items/${id}`),
   create: (formData) => api.post('/items', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
   update: (id, formData) => api.put(`/items/${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
-  remove: (id) => api.delete(`/items/${id}`)
+  remove: (id) => api.delete(`/items/${id}`),
+  getRecommendations: (id) => api.get(`/items/${id}/recommendations`)
 };
 
 export const bookingApi = {
