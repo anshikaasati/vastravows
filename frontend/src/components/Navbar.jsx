@@ -95,7 +95,7 @@ const Navbar = () => {
                   <input
                     type="text"
                     placeholder="Search..."
-                    className="w-48 bg-white border border-gray-200 rounded-xl py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary shadow-lg"
+                    className="w-48 bg-white/90 border-b border-gray-200 rounded-xl py-2 px-4 text-sm focus:outline-none focus:border-primary shadow-sm"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSearch()}

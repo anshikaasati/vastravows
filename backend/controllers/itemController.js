@@ -2,6 +2,7 @@ import { validationResult } from 'express-validator';
 import Item from '../models/Item.js';
 import Review from '../models/Review.js';
 import { uploadToCloudinary } from '../utils/cloudinary.js';
+import { buildExpandedSearchQuery } from '../utils/searchUtils.js';
 
 const mapLocation = (body) => ({
   city: body?.location?.city || body.city,
@@ -65,13 +66,16 @@ export const getItems = async (req, res, next) => {
       // partial match on city (case-insensitive)
       filters['location.city'] = new RegExp(req.query.location, 'i');
     }
+
+    // Advanced Semantic Search
     if (req.query.search) {
-      const searchRegex = new RegExp(req.query.search, 'i');
-      filters.$or = [
-        { title: searchRegex },
-        { description: searchRegex }
-      ];
+      const searchQuery = buildExpandedSearchQuery(req.query.search);
+      // Merge the $and condition into filters
+      if (searchQuery.$and) {
+        filters.$and = searchQuery.$and;
+      }
     }
+
     if (req.query.ownerId) filters.ownerId = req.query.ownerId;
 
     const items = await Item.find(filters).sort({ createdAt: -1 }).populate('ownerId', 'name email phone avatarUrl');
