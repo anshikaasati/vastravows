@@ -7,7 +7,7 @@ import { itemApi, bookingApi, reviewApi } from '../api/services';
 import { useCart } from '../context/CartContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ReviewList from '../components/ReviewList';
-import { Star as StarIcon, ShoppingBag } from 'lucide-react';
+import { Star as StarIcon, ShoppingBag, ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut } from 'lucide-react';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const ItemDetailPage = () => {
@@ -23,6 +23,13 @@ const ItemDetailPage = () => {
   const [rating, setRating] = useState(5);
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+
+  // Lightbox & Carousel State
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,6 +46,42 @@ const ItemDetailPage = () => {
     };
     fetchItem();
   }, [id]);
+
+  // Carousel Handlers
+  const nextImage = (e) => {
+    e?.stopPropagation();
+    if (item?.images?.length) {
+      setSelectedImageIndex((prev) => (prev + 1) % item.images.length);
+    }
+  };
+
+  const prevImage = (e) => {
+    e?.stopPropagation();
+    if (item?.images?.length) {
+      setSelectedImageIndex((prev) => (prev - 1 + item.images.length) % item.images.length);
+    }
+  };
+
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e) => setTouchEnd(e.targetTouches[0].clientX);
+
+  const onTouchEndHandler = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+    if (isLeftSwipe) nextImage();
+    if (isRightSwipe) prevImage();
+  };
+
+  const toggleZoom = (e) => {
+    e.stopPropagation();
+    setZoomLevel(prev => prev === 1 ? 2 : 1);
+  };
 
   const handleAvailability = async () => {
     if (!startDate || !endDate) {
@@ -134,28 +177,53 @@ const ItemDetailPage = () => {
         {/* Main Content Card */}
         <div className="glass-panel rounded-xl p-4 md:p-8 animate-fade-in">
           {/* Image Gallery */}
+          {/* Image Gallery - Carousel */}
           <div className="space-y-4">
-            <div className="aspect-[4/3] rounded-xl overflow-hidden shadow-lg">
+            <div
+              className="aspect-[4/3] rounded-xl overflow-hidden shadow-lg relative group bg-gray-100"
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEndHandler}
+            >
               <img
                 src={item.images?.[selectedImageIndex] || item.images?.[0]}
                 alt={item.title}
-                className="w-full h-full object-cover hover:scale-105 transition duration-700"
+                className="w-full h-full object-cover transition-transform duration-500 cursor-zoom-in"
+                onClick={() => setLightboxOpen(true)}
               />
-            </div>
-            {item.images?.length > 1 && (
-              <div className="grid grid-cols-4 gap-2 md:gap-4">
-                {item.images.map((src, idx) => (
-                  <div
-                    key={idx}
-                    onClick={() => setSelectedImageIndex(idx)}
-                    className={`aspect-square rounded-xl overflow-hidden cursor-pointer border-2 transition ${selectedImageIndex === idx ? 'border-primary ring-2 ring-primary/20' : 'border-transparent hover:border-primary/50'
-                      }`}
+
+              {/* Navigation Arrows */}
+              {item.images?.length > 1 && (
+                <>
+                  <button
+                    onClick={prevImage}
+                    className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-white text-gray-800 shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300"
                   >
-                    <img src={src} alt={`View ${idx + 1}`} className="w-full h-full object-cover" />
-                  </div>
-                ))}
-              </div>
-            )}
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={nextImage}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-white text-gray-800 shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </>
+              )}
+
+              {/* Dots Indicator */}
+              {item.images?.length > 1 && (
+                <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+                  {item.images.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={(e) => { e.stopPropagation(); setSelectedImageIndex(idx); }}
+                      className={`h-2 rounded-full transition-all duration-300 ${selectedImageIndex === idx ? 'w-6 bg-white' : 'w-2 bg-white/50 hover:bg-white/80'
+                        }`}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="mt-6 md:mt-8 space-y-4">
@@ -285,7 +353,7 @@ const ItemDetailPage = () => {
       {/* Sidebar - Order 2 on mobile (appears before reviews) */}
       <div className="lg:sticky lg:top-24 h-fit space-y-6 order-2 lg:order-3">
         <div className="glass-card rounded-xl p-6 md:p-8 border border-white/60 shadow-xl">
-          <h3 className="text-xl font-display font-medium mb-6">Check Availability</h3>
+          {!item.salePrice && <h3 className="text-xl font-display font-medium mb-6">Check Availability</h3>}
 
           <div className="space-y-6">
             {!item.salePrice && (
@@ -377,6 +445,66 @@ const ItemDetailPage = () => {
           </div>
         </div>
       </div>
+      {/* Lightbox Overlay */}
+      {lightboxOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm p-4 animate-fade-in">
+          <button
+            onClick={() => { setLightboxOpen(false); setZoomLevel(1); }}
+            className="absolute top-4 right-4 p-2 text-white/70 hover:text-white transition-colors z-50"
+          >
+            <X className="w-8 h-8" />
+          </button>
+
+          <div className="relative w-full max-w-6xl flex items-center justify-between gap-4">
+            {item.images?.length > 1 && (
+              <button
+                onClick={prevImage}
+                className="p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all hidden md:block"
+              >
+                <ChevronLeft className="w-8 h-8" />
+              </button>
+            )}
+
+            <div
+              className="relative flex-1 h-[80vh] flex items-center justify-center overflow-hidden"
+              onClick={toggleZoom}
+            >
+              <img
+                src={item.images?.[selectedImageIndex]}
+                alt={item.title}
+                style={{ transform: `scale(${zoomLevel})` }}
+                className={`max-w-full max-h-full object-contain transition-transform duration-300 ${zoomLevel > 1 ? 'cursor-zoom-out' : 'cursor-zoom-in'
+                  }`}
+              />
+            </div>
+
+            {item.images?.length > 1 && (
+              <button
+                onClick={nextImage}
+                className="p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all hidden md:block"
+              >
+                <ChevronRight className="w-8 h-8" />
+              </button>
+            )}
+          </div>
+
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-4 text-white">
+            <button
+              onClick={(e) => { e.stopPropagation(); setZoomLevel(prev => Math.max(1, prev - 0.5)); }}
+              className="p-2 hover:bg-white/10 rounded-full transition"
+            >
+              <ZoomOut className="w-6 h-6" />
+            </button>
+            <span className="text-sm font-medium">{Math.round(zoomLevel * 100)}%</span>
+            <button
+              onClick={(e) => { e.stopPropagation(); setZoomLevel(prev => Math.min(3, prev + 0.5)); }}
+              className="p-2 hover:bg-white/10 rounded-full transition"
+            >
+              <ZoomIn className="w-6 h-6" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
