@@ -23,7 +23,7 @@ const RecommendedCarousel = ({ items = [] }) => {
     return (
         <div className="mt-12 md:mt-16 border-t border-gray-100 pt-12">
             <div className="flex items-center justify-between mb-6 px-1">
-                <h3 className="text-xl md:text-2xl font-display font-medium text-gray-900"> Recommended for You</h3>
+                <h3 className="text-xl md:text-2xl font-display font-medium text-gray-900"> Similar Items</h3>
 
                 {/* Navigation - Hidden on mobile, visible on desktop */}
                 <div className="hidden md:flex items-center gap-2">

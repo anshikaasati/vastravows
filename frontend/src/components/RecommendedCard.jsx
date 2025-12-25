@@ -27,6 +27,14 @@ const RecommendedCard = ({ item }) => {
                         <span>{item.rating}</span>
                     </div>
                 )}
+                )}
+
+                {/* Quick Action Button - Appears on Hover */}
+                <div className="absolute inset-x-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex justify-center pb-6">
+                    <span className="bg-white/90 backdrop-blur text-primary text-xs font-bold uppercase tracking-widest px-6 py-3 shadow-lg hover:bg-primary hover:text-white transition-colors">
+                        View Details
+                    </span>
+                </div>
             </div>
 
             <div className="space-y-1">
@@ -41,17 +49,7 @@ const RecommendedCard = ({ item }) => {
                 </div>
             </div>
 
-            {/* Quick Action Button - Hidden on mobile, visible on hover desktop */}
-            <button
-                className="mt-1 w-full py-2 bg-white border border-gray-200 text-xs font-bold uppercase tracking-wider rounded hover:bg-gray-50 hover:border-gray-300 transition-colors opacity-0 group-hover:opacity-100 hidden md:block"
-                onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(`/items/${item._id}`);
-                    window.scrollTo(0, 0);
-                }}
-            >
-                View Details
-            </button>
+
         </div>
     );
 };
