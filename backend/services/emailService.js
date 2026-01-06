@@ -16,20 +16,20 @@ if (!emailUser || !emailPass) {
 }
 
 const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: parseInt(process.env.EMAIL_PORT || '587'), // Default to 587 (STARTTLS)
-    secure: process.env.EMAIL_SECURE === 'true', // Default to false (STARTTLS), true only if explicitly set
+    service: 'gmail', // Automatically handles host, port (465/587), and security settings for Gmail
     auth: {
         user: emailUser,
         pass: emailPass
     },
-    // Fix for Render/Cloud timeouts (forces IPv4)
-    family: 4,
-    connectionTimeout: 10000,
-    // Additional options for production reliability
+    // Keep performance/reliability settings
     pool: true,
     maxConnections: 5,
-    maxMessages: 100
+    maxMessages: 100,
+    // Increase timeout to avoid spurious timeouts
+    connectionTimeout: 20000,
+    greetingTimeout: 20000
+    // Note: We removed 'family: 4' to let Node/Nodemailer decide the best route. 
+    // If timeouts persist, we can add it back, but 'service: gmail' usually handles it well.
 });
 
 /**
