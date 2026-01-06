@@ -26,8 +26,11 @@ const transporter = nodemailer.createTransport({
     maxConnections: 5,
     maxMessages: 100,
     // Increase timeout to avoid spurious timeouts
+    // Increase timeout to avoid spurious timeouts
     connectionTimeout: 20000,
-    greetingTimeout: 20000
+    greetingTimeout: 20000,
+    // CRITICAL: Force IPv4 as IPv6 often times out on Render
+    family: 4
     // Note: We removed 'family: 4' to let Node/Nodemailer decide the best route. 
     // If timeouts persist, we can add it back, but 'service: gmail' usually handles it well.
 });
