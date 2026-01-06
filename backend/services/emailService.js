@@ -17,8 +17,8 @@ if (!emailUser || !emailPass) {
 
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
-    port: parseInt(process.env.EMAIL_PORT || '465'), // Default to 465, but allow 587
-    secure: process.env.EMAIL_SECURE === 'true' || process.env.EMAIL_PORT !== '587', // true for 465, false for 587
+    port: parseInt(process.env.EMAIL_PORT || '587'), // Default to 587 (STARTTLS)
+    secure: process.env.EMAIL_SECURE === 'true', // Default to false (STARTTLS), true only if explicitly set
     auth: {
         user: emailUser,
         pass: emailPass
