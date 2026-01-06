@@ -16,14 +16,14 @@ if (!emailUser || !emailPass) {
 }
 
 const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587, // Force Port 587 (STARTTLS) - most reliable on Render
-    secure: false, // Must be false for port 587
+    host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+    port: parseInt(process.env.EMAIL_PORT || '587'),
+    secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for other ports
     auth: {
         user: emailUser,
         pass: emailPass
     },
-    // CRITICAL: Force IPv4 as IPv6 often times out on Render
+    // CRITICAL for Render: Keep family: 4 to force IPv4
     family: 4,
     // Keep performance/reliability settings
     pool: true,
