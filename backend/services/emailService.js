@@ -40,7 +40,8 @@ const transporter = nodemailer.createTransport({
 export const sendEmail = async ({ to, subject, html, replyTo }) => {
     try {
         const mailOptions = {
-            from: `Vastra Vows <${process.env.EMAIL_USER}>`,
+            // Use EMAIL_FROM if set (e.g. verified sender), otherwise fall back to EMAIL_USER
+            from: `Vastra Vows <${process.env.EMAIL_FROM || process.env.EMAIL_USER}>`,
             to,
             subject,
             html,
@@ -48,7 +49,9 @@ export const sendEmail = async ({ to, subject, html, replyTo }) => {
         };
 
         const info = await transporter.sendMail(mailOptions);
-        console.log(`[EmailService] Email sent: ${info.messageId} to ${to}`);
+        console.log(`[EmailService] Using SMTP Host: ${process.env.EMAIL_HOST || 'smtp.gmail.com'}`);
+        console.log(`[EmailService] Sender (From): ${mailOptions.from}`);
+        console.log(`[EmailService] Email sent successfully: ${info.messageId} to ${to}`);
         return info;
     } catch (error) {
         console.error('[EmailService] Error sending email:', error);

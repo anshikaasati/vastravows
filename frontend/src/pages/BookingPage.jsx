@@ -158,7 +158,8 @@ const BookingPage = () => {
 
                 alternatePhoneNumber: formData.alternatePhoneNumber,
                 deliveryDate: formData.deliveryDate,
-                returnDate: formData.returnDate
+                returnDate: formData.returnDate,
+                totalAmount: paidAmount + dueAmount
               };
 
               await paymentApi.verifyPayment({

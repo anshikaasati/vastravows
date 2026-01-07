@@ -83,20 +83,30 @@ export const verifyPayment = async (req, res) => {
             return res.status(400).json({ message: 'Invalid signature' });
         }
 
+        // Fetch Item to get ownerId
+        const item = await Item.findById(bookingData.itemId).populate('ownerId');
+        if (!item) {
+            return res.status(404).json({ message: 'Item not found' });
+        }
+
+        // Calculate totalAmount if missing
+        const totalAmount = bookingData.totalAmount || (bookingData.paidAmount + bookingData.dueAmount);
+
         // Create Booking
         const status = bookingData.dueAmount > 0 ? 'partially_paid' : 'confirmed';
 
         const booking = await Booking.create({
             ...bookingData,
             renterId: req.user._id,
+            ownerId: item.ownerId._id, // Securely get ownerId from DB
+            totalAmount: totalAmount,  // Ensure totalAmount is present
             status: status,
             paymentStatus: bookingData.dueAmount > 0 ? 'partial' : 'paid',
             transactionId: razorpay_payment_id
         });
 
         // Log booking for manual payment processing by owner
-        const item = await Item.findById(bookingData.itemId).populate('ownerId');
-        if (item && item.ownerId) {
+        if (item.ownerId) {
             console.log(`Booking confirmed: ${booking._id}`);
             console.log(`Lender UPI: ${item.ownerId.upiId || 'Not provided'}`);
             console.log(`Rent Amount: ₹${bookingData.rentAmount || 0}`);
