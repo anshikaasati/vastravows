@@ -259,25 +259,53 @@ export const buyerOrderConfirmationTemplate = ({ booking, item, buyer, bookingTy
  * Owner Order Notification Template
  */
 export const ownerOrderNotificationTemplate = ({ booking, item, buyer, bookingType, fullAddress, locationLink, rentalDays }) => {
+  // Get first image or placeholder
+  const itemImage = item.images && item.images.length > 0 ? item.images[0] : 'https://via.placeholder.com/150?text=No+Image';
+
   return `
         ${header}
         <div style="background: linear-gradient(135deg, #fff 0%, #f0fdf4 100%); border: 2px solid #166534; border-radius: 12px; padding: 30px; margin-bottom: 20px;">
-            <h2 style="color: #166534; margin-top: 0;">🌟 New Order Received!</h2>
-            <p style="color: #666;">Great news! Your item <strong>${item.title}</strong> has been rented/sold.</p>
+            <h2 style="color: #166534; margin-top: 0; text-align: center;">🌟 New Order Received!</h2>
+            <p style="color: #666; text-align: center;">Your item is in demand! Please review the details below.</p>
         </div>
 
-        <div style="display: flex; gap: 20px; margin-bottom: 20px;">
-            <div style="flex: 1; background: white; padding: 20px; border-radius: 8px; border: 1px solid #eee;">
-                <h3 style="color: #800000; margin-top: 0; font-size: 16px;">Order Details</h3>
-                <p style="font-size: 14px; margin: 5px 0;"><strong>ID:</strong> ${booking._id}</p>
-                <p style="font-size: 14px; margin: 5px 0;"><strong>Type:</strong> ${bookingType}</p>
-                <p style="font-size: 14px; margin: 5px 0;"><strong>Payout Amount:</strong> ₹${booking.rentAmount || item.salePrice}</p>
+        <!-- Item & Order Card -->
+        <div style="background: white; border-radius: 12px; overflow: hidden; border: 1px solid #eee; margin-bottom: 20px;">
+             <div style="display: flex; gap: 20px; padding: 20px; align-items: flex-start;">
+                <img src="${itemImage}" alt="${item.title}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd;">
+                
+                <div style="flex: 1;">
+                     <h3 style="color: #800000; margin: 0 0 5px 0;">${item.title}</h3>
+                     <p style="font-size: 14px; margin: 2px 0; color: #555;"><strong>Order ID:</strong> #${booking._id}</p>
+                     <p style="font-size: 14px; margin: 2px 0; color: #555;"><strong>Size:</strong> ${booking.size || 'N/A'}</p>
+                     <p style="font-size: 14px; margin: 2px 0; color: #555;"><strong>Type:</strong> <span style="background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 12px; font-size: 12px;">${bookingType}</span></p>
+                </div>
+                
+                <div style="text-align: right;">
+                    <p style="font-size: 12px; color: #888; margin: 0;">Payout Amount</p>
+                    <p style="font-size: 20px; font-weight: bold; color: #166534; margin: 0;">₹${bookingType === 'Rental' ? booking.rentAmount : item.salePrice}</p>
+                </div>
+             </div>
+        </div>
+
+        <div style="display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap;">
+             <!-- Buyer Info -->
+             <div style="flex: 1; min-width: 250px; background: white; padding: 20px; border-radius: 8px; border: 1px solid #eee;">
+                <h3 style="color: #800000; margin-top: 0; font-size: 16px; border-bottom: 1px solid #fce7f3; padding-bottom: 10px;">👤 Buyer Details</h3>
+                <p style="margin: 8px 0;"><strong>Name:</strong> ${buyer.name}</p>
+                <p style="margin: 8px 0;"><strong>Phone:</strong> <a href="tel:${buyer.phone}" style="color: #2563eb; text-decoration: none;">${buyer.phone || 'N/A'}</a></p>
+                 <p style="margin: 8px 0;"><strong>Email:</strong> ${buyer.email}</p>
             </div>
-             <div style="flex: 1; background: white; padding: 20px; border-radius: 8px; border: 1px solid #eee;">
-                <h3 style="color: #800000; margin-top: 0; font-size: 16px;">Buyer Info</h3>
-                <p style="font-size: 14px; margin: 5px 0;"><strong>Name:</strong> ${buyer.name}</p>
-                <p style="font-size: 14px; margin: 5px 0;"><strong>Phone:</strong> ${buyer.phone || 'N/A'}</p>
-                 <p style="font-size: 14px; margin: 5px 0;"><strong>Email:</strong> ${buyer.email}</p>
+
+            <!-- Schedule / Logistics -->
+             <div style="flex: 1; min-width: 250px; background: #fff7ed; padding: 20px; border-radius: 8px; border: 1px solid #ffedd5;">
+                <h3 style="color: #c2410c; margin-top: 0; font-size: 16px; border-bottom: 1px solid #fdba74; padding-bottom: 10px;">📅 Logistics</h3>
+                ${bookingType === 'Rental' ? `
+                    <p style="margin: 8px 0; font-size: 14px;"><strong>Deliver By:</strong> <br><span style="font-weight: bold; color: #333;">${new Date(new Date(booking.startDate).setDate(new Date(booking.startDate).getDate() - 1)).toDateString()}</span></p>
+                    <p style="margin: 8px 0; font-size: 14px;"><strong>Pickup On:</strong> <br><span style="font-weight: bold; color: #333;">${new Date(new Date(booking.endDate).setDate(new Date(booking.endDate).getDate() + 1)).toDateString()}</span></p>
+                ` : `
+                    <p style="margin: 8px 0; font-size: 14px;"><strong>Ship By:</strong> <br><span style="font-weight: bold; color: #333;">Within 2 days</span></p>
+                `}
             </div>
         </div>
 
@@ -288,20 +316,12 @@ export const ownerOrderNotificationTemplate = ({ booking, item, buyer, bookingTy
             ${locationLink ? `
             <div style="text-align: center;">
                 <a href="${locationLink}" target="_blank" style="background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
-                    🗺️ View on Google Maps
+                    🗺️ Open in Google Maps
                 </a>
-                <p style="font-size: 12px; color: #666; margin-top: 10px;">Click above to navigate to the buyer's location.</p>
+                <p style="font-size: 12px; color: #666; margin-top: 10px;">Navigate to delivery location</p>
             </div>
             ` : '<p style="color: #666; font-style: italic;">No map location provided.</p>'}
         </div>
-
-        ${bookingType === 'Rental' ? `
-        <div style="background: #fff7ed; border-left: 4px solid #ea580c; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-            <h3 style="color: #9a3412; margin-top: 0;">📅 Schedule</h3>
-             <p style="margin: 8px 0;"><strong>Delivery:</strong> 1 day before ${new Date(booking.startDate).toLocaleDateString()}</p>
-             <p style="margin: 8px 0;"><strong>Pickup/Return:</strong> 1 day after ${new Date(booking.endDate).toLocaleDateString()}</p>
-        </div>
-        ` : ''}
 
         ${footer}
     `;

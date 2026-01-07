@@ -138,10 +138,12 @@ export const sendBookingNotification = async (booking, item, buyer, lender) => {
         const pincode = booking.location?.pincode || '';
         const fullAddress = `${deliveryAddress}${city ? ', ' + city : ''}${pincode ? ' - ' + pincode : ''}`.trim();
 
-        // Generate Map Link if coordinates exist
+        // Generate Map Link: Use Lat/Long if available, otherwise search by address
         let locationLink = null;
         if (booking.location?.latitude && booking.location?.longitude) {
             locationLink = `https://www.google.com/maps?q=${booking.location.latitude},${booking.location.longitude}`;
+        } else if (fullAddress) {
+            locationLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`;
         }
 
         // --- 1. Email to Buyer (Order Confirmation) ---
