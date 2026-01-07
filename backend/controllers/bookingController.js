@@ -67,16 +67,26 @@ export const createBooking = async (req, res, next) => {
       return next(new Error('Item not found'));
     }
 
-    const parsedStart = new Date(startDate);
-    const parsedEnd = new Date(endDate);
+    let parsedStart, parsedEnd;
 
-    // Only check for overlaps if it's a rental (rentPrice > 0)
+    // Rental Logic: Require dates and check overlaps
     if (item.rentPricePerDay > 0) {
+      if (!startDate || !endDate) {
+        res.status(400);
+        return next(new Error('Start and End dates are required for rentals'));
+      }
+      parsedStart = new Date(startDate);
+      parsedEnd = new Date(endDate);
+
       const conflicts = await findOverlappingBookings({ itemId, startDate: parsedStart, endDate: parsedEnd });
       if (conflicts.length) {
         res.status(400);
         return next(new Error('Selected dates overlap with existing booking'));
       }
+    } else {
+      // Sale Logic: Default to now if dates missing
+      parsedStart = startDate ? new Date(startDate) : new Date();
+      parsedEnd = endDate ? new Date(endDate) : new Date();
     }
 
     let rentAmount = 0;
@@ -131,14 +141,14 @@ export const createBooking = async (req, res, next) => {
     try {
       const buyer = await User.findById(req.user._id).select('name email phone');
       const lender = await User.findById(item.ownerId).select('name email phone');
-      
+
       if (buyer && lender && populated.itemId) {
         sendBookingNotification(
           populated.toObject(),
           populated.itemId.toObject(),
           buyer.toObject(),
           lender.toObject()
-        ).catch(err => 
+        ).catch(err =>
           console.error('Failed to send booking notification:', err)
         );
       }

@@ -90,6 +90,15 @@ export const verifyPayment = async (req, res) => {
             return res.status(404).json({ message: 'Item not found' });
         }
 
+        // Handle missing dates for Sale items (Purchase)
+        if (!bookingData.startDate || !bookingData.endDate) {
+            const isSale = !item.rentPricePerDay || item.rentPricePerDay === 0;
+            if (isSale) {
+                bookingData.startDate = new Date();
+                bookingData.endDate = new Date();
+            }
+        }
+
         // Calculate totalAmount if missing
         const totalAmount = bookingData.totalAmount || (bookingData.paidAmount + bookingData.dueAmount);
 
