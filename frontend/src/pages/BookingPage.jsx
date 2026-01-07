@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { bookingApi, paymentApi } from '../api/services';
 import { useCart } from '../context/CartContext';
 import { MapPin, Truck, User, Phone, Calendar, CreditCard, Banknote } from 'lucide-react';
+import LocationPicker from '../components/LocationPicker';
 
 const BookingPage = () => {
   const { cart, getCartTotal, clearCart } = useCart();
@@ -28,10 +29,26 @@ const BookingPage = () => {
     city: '',
     pincode: '',
     pickupAddress: '',
-    deliveryDate: '', // Global preference
     returnDate: '',   // Global preference
     paymentMethod: 'online', // Default
+    latitude: null, // GPS Coord
+    longitude: null, // GPS Coord
   });
+
+  const [showLocationPicker, setShowLocationPicker] = useState(false);
+
+  const handleLocationSelect = (locationData) => {
+    setFormData(prev => ({
+      ...prev,
+      deliveryAddress: locationData.address,
+      city: locationData.city,
+      pincode: locationData.pincode,
+      latitude: locationData.lat,
+      longitude: locationData.lng
+    }));
+    setShowLocationPicker(false);
+    toast.success("Location updated from map!");
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -144,7 +161,10 @@ const BookingPage = () => {
                 pickupAddress: formData.pickupAddress || formData.deliveryAddress,
                 location: {
                   city: formData.city,
-                  pincode: formData.pincode
+                  pincode: formData.pincode,
+                  latitude: formData.latitude,
+                  longitude: formData.longitude,
+                  address: formData.deliveryAddress
                 },
                 depositAmount: itemDeposit,
                 rentAmount: itemRentAmount,
@@ -260,7 +280,17 @@ const BookingPage = () => {
                   </div>
 
                   <div className="space-y-5 sm:space-y-6 pt-4 sm:pt-6 border-t border-gray-100">
-                    <h3 className="text-lg sm:text-xl font-display font-medium text-gray-900">Delivery Address</h3>
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-lg sm:text-xl font-display font-medium text-gray-900">Delivery Address</h3>
+                      <button
+                        type="button"
+                        onClick={() => setShowLocationPicker(true)}
+                        className="text-sm text-primary font-bold uppercase tracking-wider hover:underline flex items-center gap-2"
+                      >
+                        <MapPin className="w-4 h-4" />
+                        Select on Map
+                      </button>
+                    </div>
                     <textarea required name="deliveryAddress" value={formData.deliveryAddress} onChange={handleInputChange} rows="3" className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-xl border border-gray-200 bg-gray-50/50 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-gray-400 resize-none text-sm sm:text-base" placeholder="Full address" />
                     <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
                       <input required name="city" value={formData.city} onChange={handleInputChange} className="w-full px-5 py-4 rounded-xl border border-gray-200 bg-gray-50/50 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-gray-400" placeholder="City" />
@@ -405,6 +435,14 @@ const BookingPage = () => {
           </div>
         </div >
       </div>
+
+      {showLocationPicker && (
+        <LocationPicker
+          onLocationSelect={handleLocationSelect}
+          onClose={() => setShowLocationPicker(false)}
+          initialLocation={formData.latitude && formData.longitude ? { lat: formData.latitude, lng: formData.longitude } : null}
+        />
+      )}
     </div >
   );
 };
