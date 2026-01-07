@@ -15,11 +15,13 @@ export const sendContactEmail = async (req, res, next) => {
     // Generate HTML using template
     const htmlContent = contactFormTemplate({ name, email, subject, message });
 
-    // Send email to Admin (or Site Owner)
-    // AND/OR send to a dedicated support email. 
-    // The original code sent TO vastravows@gmail.com FROM vastravows@gmail.com, with replyTo as user's email.
+    // Send email to Admin
+    // Priority: ADMIN_EMAIL > EMAIL_FROM > Hardcoded fallback
+    // CRITICAL: Do NOT use EMAIL_USER as it might be an SMTP ID (like in Brevo)
+    const adminEmail = process.env.ADMIN_EMAIL || process.env.EMAIL_FROM || 'vastravows@gmail.com';
+
     await sendEmail({
-      to: process.env.EMAIL_USER || 'vastravows@gmail.com',
+      to: adminEmail,
       subject: `Contact Form: ${subject}`,
       html: htmlContent,
       replyTo: email
