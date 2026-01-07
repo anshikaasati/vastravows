@@ -7,18 +7,31 @@ import nodemailer from 'nodemailer';
  */
 
 // 1. Create a reusable transporter object using the default SMTP transport
+// 1. Create a reusable transporter object using the default SMTP transport
 const emailUser = process.env.EMAIL_USER;
 const emailPass = process.env.EMAIL_PASSWORD;
+const emailHost = process.env.EMAIL_HOST || 'smtp.gmail.com';
+const emailPort = parseInt(process.env.EMAIL_PORT || '587');
+const emailFrom = process.env.EMAIL_FROM || emailUser;
 
 if (!emailUser || !emailPass) {
     console.warn('[EmailService] WARNING: EMAIL_USER or EMAIL_PASSWORD environment variables are missing!');
     console.warn('[EmailService] Email functionality will not work until these are set.');
 }
 
+// Log configuration (Sanitized)
+console.log('[EmailService] Initializing with config:');
+console.log(`- Host: ${emailHost}`);
+console.log(`- Port: ${emailPort}`);
+console.log(`- Secure: ${emailPort === 465}`); // Explicitly log what we are inferring
+console.log(`- User: ${emailUser ? emailUser.substring(0, 3) + '***' : 'Missing'}`);
+console.log(`- From: ${emailFrom}`);
+
 const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-    port: parseInt(process.env.EMAIL_PORT || '587'),
-    secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for other ports
+    host: emailHost,
+    port: emailPort,
+    // Force secure=false for ports 587 and 2525 (Brevo/SendGrid/etc usually use STARTTLS)
+    secure: emailPort === 465,
     auth: {
         user: emailUser,
         pass: emailPass
@@ -41,7 +54,7 @@ export const sendEmail = async ({ to, subject, html, replyTo }) => {
     try {
         const mailOptions = {
             // Use EMAIL_FROM if set (e.g. verified sender), otherwise fall back to EMAIL_USER
-            from: `Vastra Vows <${process.env.EMAIL_FROM || process.env.EMAIL_USER}>`,
+            from: `Vastra Vows <${emailFrom}>`,
             to,
             subject,
             html,
@@ -49,8 +62,6 @@ export const sendEmail = async ({ to, subject, html, replyTo }) => {
         };
 
         const info = await transporter.sendMail(mailOptions);
-        console.log(`[EmailService] Using SMTP Host: ${process.env.EMAIL_HOST || 'smtp.gmail.com'}`);
-        console.log(`[EmailService] Sender (From): ${mailOptions.from}`);
         console.log(`[EmailService] Email sent successfully: ${info.messageId} to ${to}`);
         return info;
     } catch (error) {
