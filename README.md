@@ -14,7 +14,7 @@ backend/
   middleware/
   utils/
   config.js
-  env.sample
+  .env.sample
   package.json
   server.js
 frontend/
@@ -26,7 +26,7 @@ frontend/
     App.jsx
     main.jsx
     index.css
-  env.sample
+  .env.sample
   package.json
   vite.config.js
 README.md
@@ -41,7 +41,7 @@ README.md
 ```bash
 cd backend
 npm install
-cp env.sample .env               # fill in actual secrets
+cp .env.sample .env               # fill in actual secrets
 npm run dev                      # http://localhost:5000
 ```
 
@@ -50,7 +50,7 @@ npm run dev                      # http://localhost:5000
 ```bash
 cd frontend
 npm install
-cp env.sample .env               # ensure backend URL matches
+cp .env.sample .env               # ensure backend URL matches
 npm run dev                      # http://localhost:5173
 ```
 
