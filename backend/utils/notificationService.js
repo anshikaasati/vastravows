@@ -2,7 +2,9 @@ import { sendEmail } from '../services/emailService.js';
 import {
     newUserNotificationTemplate,
     userDeletedNotificationTemplate,
-    bookingNotificationTemplate
+    bookingNotificationTemplate, // Kept for backward compat or fallback
+    buyerOrderConfirmationTemplate,
+    ownerOrderNotificationTemplate
 } from '../templates/emailTemplates.js';
 import User from '../models/User.js';
 
@@ -116,7 +118,7 @@ export const sendUserDeletionNotification = async (deletedUser) => {
     }
 };
 
-// 3. Send booking notification to lender and admin
+// 3. Send booking notification to buyer, lender and admin
 export const sendBookingNotification = async (booking, item, buyer, lender) => {
     try {
         const isRental = item.rentPricePerDay > 0;
@@ -136,43 +138,78 @@ export const sendBookingNotification = async (booking, item, buyer, lender) => {
         const pincode = booking.location?.pincode || '';
         const fullAddress = `${deliveryAddress}${city ? ', ' + city : ''}${pincode ? ' - ' + pincode : ''}`.trim();
 
-        const htmlContent = bookingNotificationTemplate({
+        // Generate Map Link if coordinates exist
+        let locationLink = null;
+        if (booking.location?.latitude && booking.location?.longitude) {
+            locationLink = `https://www.google.com/maps?q=${booking.location.latitude},${booking.location.longitude}`;
+        }
+
+        // --- 1. Email to Buyer (Order Confirmation) ---
+        if (buyer && buyer.email) {
+            const buyerHtml = buyerOrderConfirmationTemplate({
+                booking,
+                item,
+                buyer,
+                bookingType,
+                fullAddress,
+                rentalDays
+            });
+
+            await sendEmail({
+                to: buyer.email,
+                subject: `Order Confirmed: ${item.title} (#${booking._id})`,
+                html: buyerHtml
+            });
+        }
+
+        // --- 2. Email to Owner (Lender Notification) ---
+        if (lender && lender.email) {
+            const ownerHtml = ownerOrderNotificationTemplate({
+                booking,
+                item,
+                buyer,
+                bookingType,
+                fullAddress,
+                locationLink,
+                rentalDays
+            });
+
+            await sendEmail({
+                to: lender.email,
+                subject: `New Order Received for ${item.title}`,
+                html: ownerHtml
+            });
+
+            // Send WhatsApp to lender (existing logic)
+            if (lender.phone) {
+                const lenderWhatsappMessage = `📦 New Booking Received!\n\nItem: ${item.title}\nAmount: ₹${booking.totalAmount || 0}\nBuyer: ${buyer.name || booking.renterName || 'N/A'}\nPhone: ${buyer.phone || booking.phoneNumber || 'N/A'}\nDelivery: ${fullAddress || 'Not provided'}\n\nCheck your email for complete details including map location.`;
+                await sendWhatsAppMessage(lender.phone, lenderWhatsappMessage);
+            }
+        }
+
+        // --- 3. Email to Admin (Monitoring) ---
+        const adminEmail = process.env.ADMIN_EMAIL || process.env.EMAIL_USER || 'vastravows@gmail.com';
+        // Reuse Owner template for Admin as it has more details
+        const adminHtml = ownerOrderNotificationTemplate({
             booking,
             item,
             buyer,
             bookingType,
             fullAddress,
+            locationLink,
             rentalDays
         });
 
-        const adminEmail = process.env.ADMIN_EMAIL || process.env.EMAIL_USER || 'vastravows@gmail.com';
-
-        // Send to Lender
-        if (lender && lender.email) {
-            await sendEmail({
-                to: lender.email,
-                subject: `📦 New ${bookingType} Booking - ${item.title}`,
-                html: htmlContent
-            });
-
-            // Send WhatsApp to lender
-            if (lender.phone) {
-                const lenderWhatsappMessage = `📦 New Booking Received!\n\nItem: ${item.title}\nAmount: ₹${booking.totalAmount || 0}\nBuyer: ${buyer.name || booking.renterName || 'N/A'}\nPhone: ${buyer.phone || booking.phoneNumber || 'N/A'}\nDelivery: ${fullAddress || 'Not provided'}\n\nCheck your email for complete details.`;
-                await sendWhatsAppMessage(lender.phone, lenderWhatsappMessage);
-            }
-        }
-
-        // Send to Admin
         await sendEmail({
             to: adminEmail,
-            subject: `📦 New ${bookingType} Booking - ${item.title} (Admin Copy)`,
-            html: htmlContent
+            subject: `[Admin] New Booking: ${item.title} by ${buyer.name}`,
+            html: adminHtml
         });
 
-        // Send WhatsApp to Admin
+        // Send WhatsApp to Admin (existing logic)
         const adminWhatsApp = process.env.ADMIN_WHATSAPP;
         if (adminWhatsApp) {
-            const adminWhatsappMessage = `📦 New Booking Received!\n\nItem: ${item.title}\nAmount: ₹${booking.totalAmount || 0}\nBuyer: ${buyer.name || booking.renterName || 'N/A'}\nPhone: ${buyer.phone || booking.phoneNumber || 'N/A'}\nDelivery: ${fullAddress || 'Not provided'}\n\nCheck your email for complete details.`;
+            const adminWhatsappMessage = `📦 New Booking Received!\n\nItem: ${item.title}\nAmount: ₹${booking.totalAmount || 0}\nBuyer: ${buyer.name || booking.renterName || 'N/A'}\nPhone: ${buyer.phone || booking.phoneNumber || 'N/A'}\nDelivery: ${fullAddress || 'Not provided'}\n\nCheck your email.`;
             await sendWhatsAppMessage(adminWhatsApp, adminWhatsappMessage);
         }
 

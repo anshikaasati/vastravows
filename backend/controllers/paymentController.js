@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import User from '../models/User.js';
 import Item from '../models/Item.js';
 import Booking from '../models/Booking.js';
+import { sendBookingNotification } from '../utils/notificationService.js';
 
 // Lazy initialization to ensure env vars are loaded
 const getRazorpayInstance = () => {
@@ -111,6 +112,22 @@ export const verifyPayment = async (req, res) => {
             console.log(`Lender UPI: ${item.ownerId.upiId || 'Not provided'}`);
             console.log(`Rent Amount: ₹${bookingData.rentAmount || 0}`);
             console.log(`Owner will process payment manually to lender`);
+
+            // Send Email Notifications
+            // We have 'booking', 'item' (populated with ownerId), and 'req.user' (buyer)
+            // item.ownerId is the lender User object
+            try {
+                // Ensure we pass objects compatible with the service
+                await sendBookingNotification(
+                    booking.toObject ? booking.toObject() : booking,
+                    item.toObject ? item.toObject() : item,
+                    req.user.toObject ? req.user.toObject() : req.user,
+                    item.ownerId.toObject ? item.ownerId.toObject() : item.ownerId
+                );
+            } catch (notifWarn) {
+                console.error('Notification Warning:', notifWarn);
+                // Don't fail the request
+            }
         }
 
         res.json({ message: 'Payment verified and booking confirmed', bookingId: booking._id });

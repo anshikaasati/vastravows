@@ -16,7 +16,10 @@ const bookingSchema = new mongoose.Schema(
     pickupAddress: { type: String }, // Optional, mostly for rentals return or owner pickup
     location: {
       city: { type: String, required: true },
-      pincode: { type: String, required: true }
+      pincode: { type: String, required: true },
+      latitude: { type: Number },
+      longitude: { type: Number },
+      address: { type: String } // Full formatted address text
     },
     // Payment details
     depositAmount: { type: Number, default: 0 },
